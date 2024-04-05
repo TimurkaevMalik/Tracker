@@ -15,10 +15,11 @@ final class TrackerViewController: UIViewController {
     private lazy var titleLabel = UILabel()
     private lazy var centralPlugLabel = UILabel()
     private lazy var centralPlugImage = UIImageView()
+    private lazy var searchController = UISearchController(searchResultsController: nil)
     
     
     
-    func makeTrackerButtonsViews() {
+    func configureTrackerButtonsViews() {
         view.backgroundColor = UIColor(named: "YPWhite")
         
         plusButton = UIButton.systemButton(with: UIImage(named: "PlusImage") ?? UIImage(), target: self, action: #selector(didTapPlusButton))
@@ -51,7 +52,7 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
-    func makeTrackerLabelsViews(){
+    func configureTrackerLabelsViews(){
         titleLabel.text = "Трекеры"
         titleLabel.font = UIFont.boldSystemFont(ofSize: 34)
         
@@ -76,7 +77,7 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
-    func makeCentralPlug(){
+    func configureCentralPlug(){
         centralPlugImage.image = UIImage(named: "TrackerPlug")
         
         centralPlugImage.translatesAutoresizingMaskIntoConstraints = false
@@ -90,14 +91,47 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
+    func configureSearchController(){
+        searchController.searchBar.delegate = self
+        searchController.searchResultsUpdater = self
+        
+        searchController.searchBar.placeholder = "Поиск"
+        searchController.searchBar.sizeToFit()
+        
+        searchController.searchBar.searchBarStyle = .prominent
+        searchController.searchBar.layer.cornerRadius = 8
+        searchController.searchBar.layer.masksToBounds = true
+        
+        searchController.searchBar.isTranslucent = false
+        searchController.searchBar.backgroundImage = UIImage()
+        
+        
+        searchController.searchBar.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(searchController.searchBar)
+        
+        
+        NSLayoutConstraint.activate([
+            searchController.searchBar.heightAnchor.constraint(equalToConstant: 36),
+            searchController.searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 92),
+            searchController.searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 11),
+            searchController.searchBar.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -11)
+        ])
+    }
+    
+    func configureTrackerViews(){
+        configureCentralPlug()
+        configureTrackerButtonsViews()
+        configureTrackerLabelsViews()
+        configureSearchController()
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        makeCentralPlug()
-        makeTrackerButtonsViews()
-        makeTrackerLabelsViews()
+        configureTrackerViews()
     }
+    
     
     @objc func didTapPlusButton(){
         print("PLUS BUTTON")
@@ -115,4 +149,12 @@ extension UIView {
             addSubview(subview)
         }
     }
+}
+
+
+extension TrackerViewController: UISearchBarDelegate {}
+
+extension TrackerViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {}
 }

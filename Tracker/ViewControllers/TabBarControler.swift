@@ -37,7 +37,7 @@ final class TabBarControler: UITabBarController {
             statisticViewController
         ]
     }
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
