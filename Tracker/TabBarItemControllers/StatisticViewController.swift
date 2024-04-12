@@ -14,7 +14,7 @@ final class StatisticViewController: UIViewController {
     private lazy var centralPlugLabel = UILabel()
     private lazy var centralPlugImage = UIImageView()
     
-    func makeLabelsViews(){
+    func configureLabelsViews(){
         view.backgroundColor = UIColor(named: "YPWhite")
         
         titleLabel.text = "Статистика"
@@ -41,7 +41,7 @@ final class StatisticViewController: UIViewController {
         ])
     }
     
-    func makeCentralPlug(){
+    func configureCentralPlug(){
         centralPlugImage.image = UIImage(named: "StatisticPlug")
         
         centralPlugImage.translatesAutoresizingMaskIntoConstraints = false
@@ -58,7 +58,7 @@ final class StatisticViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        makeLabelsViews()
-        makeCentralPlug()
+        configureLabelsViews()
+        configureCentralPlug()
     }
 }

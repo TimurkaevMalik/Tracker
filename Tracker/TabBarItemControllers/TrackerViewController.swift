@@ -17,7 +17,10 @@ final class TrackerViewController: UIViewController {
     private lazy var centralPlugImage = UIImageView()
     private lazy var searchController = UISearchController(searchResultsController: nil)
     
+    private var categories: [TrackerCategory] = []
+    private var completedTrackers: [TrackerRecord] = []
     
+    private let ShowCreatingTrackerViewSegueIdentifier = "ShowCreatingTrackerView"
     
     func configureTrackerButtonsViews() {
         view.backgroundColor = UIColor(named: "YPWhite")
@@ -125,6 +128,36 @@ final class TrackerViewController: UIViewController {
         configureSearchController()
     }
     
+    func presentCreatingTrackerView(){
+        
+        let viewController = CreatingTracker()
+        
+        viewController.delegate = self
+        viewController.modalPresentationStyle = .popover
+//        viewController.present
+        
+        present(viewController, animated: true)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == ShowCreatingTrackerViewSegueIdentifier {
+            
+            let viewController = segue.destination as? CreatingTracker
+            
+            guard let viewController else {
+                return
+            }
+            
+            viewController.delegate = self
+            viewController.modalPresentationStyle = .popover
+    //        viewController.present
+            present(viewController, animated: true)
+            
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -135,6 +168,15 @@ final class TrackerViewController: UIViewController {
     
     @objc func didTapPlusButton(){
         print("PLUS BUTTON")
+        
+        
+        completedTrackers.append(TrackerRecord(id: UUID(), date: Date()))
+        
+        print(completedTrackers.count)
+        print(completedTrackers)
+        
+        presentCreatingTrackerView()
+//        performSegue(withIdentifier: ShowCreatingTrackerViewSegueIdentifier, sender: nil)
     }
     
     @objc func didTapDateButton(){
@@ -142,19 +184,19 @@ final class TrackerViewController: UIViewController {
     }
 }
 
-extension UIView {
-    func addSubviews(_ subviews: [UIView]) {
-        
-        for subview in subviews {
-            addSubview(subview)
-        }
-    }
-}
-
 
 extension TrackerViewController: UISearchBarDelegate {}
+
 
 extension TrackerViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {}
+}
+
+
+extension TrackerViewController: CreatingTrackerDelegate {
+    func CreatingTrackerViewDidDismiss() {
+        
+        completedTrackers.remove(at: completedTrackers.count - 1)
+    }
 }
