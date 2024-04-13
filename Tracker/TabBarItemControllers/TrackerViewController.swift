@@ -11,11 +11,12 @@ import UIKit
 final class TrackerViewController: UIViewController {
     
     private lazy var plusButton = UIButton()
-    private lazy var dateButton = UIButton()
+    private lazy var datePicker = UIDatePicker()
     private lazy var titleLabel = UILabel()
     private lazy var centralPlugLabel = UILabel()
     private lazy var centralPlugImage = UIImageView()
     private lazy var searchController = UISearchController(searchResultsController: nil)
+    private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
@@ -23,24 +24,22 @@ final class TrackerViewController: UIViewController {
     private let ShowCreatingTrackerViewSegueIdentifier = "ShowCreatingTrackerView"
     
     func configureTrackerButtonsViews() {
-        view.backgroundColor = UIColor(named: "YPWhite")
         
         plusButton = UIButton.systemButton(with: UIImage(named: "PlusImage") ?? UIImage(), target: self, action: #selector(didTapPlusButton))
         plusButton.tintColor = UIColor(named: "YPBlack")
         
         
-        dateButton.backgroundColor = UIColor(named: "YPLightGray")
-        dateButton.setTitle("14.12.24", for: .normal)
-        dateButton.addTarget(self, action: #selector(didTapDateButton), for: .touchUpInside)
-        dateButton.setTitleColor(UIColor(named: "YPBlack"), for: .normal)
-        dateButton.titleLabel?.font = UIFont.systemFont(ofSize: 17)
-        dateButton.layer.cornerRadius = 8
-        dateButton.layer.masksToBounds = true
+        datePicker.backgroundColor = UIColor(named: "YPLightGray")
+        datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        datePicker.datePickerMode = .date
+        datePicker.preferredDatePickerStyle = .compact
+        datePicker.layer.cornerRadius = 8
+        datePicker.layer.masksToBounds = true
         
         plusButton.translatesAutoresizingMaskIntoConstraints = false
-        dateButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviews([plusButton, dateButton])
-        
+        datePicker.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubviews([plusButton, datePicker])
+        navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
         
         NSLayoutConstraint.activate([
             plusButton.widthAnchor.constraint(equalToConstant: 42),
@@ -48,10 +47,10 @@ final class TrackerViewController: UIViewController {
             plusButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 6),
             plusButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
             
-            dateButton.widthAnchor.constraint(equalToConstant: 77),
-            dateButton.heightAnchor.constraint(equalToConstant: 34),
-            dateButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            dateButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5)
+            datePicker.widthAnchor.constraint(equalToConstant: 100),
+            datePicker.heightAnchor.constraint(equalToConstant: 34),
+            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            datePicker.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5)
         ])
     }
     
@@ -121,11 +120,33 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
+    private func configureCollectionView(){
+        collectionView.backgroundColor = .ypGray
+        collectionView.allowsMultipleSelection = false
+        collectionView.dataSource = self
+        collectionView.delegate = self
+        
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        
+        collectionView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(collectionView)
+        
+        NSLayoutConstraint.activate([
+            collectionView.topAnchor.constraint(equalTo: searchController.searchBar.bottomAnchor, constant: 10),
+            collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
+            collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor)
+        ])
+    }
+    
     func configureTrackerViews(){
+        view.backgroundColor = UIColor(named: "YPWhite")
+        
         configureCentralPlug()
         configureTrackerButtonsViews()
         configureTrackerLabelsViews()
         configureSearchController()
+        configureCollectionView()
     }
     
     func presentCreatingTrackerView(){
@@ -179,8 +200,15 @@ final class TrackerViewController: UIViewController {
 //        performSegue(withIdentifier: ShowCreatingTrackerViewSegueIdentifier, sender: nil)
     }
     
-    @objc func didTapDateButton(){
+    @objc func datePickerValueChanged(_ sender: UIDatePicker){
         print("DATE BUTTON")
+        
+        let selctedDate = sender.date
+        let dateFormatter = DateFormatter()
+        dateFormatter.dateFormat = "dd.MM.yyyy"
+        let formatedDate = dateFormatter.string(from: selctedDate)
+        
+        print(formatedDate)
     }
 }
 
@@ -199,4 +227,29 @@ extension TrackerViewController: CreatingTrackerDelegate {
         
         completedTrackers.remove(at: completedTrackers.count - 1)
     }
+}
+
+
+extension TrackerViewController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Running", color: .orange, emoji: "😎", schedule: Date())]
+            )
+        )
+        
+        return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        return UICollectionViewCell()
+    }
+    
+    
+}
+
+
+
+extension TrackerViewController: UICollectionViewDelegate {
+    
 }
