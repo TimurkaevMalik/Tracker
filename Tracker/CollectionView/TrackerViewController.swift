@@ -237,7 +237,7 @@ extension TrackerViewController: UICollectionViewDataSource {
             )
         )
         
-        return 0
+        return categories.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
