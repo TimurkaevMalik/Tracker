@@ -31,29 +31,15 @@ final class TrackerViewController: UIViewController {
         plusButton.tintColor = UIColor(named: "YPBlack")
         
         
-        datePicker.backgroundColor = UIColor(named: "YPLightGray")
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
+        datePicker.backgroundColor = UIColor(named: "YPLightGray")
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
         datePicker.layer.cornerRadius = 8
         datePicker.layer.masksToBounds = true
         
-        plusButton.translatesAutoresizingMaskIntoConstraints = false
-        datePicker.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviews([plusButton, datePicker])
+        navigationItem.leftBarButtonItem = UIBarButtonItem(customView: plusButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
-        
-        NSLayoutConstraint.activate([
-            plusButton.widthAnchor.constraint(equalToConstant: 42),
-            plusButton.heightAnchor.constraint(equalToConstant: 42),
-            plusButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 6),
-            plusButton.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
-            
-            datePicker.widthAnchor.constraint(equalToConstant: 100),
-            datePicker.heightAnchor.constraint(equalToConstant: 34),
-            datePicker.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
-            datePicker.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 5)
-        ])
     }
     
     private func configureTrackerLabelsViews(){
@@ -72,12 +58,12 @@ final class TrackerViewController: UIViewController {
             titleLabel.widthAnchor.constraint(equalToConstant: 254),
             titleLabel.heightAnchor.constraint(equalToConstant: 41),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44),
+            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
             
             centralPlugLabel.widthAnchor.constraint(equalToConstant: 150),
             centralPlugLabel.heightAnchor.constraint(equalToConstant: 18),
-            centralPlugLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 446),
-            centralPlugLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
+            centralPlugLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 403),
+            centralPlugLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -90,8 +76,8 @@ final class TrackerViewController: UIViewController {
         NSLayoutConstraint.activate([
             centralPlugImage.widthAnchor.constraint(equalToConstant: 80),
             centralPlugImage.heightAnchor.constraint(equalToConstant: 80),
-            centralPlugImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            centralPlugImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 358)
+            centralPlugImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            centralPlugImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 315)
         ])
     }
     
@@ -116,7 +102,7 @@ final class TrackerViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             searchController.searchBar.heightAnchor.constraint(equalToConstant: 36),
-            searchController.searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 92),
+            searchController.searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 49),
             searchController.searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 11),
             searchController.searchBar.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -11)
         ])
@@ -153,10 +139,10 @@ final class TrackerViewController: UIViewController {
         view.backgroundColor = UIColor(named: "YPWhite")
         
         configureCentralPlug()
-        configureTrackerButtonsViews()
         configureTrackerLabelsViews()
         configureSearchController()
         configureCollectionView()
+        configureTrackerButtonsViews()
     }
     
     private func presentCreatingTrackerView(){
@@ -240,9 +226,15 @@ extension TrackerViewController: UICollectionViewDataSource {
             )
         )
         
-        categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Кошка заслонила камеру на созвоне", color: .orange, emoji: "😼", schedule: Date())]
+        categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Кошка заслонила", color: .orange, emoji: "😼", schedule: Date())]
             )
         )
+
+        if categories.count == 0 {
+            collectionView.backgroundColor? = .white.withAlphaComponent(0)
+        } else {
+            collectionView.backgroundColor = .ypWhite
+        }
         
         return categories.count
     }
@@ -258,10 +250,6 @@ extension TrackerViewController: UICollectionViewDataSource {
         cell.view.backgroundColor = categories[indexPath.row].habbitsArray[0].color
         cell.doneButton.backgroundColor = categories[indexPath.row].habbitsArray[0].color
 
-        
-        cell.layer.cornerRadius = 16
-        cell.layer.masksToBounds = true
-        
         return cell
     }
 }

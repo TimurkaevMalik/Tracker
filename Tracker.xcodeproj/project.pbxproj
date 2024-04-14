@@ -63,6 +63,14 @@
 			path = TabBarController;
 			sourceTree = "<group>";
 		};
+		BC3D9B142BCB66C600C60848 /* StatisticVeiw */ = {
+			isa = PBXGroup;
+			children = (
+				BCF6219F2BBF45A8001DE986 /* StatisticViewController.swift */,
+			);
+			path = StatisticVeiw;
+			sourceTree = "<group>";
+		};
 		BC5E5DBA2BC9A16300BD7655 /* Models */ = {
 			isa = PBXGroup;
 			children = (
@@ -125,6 +133,7 @@
 		BCC82EE22BBEE8710042D467 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				BC3D9B142BCB66C600C60848 /* StatisticVeiw */,
 				BC5E5DC42BC9AE3F00BD7655 /* extensions */,
 				BC5E5DC12BC9AD2D00BD7655 /* CreatingTracker */,
 				BC5E5DBA2BC9A16300BD7655 /* Models */,
@@ -143,7 +152,6 @@
 			isa = PBXGroup;
 			children = (
 				BCF6219D2BBF4595001DE986 /* TrackerViewController.swift */,
-				BCF6219F2BBF45A8001DE986 /* StatisticViewController.swift */,
 				BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */,
 				BC9A9F862BCB429900558F38 /* GeomitricParams.swift */,
 			);

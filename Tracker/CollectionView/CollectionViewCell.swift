@@ -20,9 +20,6 @@ final class CollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-//        contentView.layer.cornerRadius = 16
-//        contentView.layer.masksToBounds = true
-        
         configureView()
         configureLabels()
         configureButton()
@@ -33,7 +30,7 @@ final class CollectionViewCell: UICollectionViewCell {
     }
     
     func configureView(){
-
+        
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
         
@@ -73,7 +70,7 @@ final class CollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             nameLable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
             nameLable.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
-            nameLable.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 44),
+            nameLable.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12),
             
             emoji.widthAnchor.constraint(equalToConstant: 24),
             emoji.heightAnchor.constraint(equalToConstant: 24),
