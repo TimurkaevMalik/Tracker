@@ -22,8 +22,10 @@ final class TrackerViewController: UIViewController {
     private var completedTrackers: [TrackerRecord] = []
     
     private let ShowCreatingTrackerViewSegueIdentifier = "ShowCreatingTrackerView"
+    private let cellIdentifier = "collectionCell"
+    private let params = GeomitricParams(cellCount: 2, leftInset: 18, rightInset: 18, cellSpacing: 7)
     
-    func configureTrackerButtonsViews() {
+    private func configureTrackerButtonsViews() {
         
         plusButton = UIButton.systemButton(with: UIImage(named: "PlusImage") ?? UIImage(), target: self, action: #selector(didTapPlusButton))
         plusButton.tintColor = UIColor(named: "YPBlack")
@@ -54,7 +56,7 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
-    func configureTrackerLabelsViews(){
+    private func configureTrackerLabelsViews(){
         titleLabel.text = "Трекеры"
         titleLabel.font = UIFont.boldSystemFont(ofSize: 34)
         
@@ -79,7 +81,7 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
-    func configureCentralPlug(){
+    private func configureCentralPlug(){
         centralPlugImage.image = UIImage(named: "TrackerPlug")
         
         centralPlugImage.translatesAutoresizingMaskIntoConstraints = false
@@ -93,7 +95,7 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
-    func configureSearchController(){
+    private func configureSearchController(){
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         
@@ -121,12 +123,15 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configureCollectionView(){
-        collectionView.backgroundColor = .ypGray
+        
+        registerCollectionViewsSubviews()
+
+        collectionView.backgroundColor = .ypWhite
         collectionView.allowsMultipleSelection = false
         collectionView.dataSource = self
         collectionView.delegate = self
         
-        collectionView.contentInset = UIEdgeInsets(top: 0, left: 16, bottom: 0, right: 16)
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: params.leftInset, bottom: 0, right: params.rightInset)
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
@@ -139,7 +144,12 @@ final class TrackerViewController: UIViewController {
         ])
     }
     
-    func configureTrackerViews(){
+    private func registerCollectionViewsSubviews(){
+        
+        collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: cellIdentifier)
+    }
+    
+    private func configureTrackerViews(){
         view.backgroundColor = UIColor(named: "YPWhite")
         
         configureCentralPlug()
@@ -149,7 +159,7 @@ final class TrackerViewController: UIViewController {
         configureCollectionView()
     }
     
-    func presentCreatingTrackerView(){
+    private func presentCreatingTrackerView(){
         
         let viewController = CreatingTracker()
         
@@ -160,25 +170,27 @@ final class TrackerViewController: UIViewController {
         present(viewController, animated: true)
     }
     
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == ShowCreatingTrackerViewSegueIdentifier {
-            
-            let viewController = segue.destination as? CreatingTracker
-            
-            guard let viewController else {
-                return
-            }
-            
-            viewController.delegate = self
-            viewController.modalPresentationStyle = .popover
-    //        viewController.present
-            present(viewController, animated: true)
-            
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
-    }
+    
+    
+//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+//        
+//        if segue.identifier == ShowCreatingTrackerViewSegueIdentifier {
+//            
+//            let viewController = segue.destination as? CreatingTracker
+//            
+//            guard let viewController else {
+//                return
+//            }
+//            
+//            viewController.delegate = self
+//            viewController.modalPresentationStyle = .popover
+//            viewController.present
+//            present(viewController, animated: true)
+//            
+//        } else {
+//            super.prepare(for: segue, sender: sender)
+//        }
+//    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -213,15 +225,6 @@ final class TrackerViewController: UIViewController {
 }
 
 
-extension TrackerViewController: UISearchBarDelegate {}
-
-
-extension TrackerViewController: UISearchResultsUpdating {
-    
-    func updateSearchResults(for searchController: UISearchController) {}
-}
-
-
 extension TrackerViewController: CreatingTrackerDelegate {
     func CreatingTrackerViewDidDismiss() {
         
@@ -233,7 +236,11 @@ extension TrackerViewController: CreatingTrackerDelegate {
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Running", color: .orange, emoji: "😎", schedule: Date())]
+        categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Бабушка прислала открытку в вотсапе", color: .orange, emoji: "😎", schedule: Date())]
+            )
+        )
+        
+        categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Кошка заслонила камеру на созвоне", color: .orange, emoji: "😼", schedule: Date())]
             )
         )
         
@@ -242,14 +249,49 @@ extension TrackerViewController: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        return UICollectionViewCell()
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: cellIdentifier, for: indexPath) as? CollectionViewCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.emoji.text = categories[indexPath.row].habbitsArray[0].emoji
+        cell.nameLable.text = categories[indexPath.row].habbitsArray[0].name
+        cell.view.backgroundColor = categories[indexPath.row].habbitsArray[0].color
+        cell.doneButton.backgroundColor = categories[indexPath.row].habbitsArray[0].color
+
+        
+        cell.layer.cornerRadius = 16
+        cell.layer.masksToBounds = true
+        
+        return cell
     }
-    
-    
 }
 
-
+extension TrackerViewController: UICollectionViewDelegateFlowLayout {
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, sizeForItemAt indexPath: IndexPath) -> CGSize {
+        
+        let availibleSpacing = collectionView.frame.width - params.paddingWidth
+        let cellWidth = availibleSpacing / params.cellCount
+        
+        return CGSize(width: cellWidth, height: cellWidth - 20)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
+        
+        return 0
+    }
+}
 
 extension TrackerViewController: UICollectionViewDelegate {
     
 }
+
+
+extension TrackerViewController: UISearchBarDelegate {}
+
+
+extension TrackerViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController) {}
+}
+
