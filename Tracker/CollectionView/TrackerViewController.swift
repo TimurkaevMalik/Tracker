@@ -111,7 +111,7 @@ final class TrackerViewController: UIViewController {
     private func configureCollectionView(){
         
         registerCollectionViewsSubviews()
-
+        
         collectionView.backgroundColor = .ypWhite
         collectionView.allowsMultipleSelection = false
         collectionView.dataSource = self
@@ -147,36 +147,35 @@ final class TrackerViewController: UIViewController {
     
     private func presentCreatingTrackerView(){
         
-        let viewController = CreatingTracker()
+        let viewController = TrackerTypeController()
         
         viewController.delegate = self
         viewController.modalPresentationStyle = .popover
-//        viewController.present
         
         present(viewController, animated: true)
     }
     
     
     
-//    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-//        
-//        if segue.identifier == ShowCreatingTrackerViewSegueIdentifier {
-//            
-//            let viewController = segue.destination as? CreatingTracker
-//            
-//            guard let viewController else {
-//                return
-//            }
-//            
-//            viewController.delegate = self
-//            viewController.modalPresentationStyle = .popover
-//            viewController.present
-//            present(viewController, animated: true)
-//            
-//        } else {
-//            super.prepare(for: segue, sender: sender)
-//        }
-//    }
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        
+        if segue.identifier == ShowCreatingTrackerViewSegueIdentifier {
+            
+            let viewController = segue.destination as? TrackerTypeController
+            
+            guard let viewController else {
+                return
+            }
+            
+            viewController.delegate = self
+            viewController.modalPresentationStyle = .popover
+            
+            present(viewController, animated: true)
+            
+        } else {
+            super.prepare(for: segue, sender: sender)
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -186,14 +185,7 @@ final class TrackerViewController: UIViewController {
     
     
     @objc func didTapPlusButton(){
-        print("PLUS BUTTON")
-        
-        
-        completedTrackers.append(TrackerRecord(id: UUID(), date: Date()))
-        
-        print(completedTrackers.count)
-        print(completedTrackers)
-        
+      
         presentCreatingTrackerView()
 //        performSegue(withIdentifier: ShowCreatingTrackerViewSegueIdentifier, sender: nil)
     }
@@ -214,7 +206,7 @@ final class TrackerViewController: UIViewController {
 extension TrackerViewController: CreatingTrackerDelegate {
     func CreatingTrackerViewDidDismiss() {
         
-        completedTrackers.remove(at: completedTrackers.count - 1)
+//        completedTrackers.remove(at: completedTrackers.count - 1)
     }
 }
 
@@ -223,13 +215,13 @@ extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Бабушка прислала открытку в вотсапе", color: .orange, emoji: "😎", schedule: Date())]
-            )
+                                         )
         )
         
         categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Кошка заслонила", color: .orange, emoji: "😼", schedule: Date())]
-            )
+                                         )
         )
-
+        
         if categories.count == 0 {
             collectionView.backgroundColor? = .white.withAlphaComponent(0)
         } else {
@@ -249,7 +241,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         cell.nameLable.text = categories[indexPath.row].habbitsArray[0].name
         cell.view.backgroundColor = categories[indexPath.row].habbitsArray[0].color
         cell.doneButton.backgroundColor = categories[indexPath.row].habbitsArray[0].color
-
+        
         return cell
     }
 }

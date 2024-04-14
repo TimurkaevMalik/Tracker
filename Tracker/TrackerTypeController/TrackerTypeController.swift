@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class CreatingTracker: UIViewController {
+class TrackerTypeController: UIViewController {
     
     let habbit = UIButton()
     let irregularEvent = UIButton()
