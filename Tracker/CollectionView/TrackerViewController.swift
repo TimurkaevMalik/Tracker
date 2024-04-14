@@ -15,7 +15,9 @@ final class TrackerViewController: UIViewController {
     private lazy var titleLabel = UILabel()
     private lazy var centralPlugLabel = UILabel()
     private lazy var centralPlugImage = UIImageView()
+    
     private lazy var searchController = UISearchController(searchResultsController: nil)
+    
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private var categories: [TrackerCategory] = []
@@ -23,7 +25,9 @@ final class TrackerViewController: UIViewController {
     
     private let ShowCreatingTrackerViewSegueIdentifier = "ShowCreatingTrackerView"
     private let cellIdentifier = "collectionCell"
+    
     private let params = GeomitricParams(cellCount: 2, leftInset: 18, rightInset: 18, cellSpacing: 7)
+    
     
     private func configureTrackerButtonsViews() {
         
@@ -275,7 +279,9 @@ extension TrackerViewController: UICollectionViewDelegate {
 }
 
 
-extension TrackerViewController: UISearchBarDelegate {}
+extension TrackerViewController: UISearchBarDelegate {
+    
+}
 
 
 extension TrackerViewController: UISearchResultsUpdating {
