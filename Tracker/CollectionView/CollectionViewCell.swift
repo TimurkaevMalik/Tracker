@@ -10,6 +10,7 @@ import UIKit
 
 final class CollectionViewCell: UICollectionViewCell {
     
+    let view = UIView()
     let nameLable = UILabel()
     let emoji = UILabel()
     let daysCount = UILabel()
@@ -19,9 +20,7 @@ final class CollectionViewCell: UICollectionViewCell {
     override init(frame: CGRect) {
         super.init(frame: frame)
         
-        contentView.layer.cornerRadius = 16
-        contentView.layer.masksToBounds = true
-        
+        configureView()
         configureLabels()
         configureButton()
     }
@@ -30,17 +29,37 @@ final class CollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    func configureView(){
+        
+        view.layer.cornerRadius = 16
+        view.layer.masksToBounds = true
+        
+        view.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(view)
+        
+        NSLayoutConstraint.activate([
+            view.topAnchor.constraint(equalTo: contentView.topAnchor),
+            view.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -(contentView.frame.height * 2/5)),
+            view.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            view.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+        ])
+    }
+    
     func configureLabels(){
         
         nameLable.textAlignment = .left
         nameLable.numberOfLines = 2
         nameLable.font = UIFont.systemFont(ofSize: 12)
         nameLable.textColor = UIColor(named: "YPWhite")
+        
         daysCount.font = UIFont.systemFont(ofSize: 12)
         daysCount.textColor = UIColor(named: "YPBlack")
         daysCount.text = "\(count) день"
         
         emoji.backgroundColor = UIColor(named: "YPWhite")?.withAlphaComponent(0.3)
+        emoji.layer.cornerRadius = 13
+        emoji.layer.masksToBounds = true
+        emoji.font = UIFont.systemFont(ofSize: 16)
         
         
         nameLable.translatesAutoresizingMaskIntoConstraints = false
@@ -50,8 +69,8 @@ final class CollectionViewCell: UICollectionViewCell {
         
         NSLayoutConstraint.activate([
             nameLable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            nameLable.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 12),
-            nameLable.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 44),
+            nameLable.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            nameLable.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12),
             
             emoji.widthAnchor.constraint(equalToConstant: 24),
             emoji.heightAnchor.constraint(equalToConstant: 24),
@@ -61,17 +80,17 @@ final class CollectionViewCell: UICollectionViewCell {
             daysCount.widthAnchor.constraint(equalToConstant: 101),
             daysCount.heightAnchor.constraint(equalToConstant: 18),
             daysCount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            daysCount.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 16)
+            daysCount.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24)
         ])
     }
     
     func configureButton(){
         
         doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
-        doneButton.layer.cornerRadius = 65
+        
+        doneButton.layer.cornerRadius = 17
         doneButton.layer.masksToBounds = true
-        doneButton.imageView?.image = UIImage(named: "PlusImage")
-        doneButton.backgroundColor = contentView.backgroundColor
+        doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(doneButton)
@@ -79,21 +98,21 @@ final class CollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             doneButton.widthAnchor.constraint(equalToConstant: 34),
             doneButton.heightAnchor.constraint(equalToConstant: 34),
-            doneButton.topAnchor.constraint(equalTo: contentView.bottomAnchor, constant: 8),
-            doneButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: 12)
+            doneButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            doneButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12)
         ])
     }
     
     @objc func didTapDoneButton(){
         
-        if doneButton.imageView?.image?.pngData() == UIImage(named: "PlusImage")?.pngData() {
+        if doneButton.imageView?.image?.pngData() == UIImage(named: "WhitePlus")?.pngData() {
             
             doneButton.setImage(UIImage(named: "CheckMark"), for: .normal)
             count += 1
             daysCount.text = "\(count) день"
         } else {
             
-            doneButton.setImage(UIImage(named: "PlusImage"), for: .normal)
+            doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
             count -= 1
             daysCount.text = "\(count) день"
         }
