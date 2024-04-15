@@ -13,6 +13,7 @@ class MakeTrackerController: UIViewController {
     private let textField = UITextField()
     private var clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     
+    var savedText: String?
     
     func configureTextField(){
         
@@ -24,15 +25,14 @@ class MakeTrackerController: UIViewController {
         
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         textField.addTarget(self, action: #selector(didEnterTextInTextField(_:)), for: .editingDidEndOnExit)
+        textField.rightView = clearTextFieldButton
+        textField.rightViewMode = .whileEditing
         
         
-        
-        clearTextFieldButton.backgroundColor = UIColor(named: "YPDarkGray")
-
         clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
-        clearTextFieldButton.imageView?.image = UIImage(named: "x.mark.circle")
-//        clearTextFieldButton = UIButton.systemButton(with: UIImage(named: "x.mark.circle")!, target: self, action: #selector(clearTextFieldButtonTapped))
-//        clearTextFieldButton.imageView.im
+        clearTextFieldButton.backgroundColor = UIColor(named: "YPLightGray")
+        clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
+        clearTextFieldButton.contentHorizontalAlignment = .leading
         
         textField.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([textField])
@@ -41,11 +41,10 @@ class MakeTrackerController: UIViewController {
             textField.heightAnchor.constraint(equalToConstant: 75),
             textField.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
             textField.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            textField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+            textField.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16),
+            
+            clearTextFieldButton.widthAnchor.constraint(equalToConstant: clearTextFieldButton.frame.width + 12)
         ])
-        
-        textField.rightView = clearTextFieldButton
-        textField.rightViewMode = .whileEditing
     }
     
     func configureTableView(){
@@ -75,9 +74,15 @@ class MakeTrackerController: UIViewController {
     }
     
     @objc func didEnterTextInTextField(_ sender: UITextField){
+        guard
+            let text = sender.text,
+            !text.isEmpty,
+            !text.filter({ $0 != Character(" ") }).isEmpty
+        else {
+            return
+        }
         
-        print(sender.text)
-        print("Did Enter Text In TextField")
+        savedText = text.trimmingCharacters(in: .whitespaces)
     }
     
     @objc func clearTextFieldButtonTapped(){
