@@ -154,7 +154,6 @@ final class TrackerViewController: UIViewController {
         let viewController = TrackerTypeController()
         
         viewController.delegate = self
-        viewController.modalPresentationStyle = .popover
         
         present(viewController, animated: true)
     }
@@ -189,6 +188,13 @@ final class TrackerViewController: UIViewController {
     
     
     @objc func didTapPlusButton(){
+        
+        print("PLUS BUTTON")
+
+        completedTrackers.append(TrackerRecord(id: UUID(), date: Date()))
+
+        print(completedTrackers.count)
+        print(completedTrackers)
       
         presentCreatingTrackerView()
 //        performSegue(withIdentifier: ShowCreatingTrackerViewSegueIdentifier, sender: nil)
