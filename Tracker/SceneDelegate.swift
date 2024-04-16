@@ -19,7 +19,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         window = UIWindow(windowScene: scene)
         
-        window?.rootViewController = MakeTrackerController()
+        window?.rootViewController = TabBarControler()
         window?.makeKeyAndVisible()
     }
     

@@ -11,3 +11,10 @@ protocol CreatingTrackerDelegate {
     
     func CreatingTrackerViewDidDismiss()
 }
+
+protocol HabbitTrackerControllerProtocol {
+    
+    func dismisTrackerTypeController()
+    
+    func addNewTracker(trackerCategory: TrackerCategory)
+}

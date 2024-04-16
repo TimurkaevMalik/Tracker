@@ -22,11 +22,12 @@ final class TrackerViewController: UIViewController {
     
     private var categories: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
+    private var tracker: [Tracker] = []
     
-    private let ShowCreatingTrackerViewSegueIdentifier = "ShowCreatingTrackerView"
     private let cellIdentifier = "collectionCell"
+    private let headerIdentifier = "footerIdentifier"
     
-    private let params = GeomitricParams(cellCount: 2, leftInset: 18, rightInset: 18, cellSpacing: 7)
+    private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
     
     
     private func configureTrackerButtonsViews() {
@@ -137,6 +138,8 @@ final class TrackerViewController: UIViewController {
     private func registerCollectionViewsSubviews(){
         
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: cellIdentifier)
+        
+        collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
     }
     
     private func configureTrackerViews(){
@@ -152,32 +155,9 @@ final class TrackerViewController: UIViewController {
     private func presentCreatingTrackerView(){
         
         let viewController = TrackerTypeController()
-        
         viewController.delegate = self
         
         present(viewController, animated: true)
-    }
-    
-    
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        
-        if segue.identifier == ShowCreatingTrackerViewSegueIdentifier {
-            
-            let viewController = segue.destination as? TrackerTypeController
-            
-            guard let viewController else {
-                return
-            }
-            
-            viewController.delegate = self
-            viewController.modalPresentationStyle = .popover
-            
-            present(viewController, animated: true)
-            
-        } else {
-            super.prepare(for: segue, sender: sender)
-        }
     }
     
     override func viewDidLoad() {
@@ -190,14 +170,13 @@ final class TrackerViewController: UIViewController {
     @objc func didTapPlusButton(){
         
         print("PLUS BUTTON")
-
+        
         completedTrackers.append(TrackerRecord(id: UUID(), date: Date()))
-
+        
         print(completedTrackers.count)
         print(completedTrackers)
-      
+        
         presentCreatingTrackerView()
-//        performSegue(withIdentifier: ShowCreatingTrackerViewSegueIdentifier, sender: nil)
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
@@ -213,10 +192,67 @@ final class TrackerViewController: UIViewController {
 }
 
 
-extension TrackerViewController: CreatingTrackerDelegate {
-    func CreatingTrackerViewDidDismiss() {
+extension TrackerViewController: HabbitTrackerControllerProtocol {
+    
+    func addNewTracker(trackerCategory: TrackerCategory) {
+        print("add new tracker tapped")
         
-//        completedTrackers.remove(at: completedTrackers.count - 1)
+        
+        self.dismiss(animated: true)
+        
+        tracker.removeAll()
+        
+        var oldCount: Int
+        var newCount: Int
+        var newCategorie: TrackerCategory
+        
+        print(tracker)
+        
+        if !categories.isEmpty {
+            
+            oldCount = categories[0].habbitsArray.count
+            
+            for index in 0..<categories[0].habbitsArray.count {
+                tracker.append(categories[0].habbitsArray[index])
+            }
+            tracker.append(trackerCategory.habbitsArray[0])
+
+            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, habbitsArray: tracker)
+            
+            categories[0] = newCategorie
+            
+            newCount = categories[0].habbitsArray.count
+        } else {
+            oldCount = 0
+            
+            tracker.append(trackerCategory.habbitsArray[0])
+            
+            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, habbitsArray: tracker)
+            categories.append(newCategorie)
+            
+            newCount = categories[0].habbitsArray.count
+        }
+        
+        
+        print(oldCount)
+        print(newCount)
+        
+        if oldCount != newCount {
+            collectionView.performBatchUpdates {
+                
+                var indexPaths: [IndexPath] = []
+                
+                for count in oldCount..<newCount {
+                    indexPaths.append(IndexPath(row: count, section: 0))
+                }
+                collectionView.insertItems(at: indexPaths)
+            }
+        }
+        
+    }
+    
+    func dismisTrackerTypeController() {
+        self.dismiss(animated: true)
     }
 }
 
@@ -224,21 +260,14 @@ extension TrackerViewController: CreatingTrackerDelegate {
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Бабушка прислала открытку в вотсапе", color: .orange, emoji: "😎", schedule: Date())]
-                                         )
-        )
-        
-        categories.append(TrackerCategory(titleOfCategory: "Sport", habbitsArray:  [Tracker(id: UUID(), name: "Кошка заслонила", color: .orange, emoji: "😼", schedule: Date())]
-                                         )
-        )
-        
         if categories.count == 0 {
             collectionView.backgroundColor? = .white.withAlphaComponent(0)
         } else {
             collectionView.backgroundColor = .ypWhite
         }
         
-        return categories.count
+        return categories.isEmpty ? 0 :
+        categories[section].habbitsArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -247,13 +276,40 @@ extension TrackerViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.emoji.text = categories[indexPath.row].habbitsArray[0].emoji
-        cell.nameLable.text = categories[indexPath.row].habbitsArray[0].name
-        cell.view.backgroundColor = categories[indexPath.row].habbitsArray[0].color
-        cell.doneButton.backgroundColor = categories[indexPath.row].habbitsArray[0].color
+        cell.emoji.text = categories[indexPath.section].habbitsArray[indexPath.row].emoji
+        cell.nameLable.text = categories[indexPath.section].habbitsArray[indexPath.row].name
+        cell.view.backgroundColor = categories[indexPath.section].habbitsArray[indexPath.row].color
+        cell.doneButton.backgroundColor = categories[indexPath.section].habbitsArray[indexPath.row].color
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        var id: String
+        
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            id = headerIdentifier
+            
+        default:
+            id = ""
+        }
+        
+        guard
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
+        else {
+                return UICollectionReusableView()
+            }
+        if 
+            id == headerIdentifier,
+            !categories.isEmpty {
+            headerView.titleLabel.text = categories[indexPath.section].titleOfCategory
+        }
+        
+        return headerView
+    }
+    
 }
 
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
@@ -270,6 +326,24 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
         
         return 0
     }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        let indexPath = IndexPath(row: 0, section: section)
+        
+        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        
+        
+        return headerView.systemLayoutSizeFitting(
+            CGSize(width: collectionView.frame.width, height: 18),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        
+        return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
+    }
 }
 
 extension TrackerViewController: UICollectionViewDelegate {
@@ -284,6 +358,5 @@ extension TrackerViewController: UISearchBarDelegate {
 
 extension TrackerViewController: UISearchResultsUpdating {
     
-    func updateSearchResults(for searchController: UISearchController) {}
+    func updateSearchResults(for searchController: UISearchController){}
 }
-
