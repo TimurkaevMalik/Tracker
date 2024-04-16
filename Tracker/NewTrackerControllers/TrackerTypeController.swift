@@ -14,7 +14,7 @@ class TrackerTypeController: UIViewController {
     let irregularEvent = UIButton()
     let titleLabel = UILabel()
     
-    var delegate: CreatingTrackerDelegate?
+    var delegate: HabbitTrackerControllerProtocol?
     
     func configureCreatingTrackerView(){
         view.backgroundColor = UIColor(named: "YPWhite")
@@ -74,12 +74,6 @@ class TrackerTypeController: UIViewController {
         
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        delegate?.CreatingTrackerViewDidDismiss()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureTitleLable()
@@ -90,9 +84,9 @@ class TrackerTypeController: UIViewController {
     
     @objc func habbitButtonTapped(){
         
-        print("Habbit Button Tapped")
+        let viewController = HabbitTrackerController()
+        viewController.delegate = delegate
         
-        let viewController = MakeTrackerController()
         present(viewController, animated: true)
     }
     

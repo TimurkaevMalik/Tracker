@@ -152,7 +152,6 @@ final class TrackerViewController: UIViewController {
     private func presentCreatingTrackerView(){
         
         let viewController = TrackerTypeController()
-        
         viewController.delegate = self
         
         present(viewController, animated: true)
@@ -213,10 +212,16 @@ final class TrackerViewController: UIViewController {
 }
 
 
-extension TrackerViewController: CreatingTrackerDelegate {
-    func CreatingTrackerViewDidDismiss() {
+extension TrackerViewController: HabbitTrackerControllerProtocol {
+    func addNewTracker(tracker: Tracker) {
+        print("add new tracker tapped")
+        print(tracker)
         
-//        completedTrackers.remove(at: completedTrackers.count - 1)
+        self.dismiss(animated: true)
+    }
+    
+    func dismisTrackerTypeController() {
+        self.dismiss(animated: true)
     }
 }
 
@@ -286,4 +291,3 @@ extension TrackerViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController) {}
 }
-
