@@ -80,17 +80,20 @@ class TrackerTypeController: UIViewController {
         delegate?.CreatingTrackerViewDidDismiss()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        
+    override func viewDidLoad() {
+        super.viewDidLoad()
         configureTitleLable()
         configureCreatingTrackerView()
+        
     }
     
     
     @objc func habbitButtonTapped(){
         
         print("Habbit Button Tapped")
+        
+        let viewController = MakeTrackerController()
+        present(viewController, animated: true)
     }
     
     @objc func irregularEventButtonTapped(){

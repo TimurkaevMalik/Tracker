@@ -59,8 +59,8 @@ final class CollectionViewCell: UICollectionViewCell {
         emoji.backgroundColor = UIColor(named: "YPWhite")?.withAlphaComponent(0.3)
         emoji.layer.cornerRadius = 13
         emoji.layer.masksToBounds = true
-        emoji.font = UIFont.systemFont(ofSize: 16)
-        
+        emoji.font = UIFont.systemFont(ofSize: 14)
+        emoji.textAlignment = .center
         
         nameLable.translatesAutoresizingMaskIntoConstraints = false
         daysCount.translatesAutoresizingMaskIntoConstraints = false
