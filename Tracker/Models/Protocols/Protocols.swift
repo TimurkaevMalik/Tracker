@@ -16,5 +16,5 @@ protocol HabbitTrackerControllerProtocol {
     
     func dismisTrackerTypeController()
     
-    func addNewTracker(tracker: Tracker)
+    func addNewTracker(trackerCategory: TrackerCategory)
 }

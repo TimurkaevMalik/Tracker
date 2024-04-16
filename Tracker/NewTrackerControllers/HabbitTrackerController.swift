@@ -187,7 +187,9 @@ class HabbitTrackerController: UIViewController {
         
         let newTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: date)
         
-        delegate?.addNewTracker(tracker: newTracker)
+        let newCategorie = TrackerCategory(titleOfCategory: "My Categorie", habbitsArray: [newTracker])
+        
+        delegate?.addNewTracker(trackerCategory: newCategorie)
     }
     
     @objc func cancelButtonTapped(){
