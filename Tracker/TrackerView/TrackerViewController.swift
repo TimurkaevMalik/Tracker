@@ -24,10 +24,10 @@ final class TrackerViewController: UIViewController {
     private var completedTrackers: [TrackerRecord] = []
     private var tracker: [Tracker] = []
     
-    private let ShowCreatingTrackerViewSegueIdentifier = "ShowCreatingTrackerView"
     private let cellIdentifier = "collectionCell"
+    private let headerIdentifier = "footerIdentifier"
     
-    private let params = GeomitricParams(cellCount: 2, leftInset: 18, rightInset: 18, cellSpacing: 7)
+    private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
     
     
     private func configureTrackerButtonsViews() {
@@ -138,6 +138,8 @@ final class TrackerViewController: UIViewController {
     private func registerCollectionViewsSubviews(){
         
         collectionView.register(CollectionViewCell.self, forCellWithReuseIdentifier: cellIdentifier)
+        
+        collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
     }
     
     private func configureTrackerViews(){
@@ -281,6 +283,33 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         return cell
     }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        var id: String
+        
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            id = headerIdentifier
+            
+        default:
+            id = ""
+        }
+        
+        guard
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
+        else {
+                return UICollectionReusableView()
+            }
+        if 
+            id == headerIdentifier,
+            !categories.isEmpty {
+            headerView.titleLabel.text = categories[indexPath.section].titleOfCategory
+        }
+        
+        return headerView
+    }
+    
 }
 
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
@@ -296,6 +325,24 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumInteritemSpacingForSectionAt section: Int) -> CGFloat {
         
         return 0
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        let indexPath = IndexPath(row: 0, section: section)
+        
+        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        
+        
+        return headerView.systemLayoutSizeFitting(
+            CGSize(width: collectionView.frame.width, height: 18),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
+        
+        return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
     }
 }
 

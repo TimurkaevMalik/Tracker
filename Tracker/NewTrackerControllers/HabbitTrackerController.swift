@@ -19,12 +19,8 @@ class HabbitTrackerController: UIViewController {
     private var clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     private let tableViewNames = ["Категория", "Расписание"]
     
-    var nameOfTracker: String?
-    var emojiOfTracker: String?
-    var colorOfTracker: UIColor?
-    var idOfTracker: UUID?
-    var dateOfTracker: Date?
-    
+    var newTracker: Tracker?
+    var nameOfCattegory: String?
 
     func configureSaveAndCancelButtons(){
         
@@ -137,6 +133,25 @@ class HabbitTrackerController: UIViewController {
         ])
     }
     
+    func highLightButton(){
+        
+        UIView.animate(withDuration: 0.2) {
+            
+            self.saveButton.backgroundColor = .ypRed
+            
+        } completion: { isCompleted in
+            if isCompleted {
+                resetButtonColor()
+            }
+        }
+        
+        func resetButtonColor(){
+            UIView.animate(withDuration: 0.1) {
+                self.saveButton.backgroundColor = .ypDarkGray
+            }
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -159,13 +174,12 @@ class HabbitTrackerController: UIViewController {
         
         textField.text = text.trimmingCharacters(in: .whitespaces)
         
-        nameOfTracker = text.trimmingCharacters(in: .whitespaces)
-        emojiOfTracker = "😘"
-        colorOfTracker = .orange
-        idOfTracker = UUID()
-        dateOfTracker = Date()
-        
-        print(nameOfTracker!)
+        newTracker = Tracker(
+            id: UUID(),
+            name: text.trimmingCharacters(in: .whitespaces),
+            color: .orange,
+            emoji: "😘",
+            schedule: Date())
     }
     
     @objc func clearTextFieldButtonTapped(){
@@ -175,19 +189,16 @@ class HabbitTrackerController: UIViewController {
     @objc func saveButtonTapped(){
         
         guard
-            let name = nameOfTracker,
-            let emoji = emojiOfTracker,
-            let color = colorOfTracker,
-            let id = idOfTracker,
-            let date = dateOfTracker
+            let tracker = newTracker,
+            let nameOfCattegory = nameOfCattegory
         else {
+            highLightButton()
             return
         }
             
+        let newTracker = Tracker(id: tracker.id, name: tracker.name, color: tracker.color, emoji: tracker.emoji, schedule: tracker.schedule)
         
-        let newTracker = Tracker(id: id, name: name, color: color, emoji: emoji, schedule: date)
-        
-        let newCategorie = TrackerCategory(titleOfCategory: "My Categorie", habbitsArray: [newTracker])
+        let newCategorie = TrackerCategory(titleOfCategory: nameOfCattegory, habbitsArray: [newTracker])
         
         delegate?.addNewTracker(trackerCategory: newCategorie)
     }
@@ -230,6 +241,10 @@ extension HabbitTrackerController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         tableView.deselectRow(at: indexPath, animated: true)
+        
+        if indexPath.row == 0 {
+            nameOfCattegory = "My New Category"
+        }
         
         print("did select row at \(indexPath)")
     }
