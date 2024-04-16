@@ -24,7 +24,7 @@ class HabbitTrackerController: UIViewController {
     var nameOfCattegory: String?
     
     func configureLimitWarningLabel(){
-        limitWarningLabel.text = "Ограничение 38 символов"
+        
         limitWarningLabel.textColor = .ypRed
         limitWarningLabel.font = UIFont.systemFont(ofSize: 17)
         
@@ -33,13 +33,11 @@ class HabbitTrackerController: UIViewController {
         
         
         warningLabelConstraints.append(limitWarningLabel.bottomAnchor.constraint(equalTo: textField.bottomAnchor))
+        
         warningLabelConstraints.first?.isActive = true
-
-        NSLayoutConstraint.activate([
-            limitWarningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-        ])
+        limitWarningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
-
+    
     func configureSaveAndCancelButtons(){
         
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
@@ -134,14 +132,14 @@ class HabbitTrackerController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
-
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.backgroundColor = .white
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.isScrollEnabled = false
-
-
+        
+        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
         
@@ -177,20 +175,37 @@ class HabbitTrackerController: UIViewController {
         
     }
     
-    func showLimitWarningLabel(){
+    func showLimitWarningLabel(with text: String){
         
-        UIView.animate(withDuration: 1) {
-            self.warningLabelConstraints.first?.constant = 30
-            self.view.layoutIfNeeded()
+        limitWarningLabel.text = text
+        isTextFieldAndSaveButtonEnabled(bool: false)
+        
+        DispatchQueue.main.async {
             
-        } completion: { isCompleted in
-            sleep(1)
-            UIView.animate(withDuration: 1) {
-                self.warningLabelConstraints.first?.constant = 0
+            UIView.animate(withDuration: 0.4, delay: 0.07) {
+                self.warningLabelConstraints.first?.constant = 30
                 self.view.layoutIfNeeded()
+                
+            } completion: { isCompleted in
+                
+                UIView.animate(withDuration: 0.3, delay: 1) {
+                    self.warningLabelConstraints.first?.constant = 0
+                    self.view.layoutIfNeeded()
+                }
             }
         }
+        
+        DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1.1, execute: {
+            
+            self.isTextFieldAndSaveButtonEnabled(bool: true)
+        })
     }
+    
+    func isTextFieldAndSaveButtonEnabled(bool: Bool){
+        saveButton.isEnabled = bool
+        textField.isEnabled = bool
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -230,15 +245,16 @@ class HabbitTrackerController: UIViewController {
     }
     
     @objc func saveButtonTapped(){
-        showLimitWarningLabel()
+        
         guard
             let tracker = newTracker,
             let nameOfCattegory = nameOfCattegory
         else {
+            showLimitWarningLabel(with: "Заполните все поля")
             highLightButton()
             return
         }
-            
+        
         let newTracker = Tracker(id: tracker.id, name: tracker.name, color: tracker.color, emoji: tracker.emoji, schedule: tracker.schedule)
         
         let newCategorie = TrackerCategory(titleOfCategory: nameOfCattegory, habbitsArray: [newTracker])
@@ -304,10 +320,11 @@ extension HabbitTrackerController: UITextFieldDelegate {
         let newString = currentString.replacingCharacters(in: range, with: string)
         
         guard newString.count <= maxLength else {
-            showLimitWarningLabel()
+            
+            showLimitWarningLabel(with: "Ограничение 38 символов")
             return false
         }
-    
+        
         return true
     }
 }
