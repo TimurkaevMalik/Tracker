@@ -45,7 +45,6 @@ class HabbitTrackerController: UIViewController {
         
         
         saveButton.setTitle("Создать", for: .normal)
-        saveButton.titleLabel?.text = "Создать"
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         saveButton.backgroundColor = .ypDarkGray
         saveButton.layer.cornerRadius = 16
@@ -87,7 +86,7 @@ class HabbitTrackerController: UIViewController {
         view.addSubviews([titleLabel])
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
@@ -303,6 +302,13 @@ extension HabbitTrackerController: UITableViewDelegate {
         
         if indexPath.row == 0 {
             nameOfCattegory = "My New Category"
+        }
+        
+        if indexPath.row == 1 {
+            
+            let viewControler = ScheduleOfTracker()
+            
+            present(viewControler, animated: true)
         }
         
         print("did select row at \(indexPath)")

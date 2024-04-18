@@ -69,23 +69,26 @@ class TrackerTypeController: UIViewController {
             titleLabel.widthAnchor.constraint(equalToConstant: 149),
             titleLabel.heightAnchor.constraint(equalToConstant: 22),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -712)
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
         configureTitleLable()
         configureCreatingTrackerView()
-        
     }
     
     
     @objc func habbitButtonTapped(){
         
+//        let navigationController = UINavigationController()
         let viewController = HabbitTrackerController()
+        
         viewController.delegate = delegate
+//        navigationController.viewControllers = [viewController]
         
         present(viewController, animated: true)
     }
