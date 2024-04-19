@@ -10,11 +10,12 @@ import UIKit
 
 class TrackerTypeController: UIViewController {
     
+    var delegate: HabbitTrackerControllerDelegate?
+    
     let habbit = UIButton()
     let irregularEvent = UIButton()
     let titleLabel = UILabel()
     
-    var delegate: HabbitTrackerControllerProtocol?
     
     func configureCreatingTrackerView(){
         view.backgroundColor = UIColor(named: "YPWhite")

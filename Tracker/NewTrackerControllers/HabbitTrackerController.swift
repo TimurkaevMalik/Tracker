@@ -9,7 +9,7 @@ import UIKit
 
 class HabbitTrackerController: UIViewController {
     
-    var delegate: HabbitTrackerControllerProtocol?
+    var delegate: HabbitTrackerControllerDelegate?
     
     private let titleLabel = UILabel()
     private let limitWarningLabel = UILabel()
@@ -20,8 +20,12 @@ class HabbitTrackerController: UIViewController {
     private var clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     private let tableViewNames = ["Категория", "Расписание"]
     private var warningLabelConstraints: [NSLayoutConstraint] = []
+    
+    private var dates: [Date] = []
+    
     var newTracker: Tracker?
     var nameOfCattegory: String?
+    
     
     func configureLimitWarningLabel(){
         
@@ -246,6 +250,7 @@ class HabbitTrackerController: UIViewController {
     @objc func saveButtonTapped(){
         
         guard
+            !dates.isEmpty,
             let tracker = newTracker,
             let nameOfCattegory = nameOfCattegory
         else {
@@ -307,6 +312,7 @@ extension HabbitTrackerController: UITableViewDelegate {
         if indexPath.row == 1 {
             
             let viewControler = ScheduleOfTracker()
+            viewControler.delegate = self
             
             present(viewControler, animated: true)
         }
@@ -332,5 +338,15 @@ extension HabbitTrackerController: UITextFieldDelegate {
         }
         
         return true
+    }
+}
+
+
+extension HabbitTrackerController: ScheduleOfTrackerDelegate {
+    func didRecieveDatesArray(dates: [Date]) {
+        
+        self.dates = dates
+        
+        print("\(self.dates) 😘")
     }
 }

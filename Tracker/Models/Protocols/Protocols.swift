@@ -12,9 +12,14 @@ protocol CreatingTrackerDelegate {
     func CreatingTrackerViewDidDismiss()
 }
 
-protocol HabbitTrackerControllerProtocol {
+protocol HabbitTrackerControllerDelegate {
     
     func dismisTrackerTypeController()
     
     func addNewTracker(trackerCategory: TrackerCategory)
+}
+
+protocol ScheduleOfTrackerDelegate {
+    
+    func didRecieveDatesArray(dates: [Date])
 }

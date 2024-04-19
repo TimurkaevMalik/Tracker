@@ -10,15 +10,18 @@ import UIKit
 
 class ScheduleOfTracker: UIViewController {
     
+    var delegate: ScheduleOfTrackerDelegate?
+    
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
     private let tableViewNames = ["Понедельник", "Вторинк", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
     
+    private var dates: [Date] = []
     
     func configureDoneButton(){
         
-        doneButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
+        doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
         doneButton.setTitle("Готово", for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
@@ -88,15 +91,40 @@ class ScheduleOfTracker: UIViewController {
         configureTableView()
     }
     
-    @objc func saveButtonTapped(){
+    @objc func doneButtonTapped(){
         
-        print("Done Button Tapped")
+        delegate?.didRecieveDatesArray(dates: dates)
+        
+        dismiss(animated: true)
     }
     
     @objc func switchChanged(_ sender: UISwitch){
         
-        print("table row switch Changed \(sender.tag)")
-        print("The switch is \(sender.isOn ? "ON" : "OFF")")
+        let calendar = Calendar.current
+        
+        let startOfWeek = Date().startOfWeek(using: calendar)
+        
+        var dateComponents = DateComponents()
+        dateComponents.day = sender.tag
+        
+        guard let chosenWeekday: Date = calendar.date(byAdding: dateComponents, to: startOfWeek) else {
+            return
+        }
+
+        switch sender.isOn {
+        case true:
+            dates.append(chosenWeekday)
+            
+        case false:
+            for index in 0..<dates.count {
+                
+                if dates[index] == chosenWeekday {
+                    dates.remove(at: index)
+                    break
+                }
+            }
+        }
+        print(dates)
     }
 }
 

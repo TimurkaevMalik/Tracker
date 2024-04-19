@@ -192,7 +192,7 @@ final class TrackerViewController: UIViewController {
 }
 
 
-extension TrackerViewController: HabbitTrackerControllerProtocol {
+extension TrackerViewController: HabbitTrackerControllerDelegate {
     
     func addNewTracker(trackerCategory: TrackerCategory) {
         print("add new tracker tapped")
