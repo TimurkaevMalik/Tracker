@@ -17,7 +17,7 @@ class HabbitTrackerController: UIViewController {
     private let textField = UITextField()
     private let saveButton = UIButton()
     private let cancelButton = UIButton()
-    private var clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
+    private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     
     private let tableViewNames = ["Категория", "Расписание"]
     private var warningLabelConstraints: [NSLayoutConstraint] = []
@@ -311,6 +311,11 @@ extension HabbitTrackerController: UITableViewDelegate {
         
         if indexPath.row == 0 {
             nameOfCategory = "My New Category"
+            
+            let viewControler = CategoryOfTracker()
+            viewControler.delegate = self
+            
+            present(viewControler, animated: true)
         }
         
         if indexPath.row == 1 {
@@ -352,5 +357,12 @@ extension HabbitTrackerController: ScheduleOfTrackerDelegate {
         self.scheduleOfTracker = dates
         
         print("\(self.scheduleOfTracker) 😘")
+    }
+}
+
+
+extension HabbitTrackerController: CategoryOfTrackerDelegate{
+    func didChooseCategory(_ category: String) {
+        nameOfCategory = category
     }
 }

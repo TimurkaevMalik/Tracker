@@ -23,3 +23,8 @@ protocol ScheduleOfTrackerDelegate {
     
     func didRecieveDatesArray(dates: [Date])
 }
+
+protocol CategoryOfTrackerDelegate {
+    
+    func didChooseCategory(_ category: String)
+}

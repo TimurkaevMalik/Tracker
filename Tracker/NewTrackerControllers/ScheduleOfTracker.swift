@@ -15,7 +15,7 @@ class ScheduleOfTracker: UIViewController {
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
-    private let tableViewNames = ["Понедельник", "Вторинк", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    private let weekdays = ["Понедельник", "Вторинк", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
     
     private var dates: [Date] = []
     
@@ -131,7 +131,7 @@ class ScheduleOfTracker: UIViewController {
 extension ScheduleOfTracker: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return tableViewNames.count
+        return weekdays.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -146,7 +146,7 @@ extension ScheduleOfTracker: UITableViewDataSource {
         
         cell.accessoryView = switchView
         cell.backgroundColor = .ypLightGray
-        cell.textLabel?.text = tableViewNames[indexPath.row]
+        cell.textLabel?.text = weekdays[indexPath.row]
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
@@ -160,10 +160,5 @@ extension ScheduleOfTracker: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
         return 75
-    }
-    
-    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        
-       
     }
 }
