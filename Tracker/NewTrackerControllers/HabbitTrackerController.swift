@@ -18,13 +18,18 @@ class HabbitTrackerController: UIViewController {
     private let saveButton = UIButton()
     private let cancelButton = UIButton()
     private var clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
+    
     private let tableViewNames = ["Категория", "Расписание"]
     private var warningLabelConstraints: [NSLayoutConstraint] = []
     
-    private var dates: [Date] = []
+    private var nameOfCategory: String?
+    private var nameOfTracker: String?
+    private var colorOfTracker: UIColor?
+    private var emojiOfTracker: String?
+    private var scheduleOfTracker: [Date] = []
     
-    var newTracker: Tracker?
-    var nameOfCattegory: String?
+    private var newTracker: Tracker?
+    
     
     
     func configureLimitWarningLabel(){
@@ -185,7 +190,7 @@ class HabbitTrackerController: UIViewController {
         
         DispatchQueue.main.async {
             
-            UIView.animate(withDuration: 0.4, delay: 0.07) {
+            UIView.animate(withDuration: 0.4, delay: 0.09) {
                 self.warningLabelConstraints.first?.constant = 30
                 self.view.layoutIfNeeded()
                 
@@ -235,12 +240,9 @@ class HabbitTrackerController: UIViewController {
         
         textField.text = text.trimmingCharacters(in: .whitespaces)
         
-        newTracker = Tracker(
-            id: UUID(),
-            name: text.trimmingCharacters(in: .whitespaces),
-            color: .orange,
-            emoji: "😘",
-            schedule: Date())
+        nameOfTracker = text.trimmingCharacters(in: .whitespaces)
+        colorOfTracker = .orange
+        emojiOfTracker = "😎"
     }
     
     @objc func clearTextFieldButtonTapped(){
@@ -250,20 +252,22 @@ class HabbitTrackerController: UIViewController {
     @objc func saveButtonTapped(){
         
         guard
-            !dates.isEmpty,
-            let tracker = newTracker,
-            let nameOfCattegory = nameOfCattegory
+            !scheduleOfTracker.isEmpty,
+            let nameOfCategory = nameOfCategory,
+            let name = nameOfTracker,
+            let color = colorOfTracker,
+            let emoji = emojiOfTracker
         else {
             showLimitWarningLabel(with: "Заполните все поля")
             highLightButton()
             return
         }
         
-        let newTracker = Tracker(id: tracker.id, name: tracker.name, color: tracker.color, emoji: tracker.emoji, schedule: tracker.schedule)
+        let newTracker = Tracker(id: UUID(), name: name, color: color, emoji: emoji, schedule: scheduleOfTracker)
         
-        let newCategorie = TrackerCategory(titleOfCategory: nameOfCattegory, habbitsArray: [newTracker])
+        let newCategory = TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: [newTracker])
         
-        delegate?.addNewTracker(trackerCategory: newCategorie)
+        delegate?.addNewTracker(trackerCategory: newCategory)
     }
     
     @objc func cancelButtonTapped(){
@@ -306,7 +310,7 @@ extension HabbitTrackerController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.row == 0 {
-            nameOfCattegory = "My New Category"
+            nameOfCategory = "My New Category"
         }
         
         if indexPath.row == 1 {
@@ -345,8 +349,8 @@ extension HabbitTrackerController: UITextFieldDelegate {
 extension HabbitTrackerController: ScheduleOfTrackerDelegate {
     func didRecieveDatesArray(dates: [Date]) {
         
-        self.dates = dates
+        self.scheduleOfTracker = dates
         
-        print("\(self.dates) 😘")
+        print("\(self.scheduleOfTracker) 😘")
     }
 }

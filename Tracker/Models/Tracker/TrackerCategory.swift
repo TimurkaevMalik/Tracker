@@ -11,5 +11,5 @@ import UIKit
 struct TrackerCategory {
     
     let titleOfCategory: String
-    let habbitsArray: [Tracker]
+    let trackersArray: [Tracker]
 }
