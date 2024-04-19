@@ -192,7 +192,7 @@ final class TrackerViewController: UIViewController {
 }
 
 
-extension TrackerViewController: HabbitTrackerControllerProtocol {
+extension TrackerViewController: HabbitTrackerControllerDelegate {
     
     func addNewTracker(trackerCategory: TrackerCategory) {
         print("add new tracker tapped")
@@ -206,36 +206,36 @@ extension TrackerViewController: HabbitTrackerControllerProtocol {
         var newCount: Int
         var newCategorie: TrackerCategory
         
-        print(tracker)
+        print("🔰\(tracker)")
         
         if !categories.isEmpty {
             
-            oldCount = categories[0].habbitsArray.count
+            oldCount = categories[0].trackersArray.count
             
-            for index in 0..<categories[0].habbitsArray.count {
-                tracker.append(categories[0].habbitsArray[index])
+            for index in 0..<categories[0].trackersArray.count {
+                tracker.append(categories[0].trackersArray[index])
             }
-            tracker.append(trackerCategory.habbitsArray[0])
+            tracker.append(trackerCategory.trackersArray[0])
 
-            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, habbitsArray: tracker)
+            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: tracker)
             
             categories[0] = newCategorie
             
-            newCount = categories[0].habbitsArray.count
+            newCount = categories[0].trackersArray.count
         } else {
             oldCount = 0
             
-            tracker.append(trackerCategory.habbitsArray[0])
+            tracker.append(trackerCategory.trackersArray[0])
             
-            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, habbitsArray: tracker)
+            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: tracker)
             categories.append(newCategorie)
             
-            newCount = categories[0].habbitsArray.count
+            newCount = categories[0].trackersArray.count
         }
         
         
-        print(oldCount)
-        print(newCount)
+        print("✂️\(oldCount)")
+        print("🦷\(newCount)")
         
         if oldCount != newCount {
             collectionView.performBatchUpdates {
@@ -267,7 +267,7 @@ extension TrackerViewController: UICollectionViewDataSource {
         }
         
         return categories.isEmpty ? 0 :
-        categories[section].habbitsArray.count
+        categories[section].trackersArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
@@ -276,10 +276,10 @@ extension TrackerViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.emoji.text = categories[indexPath.section].habbitsArray[indexPath.row].emoji
-        cell.nameLable.text = categories[indexPath.section].habbitsArray[indexPath.row].name
-        cell.view.backgroundColor = categories[indexPath.section].habbitsArray[indexPath.row].color
-        cell.doneButton.backgroundColor = categories[indexPath.section].habbitsArray[indexPath.row].color
+        cell.emoji.text = categories[indexPath.section].trackersArray[indexPath.row].emoji
+        cell.nameLable.text = categories[indexPath.section].trackersArray[indexPath.row].name
+        cell.view.backgroundColor = categories[indexPath.section].trackersArray[indexPath.row].color
+        cell.doneButton.backgroundColor = categories[indexPath.section].trackersArray[indexPath.row].color
         
         return cell
     }

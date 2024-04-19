@@ -16,3 +16,32 @@ extension UIView {
         }
     }
 }
+
+extension Date {
+    func startOfWeek(using calendar: Calendar) -> Date {
+        
+        guard let sunday = calendar.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: self).date else {
+            return Date()
+        }
+        
+        var dateComponents = DateComponents()
+        dateComponents.day = 1
+        
+        guard let monday = calendar.date(byAdding: dateComponents, to: sunday) else {
+            return Date()
+        }
+        
+        return monday
+    }
+    
+    func getMonday(myDate: Date) -> Date {
+        let cal = Calendar.current
+        let comps = cal.dateComponents([.weekOfYear, .yearForWeekOfYear], from: myDate)
+        let beginningOfWeek = cal.date(from: comps)!
+        return beginningOfWeek
+    }
+}
+
+extension Calendar {
+    static let gregorian = Calendar(identifier: .gregorian)
+}

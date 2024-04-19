@@ -9,19 +9,44 @@ import UIKit
 
 class HabbitTrackerController: UIViewController {
     
-    var delegate: HabbitTrackerControllerProtocol?
+    var delegate: HabbitTrackerControllerDelegate?
     
     private let titleLabel = UILabel()
+    private let limitWarningLabel = UILabel()
     private let tableView = UITableView()
     private let textField = UITextField()
     private let saveButton = UIButton()
     private let cancelButton = UIButton()
     private var clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
-    private let tableViewNames = ["Категория", "Расписание"]
     
-    var newTracker: Tracker?
-    var nameOfCattegory: String?
-
+    private let tableViewNames = ["Категория", "Расписание"]
+    private var warningLabelConstraints: [NSLayoutConstraint] = []
+    
+    private var nameOfCategory: String?
+    private var nameOfTracker: String?
+    private var colorOfTracker: UIColor?
+    private var emojiOfTracker: String?
+    private var scheduleOfTracker: [Date] = []
+    
+    private var newTracker: Tracker?
+    
+    
+    
+    func configureLimitWarningLabel(){
+        
+        limitWarningLabel.textColor = .ypRed
+        limitWarningLabel.font = UIFont.systemFont(ofSize: 17)
+        
+        view.addSubview(limitWarningLabel)
+        limitWarningLabel.translatesAutoresizingMaskIntoConstraints = false
+        
+        
+        warningLabelConstraints.append(limitWarningLabel.bottomAnchor.constraint(equalTo: textField.bottomAnchor))
+        
+        warningLabelConstraints.first?.isActive = true
+        limitWarningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+    }
+    
     func configureSaveAndCancelButtons(){
         
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
@@ -29,7 +54,6 @@ class HabbitTrackerController: UIViewController {
         
         
         saveButton.setTitle("Создать", for: .normal)
-        saveButton.titleLabel?.text = "Создать"
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         saveButton.backgroundColor = .ypDarkGray
         saveButton.layer.cornerRadius = 16
@@ -71,18 +95,20 @@ class HabbitTrackerController: UIViewController {
         view.addSubviews([titleLabel])
         
         NSLayoutConstraint.activate([
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 24),
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
     func configureTextFieldAndClearButton(){
         
+        textField.delegate = self
         textField.backgroundColor = UIColor(named: "YPLightGray")
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.placeholder = "Введите название трекера"
         textField.leftViewMode = .always
+        
         
         textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
         textField.addTarget(self, action: #selector(didEnterTextInTextField(_:)), for: .editingDidEndOnExit)
@@ -114,19 +140,19 @@ class HabbitTrackerController: UIViewController {
         
         tableView.delegate = self
         tableView.dataSource = self
-
+        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.backgroundColor = .white
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.isScrollEnabled = false
-
-
+        
+        
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
         
         NSLayoutConstraint.activate([
-            tableView.topAnchor.constraint(equalTo: textField.bottomAnchor, constant: 24),
+            tableView.topAnchor.constraint(equalTo: limitWarningLabel.bottomAnchor, constant: 24),
             tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 150),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
@@ -152,6 +178,43 @@ class HabbitTrackerController: UIViewController {
         }
     }
     
+    func setDefaultPositionOfLimitWarningLabel(){
+        view.insertSubview(textField, aboveSubview: limitWarningLabel)
+        
+    }
+    
+    func showLimitWarningLabel(with text: String){
+        
+        limitWarningLabel.text = text
+        isTextFieldAndSaveButtonEnabled(bool: false)
+        
+        DispatchQueue.main.async {
+            
+            UIView.animate(withDuration: 0.4, delay: 0.09) {
+                self.warningLabelConstraints.first?.constant = 30
+                self.view.layoutIfNeeded()
+                
+            } completion: { isCompleted in
+                
+                UIView.animate(withDuration: 0.3, delay: 1) {
+                    self.warningLabelConstraints.first?.constant = 0
+                    self.view.layoutIfNeeded()
+                }
+            }
+        }
+        
+        DispatchQueue.main.asyncAfter(wallDeadline: .now() + 1.1, execute: {
+            
+            self.isTextFieldAndSaveButtonEnabled(bool: true)
+        })
+    }
+    
+    func isTextFieldAndSaveButtonEnabled(bool: Bool){
+        saveButton.isEnabled = bool
+        textField.isEnabled = bool
+    }
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -159,8 +222,11 @@ class HabbitTrackerController: UIViewController {
         
         configureTitleLabelView()
         configureTextFieldAndClearButton()
+        configureLimitWarningLabel()
         configureTableView()
         configureSaveAndCancelButtons()
+        
+        setDefaultPositionOfLimitWarningLabel()
     }
     
     @objc func didEnterTextInTextField(_ sender: UITextField){
@@ -174,12 +240,9 @@ class HabbitTrackerController: UIViewController {
         
         textField.text = text.trimmingCharacters(in: .whitespaces)
         
-        newTracker = Tracker(
-            id: UUID(),
-            name: text.trimmingCharacters(in: .whitespaces),
-            color: .orange,
-            emoji: "😘",
-            schedule: Date())
+        nameOfTracker = text.trimmingCharacters(in: .whitespaces)
+        colorOfTracker = .orange
+        emojiOfTracker = "😎"
     }
     
     @objc func clearTextFieldButtonTapped(){
@@ -189,18 +252,22 @@ class HabbitTrackerController: UIViewController {
     @objc func saveButtonTapped(){
         
         guard
-            let tracker = newTracker,
-            let nameOfCattegory = nameOfCattegory
+            !scheduleOfTracker.isEmpty,
+            let nameOfCategory = nameOfCategory,
+            let name = nameOfTracker,
+            let color = colorOfTracker,
+            let emoji = emojiOfTracker
         else {
+            showLimitWarningLabel(with: "Заполните все поля")
             highLightButton()
             return
         }
-            
-        let newTracker = Tracker(id: tracker.id, name: tracker.name, color: tracker.color, emoji: tracker.emoji, schedule: tracker.schedule)
         
-        let newCategorie = TrackerCategory(titleOfCategory: nameOfCattegory, habbitsArray: [newTracker])
+        let newTracker = Tracker(id: UUID(), name: name, color: color, emoji: emoji, schedule: scheduleOfTracker)
         
-        delegate?.addNewTracker(trackerCategory: newCategorie)
+        let newCategory = TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: [newTracker])
+        
+        delegate?.addNewTracker(trackerCategory: newCategory)
     }
     
     @objc func cancelButtonTapped(){
@@ -243,9 +310,47 @@ extension HabbitTrackerController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.row == 0 {
-            nameOfCattegory = "My New Category"
+            nameOfCategory = "My New Category"
+        }
+        
+        if indexPath.row == 1 {
+            
+            let viewControler = ScheduleOfTracker()
+            viewControler.delegate = self
+            
+            present(viewControler, animated: true)
         }
         
         print("did select row at \(indexPath)")
+    }
+}
+
+
+extension HabbitTrackerController: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        let maxLength = 38
+        let currentString = (textField.text ?? "") as NSString
+        
+        let newString = currentString.replacingCharacters(in: range, with: string)
+        
+        guard newString.count <= maxLength else {
+            
+            showLimitWarningLabel(with: "Ограничение 38 символов")
+            return false
+        }
+        
+        return true
+    }
+}
+
+
+extension HabbitTrackerController: ScheduleOfTrackerDelegate {
+    func didRecieveDatesArray(dates: [Date]) {
+        
+        self.scheduleOfTracker = dates
+        
+        print("\(self.scheduleOfTracker) 😘")
     }
 }
