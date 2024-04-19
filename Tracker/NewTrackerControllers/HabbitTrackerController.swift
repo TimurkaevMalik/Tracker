@@ -310,7 +310,6 @@ extension HabbitTrackerController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.row == 0 {
-            nameOfCategory = "My New Category"
             
             let viewControler = CategoryOfTracker()
             viewControler.delegate = self
@@ -325,8 +324,6 @@ extension HabbitTrackerController: UITableViewDelegate {
             
             present(viewControler, animated: true)
         }
-        
-        print("did select row at \(indexPath)")
     }
 }
 
@@ -364,5 +361,7 @@ extension HabbitTrackerController: ScheduleOfTrackerDelegate {
 extension HabbitTrackerController: CategoryOfTrackerDelegate{
     func didChooseCategory(_ category: String) {
         nameOfCategory = category
+        
+        print("\(nameOfCategory)😘")
     }
 }

@@ -12,6 +12,7 @@ class CategoryOfTracker: UIViewController {
     
     var delegate: CategoryOfTrackerDelegate?
     
+    private let doneButton = UIButton()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
 
@@ -56,6 +57,47 @@ class CategoryOfTracker: UIViewController {
         ])
     }
     
+    func configureDoneButton(){
+        
+        doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        
+        doneButton.setTitle("Добавить категорию", for: .normal)
+        doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        doneButton.backgroundColor = .ypBlack
+        doneButton.layer.cornerRadius = 16
+        doneButton.layer.masksToBounds = true
+        
+        
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubviews([doneButton])
+        
+        NSLayoutConstraint.activate([
+            doneButton.heightAnchor.constraint(equalToConstant: 60),
+            doneButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            doneButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+    }
+    
+    func highLightButton(){
+        
+        UIView.animate(withDuration: 0.3) {
+            
+            self.doneButton.backgroundColor = .ypRed
+            
+        } completion: { isCompleted in
+            if isCompleted {
+                resetButtonColor()
+            }
+        }
+        
+        func resetButtonColor(){
+            UIView.animate(withDuration: 0.3) {
+                self.doneButton.backgroundColor = .ypBlack
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -64,6 +106,19 @@ class CategoryOfTracker: UIViewController {
         
         configureTitleLabelView()
         configureTableView()
+        configureDoneButton()
+    }
+    
+    @objc func doneButtonTapped(){
+        guard let chosenCategory else {
+            
+            highLightButton()
+            return
+        }
+        
+        delegate?.didChooseCategory(chosenCategory)
+        
+        dismiss(animated: true)
     }
 }
 

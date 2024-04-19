@@ -80,6 +80,24 @@ class ScheduleOfTracker: UIViewController {
         ])
     }
     
+    func highLightButton(){
+        
+        UIView.animate(withDuration: 0.3) {
+            
+            self.doneButton.backgroundColor = .ypRed
+            
+        } completion: { isCompleted in
+            if isCompleted {
+                resetButtonColor()
+            }
+        }
+        
+        func resetButtonColor(){
+            UIView.animate(withDuration: 0.3) {
+                self.doneButton.backgroundColor = .ypBlack
+            }
+        }
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -92,6 +110,11 @@ class ScheduleOfTracker: UIViewController {
     }
     
     @objc func doneButtonTapped(){
+        
+        guard !dates.isEmpty else {
+            highLightButton()
+            return
+        }
         
         delegate?.didRecieveDatesArray(dates: dates)
         
