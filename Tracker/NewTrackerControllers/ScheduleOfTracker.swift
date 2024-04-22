@@ -19,28 +19,6 @@ class ScheduleOfTracker: UIViewController {
     
     private var dates: [Date] = []
     
-    func configureDoneButton(){
-        
-        doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
-        
-        doneButton.setTitle("Готово", for: .normal)
-        doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        doneButton.backgroundColor = .ypBlack
-        doneButton.layer.cornerRadius = 16
-        doneButton.layer.masksToBounds = true
-        
-        
-        doneButton.translatesAutoresizingMaskIntoConstraints = false
-        
-        view.addSubviews([doneButton])
-        
-        NSLayoutConstraint.activate([
-            doneButton.heightAnchor.constraint(equalToConstant: 60),
-            doneButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
-            doneButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
-        ])
-    }
     
     func configureTitleLabelView(){
         titleLabel.text = "Новая привычка"
@@ -80,6 +58,29 @@ class ScheduleOfTracker: UIViewController {
         ])
     }
     
+    func configureDoneButton(){
+        
+        doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
+        
+        doneButton.setTitle("Готово", for: .normal)
+        doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
+        doneButton.backgroundColor = .ypBlack
+        doneButton.layer.cornerRadius = 16
+        doneButton.layer.masksToBounds = true
+        
+        
+        doneButton.translatesAutoresizingMaskIntoConstraints = false
+        
+        view.addSubviews([doneButton])
+        
+        NSLayoutConstraint.activate([
+            doneButton.heightAnchor.constraint(equalToConstant: 60),
+            doneButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
+            doneButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
+            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+        ])
+    }
+    
     func highLightButton(){
         
         UIView.animate(withDuration: 0.3) {
@@ -97,6 +98,23 @@ class ScheduleOfTracker: UIViewController {
                 self.doneButton.backgroundColor = .ypBlack
             }
         }
+    }
+    
+    func getMediumDateFormat(_ date: Date) -> Date {
+        
+        let dateFormatter = DateFormatter()
+        let isoDateFomatter = ISO8601DateFormatter()
+        dateFormatter.dateStyle = .short
+        dateFormatter.timeStyle = .none
+//        dateFormatter.dateFormat = "dd.MM.yyyy"
+//        dateFormatter.formatOptions = [.withDay, .withMonth, .withYear]
+        
+        
+        let dateString = dateFormatter.string(from: date)
+        print(dateString)
+        let date = dateFormatter.date(from: dateString)
+        
+        return date ?? Date()
     }
     
     override func viewDidLoad() {
@@ -134,6 +152,9 @@ class ScheduleOfTracker: UIViewController {
             return
         }
 
+        let mediumDate = getMediumDateFormat(chosenWeekday)
+        print("\(mediumDate)🚾")
+        
         switch sender.isOn {
         case true:
             dates.append(chosenWeekday)

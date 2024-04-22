@@ -21,6 +21,7 @@ final class TrackerViewController: UIViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private var categories: [TrackerCategory] = []
+    private var visibleTrackers: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
     private var tracker: [Tracker] = []
     
@@ -28,6 +29,14 @@ final class TrackerViewController: UIViewController {
     private let headerIdentifier = "footerIdentifier"
     
     private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
+    private var dateFormatter: DateFormatter{
+        
+        let date = DateFormatter()
+        date.dateFormat = "dd.mm.yyyy"
+        date.dateStyle = .short
+        
+        return date
+    }
     
     
     private func configureTrackerButtonsViews() {
@@ -160,6 +169,23 @@ final class TrackerViewController: UIViewController {
         present(viewController, animated: true)
     }
     
+    private func showVisibleTrackers(date: Date){
+        
+        for category in categories {
+            for tracker in category.trackersArray {
+                for date in tracker.schedule {
+                    if date == date {
+                        
+                        visibleTrackers.append(TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: [tracker]))
+                        print(visibleTrackers)
+                    }
+                }
+            }
+        }
+        
+        collectionView.reloadData()
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -180,14 +206,16 @@ final class TrackerViewController: UIViewController {
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
-        print("DATE BUTTON")
         
         let selctedDate = sender.date
-        let dateFormatter = DateFormatter()
-        dateFormatter.dateFormat = "dd.MM.yyyy"
-        let formatedDate = dateFormatter.string(from: selctedDate)
         
-        print(formatedDate)
+
+        let stringDate = dateFormatter.string(from: selctedDate)
+        guard let date = dateFormatter.date(from: stringDate) else {
+            return
+        }
+        showVisibleTrackers(date: date)
+        print(date)
     }
 }
 
@@ -260,14 +288,14 @@ extension TrackerViewController: HabbitTrackerControllerDelegate {
 extension TrackerViewController: UICollectionViewDataSource {
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        if categories.count == 0 {
-            collectionView.backgroundColor? = .white.withAlphaComponent(0)
+        if visibleTrackers.count == 0 {
+            collectionView.backgroundColor? = .clear
         } else {
             collectionView.backgroundColor = .ypWhite
         }
         
-        return categories.isEmpty ? 0 :
-        categories[section].trackersArray.count
+        return visibleTrackers.isEmpty ? 0 :
+        visibleTrackers[section].trackersArray.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
