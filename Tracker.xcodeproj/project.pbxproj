@@ -17,6 +17,7 @@
 		BC5E5DC62BC9AE7000BD7655 /* Extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5E5DC52BC9AE7000BD7655 /* Extensions.swift */; };
 		BC5E5DC92BC9BF7200BD7655 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5E5DC82BC9BF7200BD7655 /* Protocols.swift */; };
 		BC70457E2BCC3B9F002F8F12 /* HabbitTrackerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70457D2BCC3B9F002F8F12 /* HabbitTrackerController.swift */; };
+		BC8C8A0B2BD9618500AB04EC /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C8A0A2BD9618500AB04EC /* Schedule.swift */; };
 		BC9A9F852BCB2F8800558F38 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */; };
 		BC9A9F872BCB429900558F38 /* GeomitricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F862BCB429900558F38 /* GeomitricParams.swift */; };
 		BCA853612BCE402500173B4A /* SupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA853602BCE402500173B4A /* SupplementaryView.swift */; };
@@ -40,6 +41,7 @@
 		BC5E5DC52BC9AE7000BD7655 /* Extensions.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Extensions.swift; sourceTree = "<group>"; };
 		BC5E5DC82BC9BF7200BD7655 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		BC70457D2BCC3B9F002F8F12 /* HabbitTrackerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabbitTrackerController.swift; sourceTree = "<group>"; };
+		BC8C8A0A2BD9618500AB04EC /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
 		BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		BC9A9F862BCB429900558F38 /* GeomitricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeomitricParams.swift; sourceTree = "<group>"; };
 		BCA853602BCE402500173B4A /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
@@ -132,6 +134,7 @@
 				BC5E5DBD2BC9A18800BD7655 /* TrackerRecord.swift */,
 				BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */,
 				BC5E5DBF2BC9A5E700BD7655 /* Tracker.swift */,
+				BC8C8A0A2BD9618500AB04EC /* Schedule.swift */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -267,6 +270,7 @@
 				BC9A9F872BCB429900558F38 /* GeomitricParams.swift in Sources */,
 				BCC82EE42BBEE8710042D467 /* AppDelegate.swift in Sources */,
 				BCA853612BCE402500173B4A /* SupplementaryView.swift in Sources */,
+				BC8C8A0B2BD9618500AB04EC /* Schedule.swift in Sources */,
 				BCC82EE62BBEE8710042D467 /* SceneDelegate.swift in Sources */,
 				BC5E5DC32BC9AD4B00BD7655 /* TrackerTypeController.swift in Sources */,
 			);

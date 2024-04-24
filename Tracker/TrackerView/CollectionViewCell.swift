@@ -105,6 +105,8 @@ final class CollectionViewCell: UICollectionViewCell {
     
     @objc func didTapDoneButton(){
         
+        
+        
         if doneButton.imageView?.image?.pngData() == UIImage(named: "WhitePlus")?.pngData() {
             
             doneButton.setImage(UIImage(named: "CheckMark"), for: .normal)

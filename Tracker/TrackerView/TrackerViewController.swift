@@ -23,21 +23,12 @@ final class TrackerViewController: UIViewController {
     private var categories: [TrackerCategory] = []
     private var visibleTrackers: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
-    private var tracker: [Tracker] = []
+    private var trackers: [Tracker] = []
     
     private let cellIdentifier = "collectionCell"
     private let headerIdentifier = "footerIdentifier"
     
     private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
-    private var dateFormatter: DateFormatter{
-        
-        let date = DateFormatter()
-        date.dateFormat = "dd.mm.yyyy"
-        date.dateStyle = .short
-        
-        return date
-    }
-    
     
     private func configureTrackerButtonsViews() {
         
@@ -51,6 +42,7 @@ final class TrackerViewController: UIViewController {
         datePicker.preferredDatePickerStyle = .compact
         datePicker.layer.cornerRadius = 8
         datePicker.layer.masksToBounds = true
+        datePicker.timeZone = TimeZone.current
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: plusButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
@@ -169,22 +161,48 @@ final class TrackerViewController: UIViewController {
         present(viewController, animated: true)
     }
     
-    private func showVisibleTrackers(date: Date){
+    private func showVisibleTrackers(dateDescription: String){
+        
+        var selectedDate: String = ""
+        
+        visibleTrackers.removeAll()
+        print(visibleTrackers.isEmpty)
+        
+        for char in dateDescription {
+            if char != "," {
+                selectedDate.append(char)
+            } else {
+                break
+            }
+        }
+        
+        print("🔰\(selectedDate)")
         
         for category in categories {
+            
+            trackers.removeAll()
+            
             for tracker in category.trackersArray {
-                for date in tracker.schedule {
-                    if date == date {
-                        
-                        visibleTrackers.append(TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: [tracker]))
-                        print(visibleTrackers)
+                
+                if let trackerDate = tracker.schedule, !trackerDate.isEmpty {
+                    for date in trackerDate {
+                        if date == selectedDate {
+                            
+                            trackers.append(tracker)
+                            print(visibleTrackers)
+                        }
                     }
+                } else  {
+                    trackers.append(tracker)
                 }
             }
+            
+            visibleTrackers.append(TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers))
         }
         
         collectionView.reloadData()
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -207,15 +225,8 @@ final class TrackerViewController: UIViewController {
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
         
-        let selctedDate = sender.date
-        
-
-        let stringDate = dateFormatter.string(from: selctedDate)
-        guard let date = dateFormatter.date(from: stringDate) else {
-            return
-        }
-        showVisibleTrackers(date: date)
-        print(date)
+        print(sender.date)
+        showVisibleTrackers(dateDescription: sender.date.description(with: .current))
     }
 }
 
@@ -228,24 +239,24 @@ extension TrackerViewController: HabbitTrackerControllerDelegate {
         
         self.dismiss(animated: true)
         
-        tracker.removeAll()
+        trackers.removeAll()
         
         var oldCount: Int
         var newCount: Int
         var newCategorie: TrackerCategory
         
-        print("🔰\(tracker)")
+        print("🔰\(trackers)")
         
         if !categories.isEmpty {
             
             oldCount = categories[0].trackersArray.count
             
             for index in 0..<categories[0].trackersArray.count {
-                tracker.append(categories[0].trackersArray[index])
+                trackers.append(categories[0].trackersArray[index])
             }
-            tracker.append(trackerCategory.trackersArray[0])
+            trackers.append(trackerCategory.trackersArray[0])
 
-            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: tracker)
+            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: trackers)
             
             categories[0] = newCategorie
             
@@ -253,30 +264,20 @@ extension TrackerViewController: HabbitTrackerControllerDelegate {
         } else {
             oldCount = 0
             
-            tracker.append(trackerCategory.trackersArray[0])
+            trackers.append(trackerCategory.trackersArray[0])
             
-            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: tracker)
+            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: trackers)
             categories.append(newCategorie)
             
             newCount = categories[0].trackersArray.count
         }
         
-        
         print("✂️\(oldCount)")
         print("🦷\(newCount)")
         
-        if oldCount != newCount {
-            collectionView.performBatchUpdates {
-                
-                var indexPaths: [IndexPath] = []
-                
-                for count in oldCount..<newCount {
-                    indexPaths.append(IndexPath(row: count, section: 0))
-                }
-                collectionView.insertItems(at: indexPaths)
-            }
-        }
+        let actualDate = datePicker.date.description(with: .current)
         
+        showVisibleTrackers(dateDescription: actualDate)
     }
     
     func dismisTrackerTypeController() {
@@ -304,10 +305,10 @@ extension TrackerViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
-        cell.emoji.text = categories[indexPath.section].trackersArray[indexPath.row].emoji
-        cell.nameLable.text = categories[indexPath.section].trackersArray[indexPath.row].name
-        cell.view.backgroundColor = categories[indexPath.section].trackersArray[indexPath.row].color
-        cell.doneButton.backgroundColor = categories[indexPath.section].trackersArray[indexPath.row].color
+        cell.emoji.text = visibleTrackers[indexPath.section].trackersArray[indexPath.row].emoji
+        cell.nameLable.text = visibleTrackers[indexPath.section].trackersArray[indexPath.row].name
+        cell.view.backgroundColor = visibleTrackers[indexPath.section].trackersArray[indexPath.row].color
+        cell.doneButton.backgroundColor = visibleTrackers[indexPath.section].trackersArray[indexPath.row].color
         
         return cell
     }
@@ -331,8 +332,8 @@ extension TrackerViewController: UICollectionViewDataSource {
             }
         if 
             id == headerIdentifier,
-            !categories.isEmpty {
-            headerView.titleLabel.text = categories[indexPath.section].titleOfCategory
+            !visibleTrackers.isEmpty {
+            headerView.titleLabel.text = visibleTrackers[indexPath.section].titleOfCategory
         }
         
         return headerView

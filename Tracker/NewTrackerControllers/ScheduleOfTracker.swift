@@ -17,7 +17,7 @@ class ScheduleOfTracker: UIViewController {
     private let tableView = UITableView()
     private let weekdays = ["Понедельник", "Вторинк", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
     
-    private var dates: [Date] = []
+    private var dates: [String] = []
     
     
     func configureTitleLabelView(){
@@ -100,23 +100,6 @@ class ScheduleOfTracker: UIViewController {
         }
     }
     
-    func getMediumDateFormat(_ date: Date) -> Date {
-        
-        let dateFormatter = DateFormatter()
-        let isoDateFomatter = ISO8601DateFormatter()
-        dateFormatter.dateStyle = .short
-        dateFormatter.timeStyle = .none
-//        dateFormatter.dateFormat = "dd.MM.yyyy"
-//        dateFormatter.formatOptions = [.withDay, .withMonth, .withYear]
-        
-        
-        let dateString = dateFormatter.string(from: date)
-        print(dateString)
-        let date = dateFormatter.date(from: dateString)
-        
-        return date ?? Date()
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -141,28 +124,35 @@ class ScheduleOfTracker: UIViewController {
     
     @objc func switchChanged(_ sender: UISwitch){
         
-        let calendar = Calendar.current
+        var stringWeekDay = ""
         
-        let startOfWeek = Date().startOfWeek(using: calendar)
-        
-        var dateComponents = DateComponents()
-        dateComponents.day = sender.tag
-        
-        guard let chosenWeekday: Date = calendar.date(byAdding: dateComponents, to: startOfWeek) else {
+        switch sender.tag {
+        case 0:
+            stringWeekDay = "Monday"
+        case 1:
+            stringWeekDay = "Tuesday"
+        case 2:
+            stringWeekDay = "Wednesday"
+        case 3:
+            stringWeekDay = "Thursday"
+        case 4:
+            stringWeekDay = "Friday"
+        case 5:
+            stringWeekDay = "Saturday"
+        case 6:
+            stringWeekDay = "Sunday"
+        default:
             return
         }
-
-        let mediumDate = getMediumDateFormat(chosenWeekday)
-        print("\(mediumDate)🚾")
         
         switch sender.isOn {
         case true:
-            dates.append(chosenWeekday)
+            dates.append(stringWeekDay)
             
         case false:
             for index in 0..<dates.count {
                 
-                if dates[index] == chosenWeekday {
+                if dates[index] == stringWeekDay {
                     dates.remove(at: index)
                     break
                 }

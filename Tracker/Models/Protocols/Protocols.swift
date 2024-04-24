@@ -21,7 +21,7 @@ protocol HabbitTrackerControllerDelegate {
 
 protocol ScheduleOfTrackerDelegate {
     
-    func didRecieveDatesArray(dates: [Date])
+    func didRecieveDatesArray(dates: [String])
 }
 
 protocol CategoryOfTrackerDelegate {

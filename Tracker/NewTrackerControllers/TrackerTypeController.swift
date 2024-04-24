@@ -85,17 +85,21 @@ class TrackerTypeController: UIViewController {
     
     @objc func habbitButtonTapped(){
         
-//        let navigationController = UINavigationController()
         let viewController = HabbitTrackerController()
         
         viewController.delegate = delegate
-//        navigationController.viewControllers = [viewController]
+        viewController.configureTwoTableVeiwCells()
         
         present(viewController, animated: true)
     }
     
     @objc func irregularEventButtonTapped(){
         
-        print("Irregular Event Button Tapped")
+        let viewController = HabbitTrackerController()
+        
+        viewController.delegate = delegate
+        viewController.configureOneTableVeiwCell()
+        
+        present(viewController, animated: true)
     }
 }
