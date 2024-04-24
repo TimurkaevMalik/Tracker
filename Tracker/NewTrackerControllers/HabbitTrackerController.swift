@@ -17,16 +17,16 @@ class HabbitTrackerController: UIViewController {
     private let textField = UITextField()
     private let saveButton = UIButton()
     private let cancelButton = UIButton()
-    private var clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
+    private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     
-    private let tableViewNames = ["Категория", "Расписание"]
+    private var tableViewCells: [String] = []
     private var warningLabelConstraints: [NSLayoutConstraint] = []
     
     private var nameOfCategory: String?
     private var nameOfTracker: String?
     private var colorOfTracker: UIColor?
     private var emojiOfTracker: String?
-    private var scheduleOfTracker: [Date] = []
+    private var scheduleOfTracker: [String] = []
     
     private var newTracker: Tracker?
     
@@ -214,6 +214,14 @@ class HabbitTrackerController: UIViewController {
         textField.isEnabled = bool
     }
     
+    func configureTwoTableVeiwCells(){
+        tableViewCells.append("Категория")
+        tableViewCells.append("Рассписание")
+    }
+    
+    func configureOneTableVeiwCell(){
+        tableViewCells.append("Категория")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -251,8 +259,15 @@ class HabbitTrackerController: UIViewController {
     
     @objc func saveButtonTapped(){
         
+        if tableViewCells.count == 2 {
+            guard !scheduleOfTracker.isEmpty else {
+                showLimitWarningLabel(with: "Заполните все поля")
+                highLightButton()
+                return
+            }
+        }
+        
         guard
-            !scheduleOfTracker.isEmpty,
             let nameOfCategory = nameOfCategory,
             let name = nameOfTracker,
             let color = colorOfTracker,
@@ -280,7 +295,7 @@ class HabbitTrackerController: UIViewController {
 extension HabbitTrackerController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return tableViewNames.count
+        return tableViewCells.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -289,7 +304,7 @@ extension HabbitTrackerController: UITableViewDataSource {
         
         cell.backgroundColor = .ypLightGray
         cell.accessoryType = .disclosureIndicator
-        cell.textLabel?.text = tableViewNames[indexPath.row]
+        cell.textLabel?.text = tableViewCells[indexPath.row]
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
@@ -310,7 +325,11 @@ extension HabbitTrackerController: UITableViewDelegate {
         tableView.deselectRow(at: indexPath, animated: true)
         
         if indexPath.row == 0 {
-            nameOfCategory = "My New Category"
+            
+            let viewControler = CategoryOfTracker()
+            viewControler.delegate = self
+            
+            present(viewControler, animated: true)
         }
         
         if indexPath.row == 1 {
@@ -320,8 +339,6 @@ extension HabbitTrackerController: UITableViewDelegate {
             
             present(viewControler, animated: true)
         }
-        
-        print("did select row at \(indexPath)")
     }
 }
 
@@ -347,10 +364,17 @@ extension HabbitTrackerController: UITextFieldDelegate {
 
 
 extension HabbitTrackerController: ScheduleOfTrackerDelegate {
-    func didRecieveDatesArray(dates: [Date]) {
+    func didRecieveDatesArray(dates: [String]) {
         
         self.scheduleOfTracker = dates
         
         print("\(self.scheduleOfTracker) 😘")
+    }
+}
+
+
+extension HabbitTrackerController: CategoryOfTrackerDelegate{
+    func didChooseCategory(_ category: String) {
+        nameOfCategory = category
     }
 }

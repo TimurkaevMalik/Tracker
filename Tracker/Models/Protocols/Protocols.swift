@@ -21,5 +21,15 @@ protocol HabbitTrackerControllerDelegate {
 
 protocol ScheduleOfTrackerDelegate {
     
-    func didRecieveDatesArray(dates: [Date])
+    func didRecieveDatesArray(dates: [String])
+}
+
+protocol CategoryOfTrackerDelegate {
+    
+    func didChooseCategory(_ category: String)
+}
+
+protocol CollectionViewCellDelegate {
+    
+    func didTapCollectionCellButton(_ cell: CollectionViewCell)
 }

@@ -33,15 +33,4 @@ extension Date {
         
         return monday
     }
-    
-    func getMonday(myDate: Date) -> Date {
-        let cal = Calendar.current
-        let comps = cal.dateComponents([.weekOfYear, .yearForWeekOfYear], from: myDate)
-        let beginningOfWeek = cal.date(from: comps)!
-        return beginningOfWeek
-    }
-}
-
-extension Calendar {
-    static let gregorian = Calendar(identifier: .gregorian)
 }
