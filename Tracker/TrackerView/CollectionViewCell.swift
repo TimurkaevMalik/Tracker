@@ -92,7 +92,7 @@ final class CollectionViewCell: UICollectionViewCell {
         
         doneButton.layer.cornerRadius = 17
         doneButton.layer.masksToBounds = true
-        doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
+//        doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(doneButton)
@@ -105,7 +105,7 @@ final class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func shouldAddDay(_ cell: CollectionViewCell){
+    func shouldAddDay(_ cell: CollectionViewCell) -> Bool {
         
         if doneButton.imageView?.image?.pngData() == UIImage(named: "WhitePlus")?.pngData() {
             
@@ -114,6 +114,8 @@ final class CollectionViewCell: UICollectionViewCell {
             
             count += 1
             daysCount.text = "\(count) день"
+            
+            return true
         } else {
             
             doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
@@ -121,6 +123,8 @@ final class CollectionViewCell: UICollectionViewCell {
         
             count -= 1
             daysCount.text = "\(count) день"
+            
+            return false
         }
     }
     
