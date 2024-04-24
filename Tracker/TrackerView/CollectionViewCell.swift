@@ -10,6 +10,8 @@ import UIKit
 
 final class CollectionViewCell: UICollectionViewCell {
     
+    var delegate: CollectionViewCellDelegate?
+    
     let view = UIView()
     let nameLable = UILabel()
     let emoji = UILabel()
@@ -103,20 +105,28 @@ final class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    @objc func didTapDoneButton(){
-        
-        
+    func shouldAddDay(_ cell: CollectionViewCell){
         
         if doneButton.imageView?.image?.pngData() == UIImage(named: "WhitePlus")?.pngData() {
             
             doneButton.setImage(UIImage(named: "CheckMark"), for: .normal)
+            doneButton.backgroundColor = view.backgroundColor?.withAlphaComponent(0.3)
+            
             count += 1
             daysCount.text = "\(count) день"
         } else {
             
             doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
+            doneButton.backgroundColor = view.backgroundColor?.withAlphaComponent(1)
+        
             count -= 1
             daysCount.text = "\(count) день"
         }
+    }
+    
+    
+    @objc func didTapDoneButton(){
+        
+        delegate?.didTapCollectionCellButton(self)
     }
 }

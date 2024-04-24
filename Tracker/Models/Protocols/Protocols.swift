@@ -28,3 +28,8 @@ protocol CategoryOfTrackerDelegate {
     
     func didChooseCategory(_ category: String)
 }
+
+protocol CollectionViewCellDelegate {
+    
+    func didTapCollectionCellButton(_ cell: CollectionViewCell)
+}

@@ -184,12 +184,11 @@ final class TrackerViewController: UIViewController {
             
             for tracker in category.trackersArray {
                 
-                if let trackerDate = tracker.schedule, !trackerDate.isEmpty {
-                    for date in trackerDate {
+                if !tracker.schedule.isEmpty {
+                    for date in tracker.schedule {
                         if date == selectedDate {
                             
                             trackers.append(tracker)
-                            print(visibleTrackers)
                         }
                     }
                 } else  {
@@ -305,6 +304,7 @@ extension TrackerViewController: UICollectionViewDataSource {
             return UICollectionViewCell()
         }
         
+        cell.delegate = self
         cell.emoji.text = visibleTrackers[indexPath.section].trackersArray[indexPath.row].emoji
         cell.nameLable.text = visibleTrackers[indexPath.section].trackersArray[indexPath.row].name
         cell.view.backgroundColor = visibleTrackers[indexPath.section].trackersArray[indexPath.row].color
@@ -388,4 +388,60 @@ extension TrackerViewController: UISearchBarDelegate {
 extension TrackerViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController){}
+}
+
+
+extension TrackerViewController: CollectionViewCellDelegate {
+    
+    func didTapCollectionCellButton(_ cell: CollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        if visibleTrackers[indexPath.section].trackersArray[indexPath.row].schedule.isEmpty {
+            
+            closeCollectionCellAt(indexPath: indexPath)
+        } else {
+            cell.shouldAddDay(cell)
+        }
+        
+    }
+    
+    func closeCollectionCellAt(indexPath: IndexPath){
+        
+        let cattegorie = categories[indexPath.section]
+        let oldVisibleTrackers = visibleTrackers[indexPath.section]
+        
+        trackers.removeAll()
+        
+        for tracker in categories[indexPath.section].trackersArray {
+            if tracker.id != categories[indexPath.section].trackersArray[indexPath.row].id {
+                
+                trackers.append(tracker)
+            }
+        }
+        
+        categories.remove(at: indexPath.section)
+        
+        categories.append(TrackerCategory(titleOfCategory: cattegorie.titleOfCategory, trackersArray: trackers))
+        
+        
+        trackers.removeAll()
+        
+        for tracker in visibleTrackers[indexPath.section].trackersArray {
+            if tracker.id != visibleTrackers[indexPath.section].trackersArray[indexPath.row].id {
+                
+                trackers.append(tracker)
+            }
+        }
+        
+        visibleTrackers.remove(at: indexPath.section)
+        visibleTrackers.append(TrackerCategory(titleOfCategory: oldVisibleTrackers.titleOfCategory, trackersArray: trackers))
+        
+        
+        collectionView.performBatchUpdates {
+            
+            collectionView.deleteItems(at: [indexPath])
+        }
+    }
 }
