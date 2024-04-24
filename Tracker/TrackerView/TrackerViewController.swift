@@ -286,6 +286,7 @@ extension TrackerViewController: HabbitTrackerControllerDelegate {
 
 
 extension TrackerViewController: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         if visibleTrackers.count == 0 {
