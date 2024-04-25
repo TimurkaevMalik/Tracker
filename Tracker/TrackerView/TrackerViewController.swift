@@ -164,7 +164,6 @@ final class TrackerViewController: UIViewController {
     
     func configureCell(for cell: CollectionViewCell, with indexPath: IndexPath){
         
-        let actaualCategorie = visibleTrackers[indexPath.section]
         let actualTracker = visibleTrackers[indexPath.section].trackersArray[indexPath.row]
         
         cell.delegate = self
@@ -584,7 +583,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             if id == recordToCheck.id {
                 
-                
                 if recordToCheck.date.count != 1 {
                     
                     for dateIndex in 0..<recordToCheck.date.count {
@@ -599,7 +597,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
                     completedTrackers.append(TrackerRecord(id: id, date: records))
                 } else {
                     
-                    ////CНОСИТ БЕЗ РАЗБОРА
                     completedTrackers.remove(at: index)
                 }
             } else {

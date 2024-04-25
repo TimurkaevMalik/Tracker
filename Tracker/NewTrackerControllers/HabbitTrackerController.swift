@@ -151,12 +151,18 @@ class HabbitTrackerController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
         
+        
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: limitWarningLabel.bottomAnchor, constant: 24),
-            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 150),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
+        
+        if tableViewCells.count == 2 {
+            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 149).isActive = true
+        } else {
+            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 74).isActive = true
+        }
     }
     
     func highLightButton(){
@@ -222,6 +228,7 @@ class HabbitTrackerController: UIViewController {
     func configureOneTableVeiwCell(){
         tableViewCells.append("Категория")
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -305,7 +312,7 @@ extension HabbitTrackerController: UITableViewDataSource {
         cell.backgroundColor = .ypLightGray
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = tableViewCells[indexPath.row]
-        
+                
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
         return cell

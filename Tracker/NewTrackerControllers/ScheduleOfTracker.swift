@@ -52,7 +52,7 @@ class ScheduleOfTracker: UIViewController {
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
-            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 525),
+            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 524),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])

@@ -49,9 +49,11 @@ class CategoryOfTracker: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
         
+        let bottomConstant = categories.count * 75 > 524 ? 524 : categories.count * 75 - 1
+        
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
-            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 525),
+            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: CGFloat(Float(bottomConstant))),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
@@ -135,8 +137,6 @@ extension CategoryOfTracker: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        
-//        cell.layer.cornerRadius = 16
         cell.layer.masksToBounds = true
         cell.setCornerRadiusForCell(at: indexPath, of: tableView)
         
