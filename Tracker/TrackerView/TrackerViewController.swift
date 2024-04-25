@@ -313,7 +313,7 @@ final class TrackerViewController: UIViewController {
 }
 
 
-extension TrackerViewController: HabbitTrackerControllerDelegate {
+extension TrackerViewController: ChosenTrackerControllerDelegate {
     
     func addNewTracker(trackerCategory: TrackerCategory) {
         print("add new tracker tapped")
@@ -478,6 +478,9 @@ extension TrackerViewController: CollectionViewCellDelegate {
         guard let indexPath = collectionView.indexPath(for: cell) else {
             return
         }
+        guard let actualDate = datePicker.date.getDefaultDateWith(formatter: dateFormatter) else {
+            return
+        }
         let idOfCell = visibleTrackers[indexPath.section].trackersArray[indexPath.row].id
         
         
@@ -485,8 +488,8 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             closeCollectionCellAt(indexPath: indexPath, idOfCell: idOfCell)
         } else {
-            
-            guard let bool = cell.shouldAddDay(cell) else { return }
+        
+            guard let bool = cell.shouldAddDay(cell, date: actualDate) else { return }
             shouldRecordDate(bool, idOfCell: idOfCell)
         }
         

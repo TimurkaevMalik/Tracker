@@ -92,7 +92,6 @@ final class CollectionViewCell: UICollectionViewCell {
         
         doneButton.layer.cornerRadius = 17
         doneButton.layer.masksToBounds = true
-//        doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
         
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(doneButton)
@@ -105,12 +104,35 @@ final class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func shouldAddDay(_ cell: CollectionViewCell) -> Bool? {
+    func highLightButton(){
         
-        guard var count = cell.count else {
+        UIView.animate(withDuration: 0.4) {
+            
+            self.doneButton.backgroundColor = .ypRed
+            
+        } completion: { isCompleted in
+            if isCompleted {
+                resetButtonColor()
+            }
+        }
+        
+        func resetButtonColor(){
+            UIView.animate(withDuration: 0.1) {
+                self.doneButton.backgroundColor = self.view.backgroundColor
+            }
+        }
+    }
+    
+    func shouldAddDay(_ cell: CollectionViewCell, date selectedDate: Date) -> Bool? {
+        
+        guard 
+            var count = cell.count,
+            Date() >= selectedDate
+        else {
+            highLightButton()
             return nil
         }
-        print(count)
+        
         if doneButton.imageView?.image?.pngData() == UIImage(named: "WhitePlus")?.pngData() {
             
             doneButton.setImage(UIImage(named: "CheckMark"), for: .normal)

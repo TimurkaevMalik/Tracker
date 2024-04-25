@@ -7,9 +7,9 @@
 
 import UIKit
 
-class HabbitTrackerController: UIViewController {
+class ChosenTrackerController: UIViewController {
     
-    var delegate: HabbitTrackerControllerDelegate?
+    var delegate: ChosenTrackerControllerDelegate?
     
     private let titleLabel = UILabel()
     private let limitWarningLabel = UILabel()
@@ -299,7 +299,7 @@ class HabbitTrackerController: UIViewController {
 }
 
 
-extension HabbitTrackerController: UITableViewDataSource {
+extension ChosenTrackerController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return tableViewCells.count
@@ -320,7 +320,7 @@ extension HabbitTrackerController: UITableViewDataSource {
 }
 
 
-extension HabbitTrackerController: UITableViewDelegate {
+extension ChosenTrackerController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
@@ -350,7 +350,7 @@ extension HabbitTrackerController: UITableViewDelegate {
 }
 
 
-extension HabbitTrackerController: UITextFieldDelegate {
+extension ChosenTrackerController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
@@ -370,7 +370,7 @@ extension HabbitTrackerController: UITextFieldDelegate {
 }
 
 
-extension HabbitTrackerController: ScheduleOfTrackerDelegate {
+extension ChosenTrackerController: ScheduleOfTrackerDelegate {
     func didRecieveDatesArray(dates: [String]) {
         
         self.scheduleOfTracker = dates
@@ -380,7 +380,7 @@ extension HabbitTrackerController: ScheduleOfTrackerDelegate {
 }
 
 
-extension HabbitTrackerController: CategoryOfTrackerDelegate{
+extension ChosenTrackerController: CategoryOfTrackerDelegate{
     func didChooseCategory(_ category: String) {
         nameOfCategory = category
     }
