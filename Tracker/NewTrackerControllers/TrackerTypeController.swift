@@ -10,7 +10,7 @@ import UIKit
 
 class TrackerTypeController: UIViewController {
     
-    var delegate: HabbitTrackerControllerDelegate?
+    var delegate: ChosenTrackerControllerDelegate?
     
     let habbit = UIButton()
     let irregularEvent = UIButton()
@@ -85,7 +85,7 @@ class TrackerTypeController: UIViewController {
     
     @objc func habbitButtonTapped(){
         
-        let viewController = HabbitTrackerController()
+        let viewController = ChosenTrackerController()
         
         viewController.delegate = delegate
         viewController.configureTwoTableVeiwCells()
@@ -95,7 +95,7 @@ class TrackerTypeController: UIViewController {
     
     @objc func irregularEventButtonTapped(){
         
-        let viewController = HabbitTrackerController()
+        let viewController = ChosenTrackerController()
         
         viewController.delegate = delegate
         viewController.configureOneTableVeiwCell()

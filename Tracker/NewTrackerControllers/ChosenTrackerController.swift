@@ -7,9 +7,9 @@
 
 import UIKit
 
-class HabbitTrackerController: UIViewController {
+class ChosenTrackerController: UIViewController {
     
-    var delegate: HabbitTrackerControllerDelegate?
+    var delegate: ChosenTrackerControllerDelegate?
     
     private let titleLabel = UILabel()
     private let limitWarningLabel = UILabel()
@@ -151,12 +151,18 @@ class HabbitTrackerController: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
         
+        
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: limitWarningLabel.bottomAnchor, constant: 24),
-            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 150),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
+        
+        if tableViewCells.count == 2 {
+            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 149).isActive = true
+        } else {
+            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 74).isActive = true
+        }
     }
     
     func highLightButton(){
@@ -222,6 +228,7 @@ class HabbitTrackerController: UIViewController {
     func configureOneTableVeiwCell(){
         tableViewCells.append("Категория")
     }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -292,7 +299,7 @@ class HabbitTrackerController: UIViewController {
 }
 
 
-extension HabbitTrackerController: UITableViewDataSource {
+extension ChosenTrackerController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         return tableViewCells.count
@@ -305,7 +312,7 @@ extension HabbitTrackerController: UITableViewDataSource {
         cell.backgroundColor = .ypLightGray
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = tableViewCells[indexPath.row]
-        
+                
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
         return cell
@@ -313,7 +320,7 @@ extension HabbitTrackerController: UITableViewDataSource {
 }
 
 
-extension HabbitTrackerController: UITableViewDelegate {
+extension ChosenTrackerController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
@@ -343,7 +350,7 @@ extension HabbitTrackerController: UITableViewDelegate {
 }
 
 
-extension HabbitTrackerController: UITextFieldDelegate {
+extension ChosenTrackerController: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
@@ -363,17 +370,15 @@ extension HabbitTrackerController: UITextFieldDelegate {
 }
 
 
-extension HabbitTrackerController: ScheduleOfTrackerDelegate {
+extension ChosenTrackerController: ScheduleOfTrackerDelegate {
     func didRecieveDatesArray(dates: [String]) {
         
         self.scheduleOfTracker = dates
-        
-        print("\(self.scheduleOfTracker) 😘")
     }
 }
 
 
-extension HabbitTrackerController: CategoryOfTrackerDelegate{
+extension ChosenTrackerController: CategoryOfTrackerDelegate{
     func didChooseCategory(_ category: String) {
         nameOfCategory = category
     }

@@ -164,7 +164,6 @@ final class TrackerViewController: UIViewController {
     
     func configureCell(for cell: CollectionViewCell, with indexPath: IndexPath){
         
-        let actaualCategorie = visibleTrackers[indexPath.section]
         let actualTracker = visibleTrackers[indexPath.section].trackersArray[indexPath.row]
         
         cell.delegate = self
@@ -190,7 +189,6 @@ final class TrackerViewController: UIViewController {
             for record in completedTrackers {
                 if record.id == actualTracker.id {
                     
-                    print(record.date.count)
                     cell.count = record.date.count
                     cell.daysCount.text = "\(record.date.count) день"
                 } else {
@@ -224,15 +222,12 @@ final class TrackerViewController: UIViewController {
     private func showVisibleTrackers(dateDescription: String){
         
         checkForVisibleTrackersAt(dateDescription: dateDescription)
-        
-        print(visibleTrackers)
         collectionView.reloadData()
     }
     
     func checkForVisibleTrackersAt(dateDescription: String) {
         
         visibleTrackers.removeAll()
-        print(visibleTrackers.isEmpty)
         
         var selectedDate: String = ""
         
@@ -243,8 +238,6 @@ final class TrackerViewController: UIViewController {
                 break
             }
         }
-        
-        print("🔰\(selectedDate)")
         
         for category in categories {
             
@@ -307,18 +300,14 @@ final class TrackerViewController: UIViewController {
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
-        
-        print(sender.date)
         showVisibleTrackers(dateDescription: sender.date.description(with: .current))
     }
 }
 
 
-extension TrackerViewController: HabbitTrackerControllerDelegate {
+extension TrackerViewController: ChosenTrackerControllerDelegate {
     
     func addNewTracker(trackerCategory: TrackerCategory) {
-        print("add new tracker tapped")
-        
         
         self.dismiss(animated: true)
         
@@ -327,8 +316,6 @@ extension TrackerViewController: HabbitTrackerControllerDelegate {
         var oldCount: Int
         var newCount: Int
         var newCategorie: TrackerCategory
-        
-        print("🔰\(trackers)")
         
         if !categories.isEmpty {
             
@@ -354,9 +341,6 @@ extension TrackerViewController: HabbitTrackerControllerDelegate {
             
             newCount = categories[0].trackersArray.count
         }
-        
-        print("✂️\(oldCount)")
-        print("🦷\(newCount)")
         
         let actualDate = datePicker.date.description(with: .current)
         
@@ -479,6 +463,9 @@ extension TrackerViewController: CollectionViewCellDelegate {
         guard let indexPath = collectionView.indexPath(for: cell) else {
             return
         }
+        guard let actualDate = datePicker.date.getDefaultDateWith(formatter: dateFormatter) else {
+            return
+        }
         let idOfCell = visibleTrackers[indexPath.section].trackersArray[indexPath.row].id
         
         
@@ -486,8 +473,8 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             closeCollectionCellAt(indexPath: indexPath, idOfCell: idOfCell)
         } else {
-            
-            guard let bool = cell.shouldAddDay(cell) else { return }
+        
+            guard let bool = cell.shouldAddDay(cell, date: actualDate) else { return }
             shouldRecordDate(bool, idOfCell: idOfCell)
         }
         
@@ -533,8 +520,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
             return
         }
         
-        print("✅\(actualDate)")
-        
         records.removeAll()
         
         if bool == true {
@@ -544,7 +529,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             removeRecordDate(id: idOfCell, actualDate: actualDate)
         }
-        print(completedTrackers)
     }
     
     
@@ -584,7 +568,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             if id == recordToCheck.id {
                 
-                
                 if recordToCheck.date.count != 1 {
                     
                     for dateIndex in 0..<recordToCheck.date.count {
@@ -599,11 +582,8 @@ extension TrackerViewController: CollectionViewCellDelegate {
                     completedTrackers.append(TrackerRecord(id: id, date: records))
                 } else {
                     
-                    ////CНОСИТ БЕЗ РАЗБОРА
                     completedTrackers.remove(at: index)
                 }
-            } else {
-                print("id is not equal to recordToCheck.id")
             }
         }
     }
