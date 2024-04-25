@@ -33,4 +33,14 @@ extension Date {
         
         return monday
     }
+    
+    func getDefaultDateWith(formatter: DateFormatter) -> Date? {
+        
+        let stringDate = formatter.string(from: self)
+        guard let date = formatter.date(from: stringDate) else {
+            return nil
+        }
+                
+        return date
+    }
 }

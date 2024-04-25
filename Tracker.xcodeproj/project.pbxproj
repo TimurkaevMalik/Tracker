@@ -18,6 +18,7 @@
 		BC5E5DC92BC9BF7200BD7655 /* Protocols.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5E5DC82BC9BF7200BD7655 /* Protocols.swift */; };
 		BC70457E2BCC3B9F002F8F12 /* HabbitTrackerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70457D2BCC3B9F002F8F12 /* HabbitTrackerController.swift */; };
 		BC8C8A0B2BD9618500AB04EC /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C8A0A2BD9618500AB04EC /* Schedule.swift */; };
+		BC8C8A0E2BD9A70A00AB04EC /* DateFormatManager.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C8A0D2BD9A70A00AB04EC /* DateFormatManager.swift */; };
 		BC9A9F852BCB2F8800558F38 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */; };
 		BC9A9F872BCB429900558F38 /* GeomitricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F862BCB429900558F38 /* GeomitricParams.swift */; };
 		BCA853612BCE402500173B4A /* SupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA853602BCE402500173B4A /* SupplementaryView.swift */; };
@@ -42,6 +43,7 @@
 		BC5E5DC82BC9BF7200BD7655 /* Protocols.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Protocols.swift; sourceTree = "<group>"; };
 		BC70457D2BCC3B9F002F8F12 /* HabbitTrackerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = HabbitTrackerController.swift; sourceTree = "<group>"; };
 		BC8C8A0A2BD9618500AB04EC /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
+		BC8C8A0D2BD9A70A00AB04EC /* DateFormatManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DateFormatManager.swift; sourceTree = "<group>"; };
 		BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		BC9A9F862BCB429900558F38 /* GeomitricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeomitricParams.swift; sourceTree = "<group>"; };
 		BCA853602BCE402500173B4A /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
@@ -139,6 +141,14 @@
 			path = Tracker;
 			sourceTree = "<group>";
 		};
+		BC8C8A0C2BD9A68700AB04EC /* Services */ = {
+			isa = PBXGroup;
+			children = (
+				BC8C8A0D2BD9A70A00AB04EC /* DateFormatManager.swift */,
+			);
+			path = Services;
+			sourceTree = "<group>";
+		};
 		BCC82ED72BBEE8710042D467 = {
 			isa = PBXGroup;
 			children = (
@@ -158,6 +168,7 @@
 		BCC82EE22BBEE8710042D467 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
+				BC8C8A0C2BD9A68700AB04EC /* Services */,
 				BC3D9B142BCB66C600C60848 /* StatisticVeiw */,
 				BC5E5DC42BC9AE3F00BD7655 /* extensions */,
 				BC5E5DC12BC9AD2D00BD7655 /* NewTrackerControllers */,
@@ -262,6 +273,7 @@
 				BC5E5DC62BC9AE7000BD7655 /* Extensions.swift in Sources */,
 				BC2B8CD22BD2F0C60098D664 /* CategoryOfTracker.swift in Sources */,
 				BC70457E2BCC3B9F002F8F12 /* HabbitTrackerController.swift in Sources */,
+				BC8C8A0E2BD9A70A00AB04EC /* DateFormatManager.swift in Sources */,
 				BC5E5DC92BC9BF7200BD7655 /* Protocols.swift in Sources */,
 				BCF6219C2BBF4561001DE986 /* TabBarControler.swift in Sources */,
 				BC5E5DBE2BC9A18800BD7655 /* TrackerRecord.swift in Sources */,
