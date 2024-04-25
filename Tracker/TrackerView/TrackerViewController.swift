@@ -23,6 +23,7 @@ final class TrackerViewController: UIViewController {
     private var completedTrackers: [TrackerRecord] = []
     private var trackers: [Tracker] = []
     private var records: [Date] = []
+    private var currentDate: Date?
     
     private let cellIdentifier = "collectionCell"
     private let headerIdentifier = "footerIdentifier"
@@ -265,7 +266,7 @@ final class TrackerViewController: UIViewController {
     
     func wasCellButtonTapped(at indexPath: IndexPath) -> Bool {
         
-        guard let actualDate = datePicker.date.getDefaultDateWith(formatter: dateFormatter) else {
+        guard let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) else {
             return false
         }
         
@@ -290,6 +291,7 @@ final class TrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        currentDate = datePicker.date
         configureTrackerViews()
     }
     
@@ -300,6 +302,8 @@ final class TrackerViewController: UIViewController {
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
+        
+        currentDate = sender.date
         showVisibleTrackers(dateDescription: sender.date.description(with: .current))
     }
 }
@@ -342,7 +346,9 @@ extension TrackerViewController: ChosenTrackerControllerDelegate {
             newCount = categories[0].trackersArray.count
         }
         
-        let actualDate = datePicker.date.description(with: .current)
+        guard let actualDate = currentDate?.description(with: .current) else {
+            return
+        }
         
         showVisibleTrackers(dateDescription: actualDate)
     }
@@ -463,7 +469,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         guard let indexPath = collectionView.indexPath(for: cell) else {
             return
         }
-        guard let actualDate = datePicker.date.getDefaultDateWith(formatter: dateFormatter) else {
+        guard let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) else {
             return
         }
         let idOfCell = visibleTrackers[indexPath.section].trackersArray[indexPath.row].id
@@ -473,7 +479,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             closeCollectionCellAt(indexPath: indexPath, idOfCell: idOfCell)
         } else {
-        
+            
             guard let bool = cell.shouldAddDay(cell, date: actualDate) else { return }
             shouldRecordDate(bool, idOfCell: idOfCell)
         }
@@ -516,7 +522,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     func shouldRecordDate(_ bool: Bool, idOfCell: UUID){
         
-        guard let actualDate = datePicker.date.getDefaultDateWith(formatter: dateFormatter) else {
+        guard let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) else {
             return
         }
         

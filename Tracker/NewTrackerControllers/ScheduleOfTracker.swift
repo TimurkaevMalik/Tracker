@@ -8,7 +8,7 @@
 import UIKit
 
 
-class ScheduleOfTracker: UIViewController {
+final class ScheduleOfTracker: UIViewController {
     
     var delegate: ScheduleOfTrackerDelegate?
     

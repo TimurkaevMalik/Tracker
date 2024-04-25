@@ -125,7 +125,7 @@ final class CollectionViewCell: UICollectionViewCell {
     
     func shouldAddDay(_ cell: CollectionViewCell, date selectedDate: Date) -> Bool? {
         
-        guard 
+        guard
             var count = cell.count,
             Date() >= selectedDate
         else {
@@ -147,7 +147,7 @@ final class CollectionViewCell: UICollectionViewCell {
             
             doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
             doneButton.backgroundColor = view.backgroundColor?.withAlphaComponent(1)
-        
+            
             self.count = count - 1
             count -= 1
             daysCount.text = "\(count) день"

@@ -40,7 +40,7 @@ extension Date {
         guard let date = formatter.date(from: stringDate) else {
             return nil
         }
-                
+        
         return date
     }
 }

@@ -8,15 +8,15 @@
 import UIKit
 
 
-class CategoryOfTracker: UIViewController {
+final class CategoryOfTracker: UIViewController {
     
     var delegate: CategoryOfTrackerDelegate?
     
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
-
-    private var categories: [String] = ["Важное", "Очень важное", "Не важное"]
+    
+    private var categories: [String] = ["Важное"]
     private var chosenCategory: String?
     
     func configureTitleLabelView(){
@@ -44,12 +44,16 @@ class CategoryOfTracker: UIViewController {
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.allowsMultipleSelection = false
-
+        
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
         
-        let bottomConstant = categories.count * 75 > 524 ? 524 : categories.count * 75 - 1
+        let bottomConstant = categories.count * 75 > 599 ? 599 : categories.count * 75 - 1
+        
+        if categories.count * 75 <= 599 {
+            tableView.isScrollEnabled = false
+        }
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
@@ -167,7 +171,7 @@ extension CategoryOfTracker: UITableViewDelegate {
             tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.none
             
             chosenCategory = nil
-
+            
         } else {
             
             for cells in tableView.visibleCells {
