@@ -164,18 +164,52 @@ final class TrackerViewController: UIViewController {
     
     func configureCell(for cell: CollectionViewCell, with indexPath: IndexPath){
         
+        let actaualCategorie = visibleTrackers[indexPath.section]
+        let actualTracker = visibleTrackers[indexPath.section].trackersArray[indexPath.row]
+        
         cell.delegate = self
-        cell.emoji.text = visibleTrackers[indexPath.section].trackersArray[indexPath.row].emoji
-        cell.nameLable.text = visibleTrackers[indexPath.section].trackersArray[indexPath.row].name
-        cell.view.backgroundColor = visibleTrackers[indexPath.section].trackersArray[indexPath.row].color
-        cell.doneButton.backgroundColor = visibleTrackers[indexPath.section].trackersArray[indexPath.row].color
+        cell.emoji.text = actualTracker.emoji
+        cell.nameLable.text = actualTracker.name
+        cell.view.backgroundColor = actualTracker.color
+        cell.doneButton.backgroundColor = actualTracker.color
+        
         
         if wasCellButtonTapped(at: indexPath) == true {
             
+            cell.doneButton.backgroundColor = actualTracker.color.withAlphaComponent(0.3)
             cell.doneButton.setImage(UIImage(named: "CheckMark"), for: .normal)
         } else {
             
+            cell.doneButton.backgroundColor = actualTracker.color.withAlphaComponent(1)
             cell.doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
+        }
+        
+        
+        if !completedTrackers.isEmpty {
+            
+            for record in completedTrackers {
+                if record.id == actualTracker.id {
+                    
+                    print(record.date.count)
+                    cell.count = record.date.count
+                    cell.daysCount.text = "\(record.date.count) день"
+                } else {
+                    
+                    if completedTrackers.contains(where: { element in
+                        element.id == actualTracker.id
+                    }) {
+                        
+                        continue
+                    } else {
+                        
+                        cell.daysCount.text = "0 дней"
+                        cell.count = 0
+                    }
+                }
+            }
+        } else {
+            cell.daysCount.text = "0 дней"
+            cell.count = 0
         }
     }
     
@@ -453,7 +487,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
             closeCollectionCellAt(indexPath: indexPath, idOfCell: idOfCell)
         } else {
             
-            let bool = cell.shouldAddDay(cell)
+            guard let bool = cell.shouldAddDay(cell) else { return }
             shouldRecordDate(bool, idOfCell: idOfCell)
         }
         
@@ -537,7 +571,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
                 
                 completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
             }
-            //        }
         } else {
             completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
         }

@@ -17,7 +17,7 @@ final class CollectionViewCell: UICollectionViewCell {
     let emoji = UILabel()
     let daysCount = UILabel()
     let doneButton = UIButton()
-    private var count = 0
+    var count: Int?
     
     override init(frame: CGRect) {
         super.init(frame: frame)
@@ -105,13 +105,18 @@ final class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func shouldAddDay(_ cell: CollectionViewCell) -> Bool {
+    func shouldAddDay(_ cell: CollectionViewCell) -> Bool? {
         
+        guard var count = cell.count else {
+            return nil
+        }
+        print(count)
         if doneButton.imageView?.image?.pngData() == UIImage(named: "WhitePlus")?.pngData() {
             
             doneButton.setImage(UIImage(named: "CheckMark"), for: .normal)
             doneButton.backgroundColor = view.backgroundColor?.withAlphaComponent(0.3)
             
+            self.count = count + 1
             count += 1
             daysCount.text = "\(count) день"
             
@@ -121,6 +126,7 @@ final class CollectionViewCell: UICollectionViewCell {
             doneButton.setImage(UIImage(named: "WhitePlus"), for: .normal)
             doneButton.backgroundColor = view.backgroundColor?.withAlphaComponent(1)
         
+            self.count = count - 1
             count -= 1
             daysCount.text = "\(count) день"
             
