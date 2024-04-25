@@ -189,10 +189,18 @@ final class TrackerViewController: UIViewController {
     
     private func showVisibleTrackers(dateDescription: String){
         
-        var selectedDate: String = ""
+        checkForVisibleTrackersAt(dateDescription: dateDescription)
+        
+        print(visibleTrackers)
+        collectionView.reloadData()
+    }
+    
+    func checkForVisibleTrackersAt(dateDescription: String) {
         
         visibleTrackers.removeAll()
         print(visibleTrackers.isEmpty)
+        
+        var selectedDate: String = ""
         
         for char in dateDescription {
             if char != "," {
@@ -216,7 +224,6 @@ final class TrackerViewController: UIViewController {
                             
                             trackers.append(tracker)
                         }
-//                        visibleTrackers.append(TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers))
                     }
                 } else  {
                     trackers.append(tracker)
@@ -227,9 +234,6 @@ final class TrackerViewController: UIViewController {
                 visibleTrackers.append(TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers))
             }
         }
-        
-        print(visibleTrackers)
-        collectionView.reloadData()
     }
     
     func wasCellButtonTapped(at indexPath: IndexPath) -> Bool {
@@ -254,7 +258,7 @@ final class TrackerViewController: UIViewController {
         
         return false
     }
-
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -437,67 +441,63 @@ extension TrackerViewController: UISearchResultsUpdating {
 extension TrackerViewController: CollectionViewCellDelegate {
     
     func didTapCollectionCellButton(_ cell: CollectionViewCell) {
+        
         guard let indexPath = collectionView.indexPath(for: cell) else {
             return
         }
+        let idOfCell = visibleTrackers[indexPath.section].trackersArray[indexPath.row].id
+        
         
         if visibleTrackers[indexPath.section].trackersArray[indexPath.row].schedule.isEmpty {
             
-            closeCollectionCellAt(indexPath: indexPath)
+            closeCollectionCellAt(indexPath: indexPath, idOfCell: idOfCell)
         } else {
             
             let bool = cell.shouldAddDay(cell)
-            
-            shouldRecordDate(bool, indexPath: indexPath)
+            shouldRecordDate(bool, idOfCell: idOfCell)
         }
         
     }
     
-    func closeCollectionCellAt(indexPath: IndexPath){
+    func closeCollectionCellAt(indexPath: IndexPath, idOfCell: UUID){
         
         let cattegorie = categories[indexPath.section]
-        let oldVisibleTrackers = visibleTrackers[indexPath.section]
         
         trackers.removeAll()
         
-        for tracker in categories[indexPath.section].trackersArray {
-            if tracker.id != categories[indexPath.section].trackersArray[indexPath.row].id {
-                
-                trackers.append(tracker)
+        if cattegorie.trackersArray.count != 1 {
+            for tracker in cattegorie.trackersArray {
+                if tracker.id != idOfCell {
+                    
+                    trackers.append(tracker)
+                }
             }
+            categories.remove(at: indexPath.section)
+            
+            categories.append(TrackerCategory(titleOfCategory: cattegorie.titleOfCategory, trackersArray: trackers))
+        } else {
+            categories.remove(at: indexPath.section)
         }
         
-        categories.remove(at: indexPath.section)
         
-        categories.append(TrackerCategory(titleOfCategory: cattegorie.titleOfCategory, trackersArray: trackers))
-        
-        
-        trackers.removeAll()
-        
-        for tracker in visibleTrackers[indexPath.section].trackersArray {
-            if tracker.id != visibleTrackers[indexPath.section].trackersArray[indexPath.row].id {
-                
-                trackers.append(tracker)
-            }
-        }
-        
-        visibleTrackers.remove(at: indexPath.section)
-        visibleTrackers.append(TrackerCategory(titleOfCategory: oldVisibleTrackers.titleOfCategory, trackersArray: trackers))
-        
+        checkForVisibleTrackersAt(dateDescription: datePicker.date.description(with: .current))
         
         collectionView.performBatchUpdates {
             
             collectionView.deleteItems(at: [indexPath])
         }
+        
+        if visibleTrackers.isEmpty {
+            collectionView.backgroundColor = .clear
+        }
     }
     
     
-    func shouldRecordDate(_ bool: Bool, indexPath: IndexPath){
+    func shouldRecordDate(_ bool: Bool, idOfCell: UUID){
         
         guard let actualDate = datePicker.date.getDefaultDateWith(formatter: dateFormatter) else {
             return
         }
-        let idOfCell = visibleTrackers[indexPath.section].trackersArray[indexPath.row].id
         
         print("✅\(actualDate)")
         
@@ -517,22 +517,27 @@ extension TrackerViewController: CollectionViewCellDelegate {
     func addRecordDate(id: UUID, actualDate: Date){
         
         if !completedTrackers.isEmpty {
-            for index in 0..<completedTrackers.count {
+            
+            if completedTrackers.contains(where: { element in
+                element.id == id
+            }) {
                 
-                if id == completedTrackers[index].id {
-                    
-                    records = completedTrackers[index].date
-                    records.append(actualDate)
-                    
-                    completedTrackers.remove(at: index)
-                    completedTrackers.append(TrackerRecord(id: id, date: records))
-                    
-                    
-                } else {
-                    
-                    completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
+                for index in 0..<completedTrackers.count {
+                    if completedTrackers[index].id == id {
+                        
+                        records = completedTrackers[index].date
+                        records.append(actualDate)
+                        
+                        completedTrackers.remove(at: index)
+                        completedTrackers.append(TrackerRecord(id: id, date: records))
+                        break
+                    }
                 }
+            } else {
+                
+                completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
             }
+            //        }
         } else {
             completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
         }
@@ -544,22 +549,28 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             let recordToCheck = completedTrackers[index]
             
-            if id == recordToCheck.id,
-               recordToCheck.date.count != 1 {
+            if id == recordToCheck.id {
                 
-                for dateIndex in 0..<recordToCheck.date.count {
+                
+                if recordToCheck.date.count != 1 {
                     
-                    if actualDate != recordToCheck.date[dateIndex] {
+                    for dateIndex in 0..<recordToCheck.date.count {
                         
-                        records.append(recordToCheck.date[dateIndex])
+                        if actualDate != recordToCheck.date[dateIndex] {
+                            
+                            records.append(recordToCheck.date[dateIndex])
+                        }
                     }
+                    
+                    completedTrackers.remove(at: index)
+                    completedTrackers.append(TrackerRecord(id: id, date: records))
+                } else {
+                    
+                    ////CНОСИТ БЕЗ РАЗБОРА
+                    completedTrackers.remove(at: index)
                 }
-                
-                completedTrackers.remove(at: index)
-                completedTrackers.append(TrackerRecord(id: id, date: records))
             } else {
-                
-                completedTrackers.remove(at: index)
+                print("id is not equal to recordToCheck.id")
             }
         }
     }
