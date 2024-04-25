@@ -56,7 +56,7 @@ final class CollectionViewCell: UICollectionViewCell {
         
         daysCount.font = UIFont.systemFont(ofSize: 12)
         daysCount.textColor = UIColor(named: "YPBlack")
-        daysCount.text = "\(count) день"
+        daysCount.text = "\(String(describing: count)) день"
         
         emoji.backgroundColor = UIColor(named: "YPWhite")?.withAlphaComponent(0.3)
         emoji.layer.cornerRadius = 13

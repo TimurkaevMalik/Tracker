@@ -158,7 +158,6 @@ class ScheduleOfTracker: UIViewController {
                 }
             }
         }
-        print(dates)
     }
 }
 

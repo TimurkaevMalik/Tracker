@@ -374,8 +374,6 @@ extension ChosenTrackerController: ScheduleOfTrackerDelegate {
     func didRecieveDatesArray(dates: [String]) {
         
         self.scheduleOfTracker = dates
-        
-        print("\(self.scheduleOfTracker) 😘")
     }
 }
 
