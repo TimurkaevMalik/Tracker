@@ -19,7 +19,7 @@ class Schedule {
     let sunday: String?
     
     init( monday: String?, tuesday: String?, wednesday: String?, thursday: String?, friday: String?, saturday: String?, sunday: String?) {
-
+        
         self.unregularEvent = nil
         self.monday = monday
         self.tuesday = tuesday

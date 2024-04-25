@@ -8,7 +8,7 @@
 import UIKit
 
 
-class CategoryCellView: UITableViewCell {
+final class CategoryCellView: UITableViewCell {
     
     var nameOfCategory: String?
     let categoryNameLabel = UILabel()
@@ -91,8 +91,8 @@ class CategoryCellView: UITableViewCell {
     
     override func awakeFromNib() {
         super.awakeFromNib()
-    
-       configureCategoryNameLabel()
+        
+        configureCategoryNameLabel()
     }
     
     
@@ -126,7 +126,6 @@ extension CategoryCellView: UITextFieldDelegate {
         
         guard newString.count <= maxLength else {
             
-//            showLimitWarningLabel(with: "Ограничение 38 символов")
             return false
         }
         

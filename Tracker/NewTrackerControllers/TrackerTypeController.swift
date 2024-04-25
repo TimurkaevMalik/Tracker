@@ -8,7 +8,7 @@
 import Foundation
 import UIKit
 
-class TrackerTypeController: UIViewController {
+final class TrackerTypeController: UIViewController {
     
     var delegate: ChosenTrackerControllerDelegate?
     

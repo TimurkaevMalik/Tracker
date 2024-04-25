@@ -7,7 +7,7 @@
 
 import UIKit
 
-class ChosenTrackerController: UIViewController {
+final class ChosenTrackerController: UIViewController {
     
     var delegate: ChosenTrackerControllerDelegate?
     
@@ -312,7 +312,7 @@ extension ChosenTrackerController: UITableViewDataSource {
         cell.backgroundColor = .ypLightGray
         cell.accessoryType = .disclosureIndicator
         cell.textLabel?.text = tableViewCells[indexPath.row]
-                
+        
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
         return cell
@@ -360,6 +360,13 @@ extension ChosenTrackerController: UITextFieldDelegate {
         let newString = currentString.replacingCharacters(in: range, with: string)
         
         guard newString.count <= maxLength else {
+            
+            while var text = textField.text,
+                  text.count >= maxLength {
+                
+                text.removeLast()
+                textField.text = text
+            }
             
             showLimitWarningLabel(with: "Ограничение 38 символов")
             return false
