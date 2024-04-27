@@ -107,7 +107,10 @@ final class TrackerViewController: UIViewController {
         searchController.searchBar.searchBarStyle = .prominent
         searchController.searchBar.layer.cornerRadius = 8
         searchController.searchBar.layer.masksToBounds = true
-        
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.hidesNavigationBarDuringPresentation = false
+        searchController.hidesBottomBarWhenPushed = false
+        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.isTranslucent = false
         searchController.searchBar.backgroundImage = UIImage()
         
@@ -118,7 +121,7 @@ final class TrackerViewController: UIViewController {
         
         NSLayoutConstraint.activate([
             searchController.searchBar.heightAnchor.constraint(equalToConstant: 36),
-            searchController.searchBar.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 49),
+            searchController.searchBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 136),
             searchController.searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 11),
             searchController.searchBar.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -11)
         ])

@@ -229,6 +229,23 @@ final class ChosenTrackerController: UIViewController {
         tableViewCells.append("Категория")
     }
     
+    func shouldActivateSaveButton(){
+        
+        if tableViewCells.count > 1 {
+            guard !scheduleOfTracker.isEmpty else { return }
+        }
+        
+        guard 
+            nameOfTracker != nil,
+            nameOfCategory != nil,
+            emojiOfTracker != nil,
+            colorOfTracker != nil
+        else {
+            return
+        }
+        
+        saveButton.backgroundColor = .ypBlack
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -245,19 +262,23 @@ final class ChosenTrackerController: UIViewController {
     }
     
     @objc func didEnterTextInTextField(_ sender: UITextField){
+        
         guard
             let text = sender.text,
             !text.isEmpty,
             !text.filter({ $0 != Character(" ") }).isEmpty
         else {
+            nameOfTracker = nil
+            clearTextFieldButtonTapped()
             return
         }
         
         textField.text = text.trimmingCharacters(in: .whitespaces)
-        
         nameOfTracker = text.trimmingCharacters(in: .whitespaces)
         colorOfTracker = .orange
         emojiOfTracker = "😎"
+        
+        shouldActivateSaveButton()
     }
     
     @objc func clearTextFieldButtonTapped(){
@@ -381,12 +402,15 @@ extension ChosenTrackerController: ScheduleOfTrackerDelegate {
     func didRecieveDatesArray(dates: [String]) {
         
         self.scheduleOfTracker = dates
+        shouldActivateSaveButton()
     }
 }
 
 
 extension ChosenTrackerController: CategoryOfTrackerDelegate{
     func didChooseCategory(_ category: String) {
+        
         nameOfCategory = category
+        shouldActivateSaveButton()
     }
 }
