@@ -12,7 +12,6 @@ final class TrackerViewController: UIViewController {
     
     private lazy var plusButton = UIButton()
     private lazy var datePicker = UIDatePicker()
-    private lazy var titleLabel = UILabel()
     private lazy var centralPlugLabel = UILabel()
     private lazy var centralPlugImage = UIImageView()
     private lazy var searchController = UISearchController(searchResultsController: nil)
@@ -59,23 +58,14 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configureTrackerLabelsViews(){
-        titleLabel.text = "Трекеры"
-        titleLabel.font = UIFont.boldSystemFont(ofSize: 34)
-        
         centralPlugLabel.text = "Что будем отслеживать?"
         centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
         centralPlugLabel.textAlignment = .center
         
         centralPlugLabel.translatesAutoresizingMaskIntoConstraints = false
-        titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviews([titleLabel, centralPlugLabel])
+        view.addSubviews([centralPlugLabel])
         
         NSLayoutConstraint.activate([
-            titleLabel.widthAnchor.constraint(equalToConstant: 254),
-            titleLabel.heightAnchor.constraint(equalToConstant: 41),
-            titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 1),
-            
             centralPlugLabel.widthAnchor.constraint(equalToConstant: 150),
             centralPlugLabel.heightAnchor.constraint(equalToConstant: 18),
             centralPlugLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 403),
@@ -102,29 +92,21 @@ final class TrackerViewController: UIViewController {
         searchController.searchResultsUpdater = self
         
         searchController.searchBar.placeholder = "Поиск"
-        searchController.searchBar.sizeToFit()
         
+        searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.searchBarStyle = .prominent
         searchController.searchBar.layer.cornerRadius = 8
         searchController.searchBar.layer.masksToBounds = true
-        searchController.dimsBackgroundDuringPresentation = false
-        searchController.hidesNavigationBarDuringPresentation = false
-        searchController.hidesBottomBarWhenPushed = false
-        searchController.obscuresBackgroundDuringPresentation = false
         searchController.searchBar.isTranslucent = false
-        searchController.searchBar.backgroundImage = UIImage()
         
+        addTitleAndSearchControllerToNavBar()
+    }
+    
+    private func addTitleAndSearchControllerToNavBar(){
         
-        searchController.searchBar.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(searchController.searchBar)
-        
-        
-        NSLayoutConstraint.activate([
-            searchController.searchBar.heightAnchor.constraint(equalToConstant: 36),
-            searchController.searchBar.topAnchor.constraint(equalTo: view.topAnchor, constant: 136),
-            searchController.searchBar.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 11),
-            searchController.searchBar.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor, constant: -11)
-        ])
+        navigationItem.searchController = searchController
+        navigationController?.navigationBar.prefersLargeTitles = true
+        navigationItem.title = "Трекеры"
     }
     
     private func configureCollectionView(){
@@ -142,7 +124,7 @@ final class TrackerViewController: UIViewController {
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            collectionView.topAnchor.constraint(equalTo: searchController.searchBar.bottomAnchor, constant: 10),
+            collectionView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 10),
             collectionView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             collectionView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor),
             collectionView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor)
@@ -166,7 +148,7 @@ final class TrackerViewController: UIViewController {
         configureTrackerButtonsViews()
     }
     
-    func configureCell(for cell: CollectionViewCell, with indexPath: IndexPath){
+    private func configureCell(for cell: CollectionViewCell, with indexPath: IndexPath){
         
         let actualTracker = visibleTrackers[indexPath.section].trackersArray[indexPath.row]
         
@@ -229,7 +211,7 @@ final class TrackerViewController: UIViewController {
         collectionView.reloadData()
     }
     
-    func checkForVisibleTrackersAt(dateDescription: String) {
+    private func checkForVisibleTrackersAt(dateDescription: String) {
         
         visibleTrackers.removeAll()
         
@@ -267,7 +249,7 @@ final class TrackerViewController: UIViewController {
         }
     }
     
-    func wasCellButtonTapped(at indexPath: IndexPath) -> Bool {
+    private func wasCellButtonTapped(at indexPath: IndexPath) -> Bool {
         
         guard let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) else {
             return false
@@ -449,22 +431,6 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-extension TrackerViewController: UICollectionViewDelegate {
-    
-}
-
-
-extension TrackerViewController: UISearchBarDelegate {
-    
-}
-
-
-extension TrackerViewController: UISearchResultsUpdating {
-    
-    func updateSearchResults(for searchController: UISearchController){}
-}
-
-
 extension TrackerViewController: CollectionViewCellDelegate {
     
     func didTapCollectionCellButton(_ cell: CollectionViewCell) {
@@ -489,7 +455,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
     }
     
-    func closeCollectionCellAt(indexPath: IndexPath, idOfCell: UUID){
+    private func closeCollectionCellAt(indexPath: IndexPath, idOfCell: UUID){
         
         let cattegorie = categories[indexPath.section]
         
@@ -522,8 +488,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         }
     }
     
-    
-    func shouldRecordDate(_ bool: Bool, idOfCell: UUID){
+    private func shouldRecordDate(_ bool: Bool, idOfCell: UUID){
         
         guard let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) else {
             return
@@ -540,8 +505,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         }
     }
     
-    
-    func addRecordDate(id: UUID, actualDate: Date){
+    private func addRecordDate(id: UUID, actualDate: Date){
         
         if !completedTrackers.isEmpty {
             
@@ -569,7 +533,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         }
     }
     
-    func removeRecordDate(id: UUID, actualDate: Date){
+    private func removeRecordDate(id: UUID, actualDate: Date){
         
         for index in (0..<completedTrackers.count).reversed() {
             
@@ -596,4 +560,17 @@ extension TrackerViewController: CollectionViewCellDelegate {
             }
         }
     }
+}
+
+extension TrackerViewController: UICollectionViewDelegate {
+    
+}
+
+extension TrackerViewController: UISearchResultsUpdating {
+    
+    func updateSearchResults(for searchController: UISearchController){}
+}
+
+extension TrackerViewController: UISearchBarDelegate {
+    
 }

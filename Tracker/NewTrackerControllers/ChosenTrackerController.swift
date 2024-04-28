@@ -30,9 +30,7 @@ final class ChosenTrackerController: UIViewController {
     
     private var newTracker: Tracker?
     
-    
-    
-    func configureLimitWarningLabel(){
+    private func configureLimitWarningLabel(){
         
         limitWarningLabel.textColor = .ypRed
         limitWarningLabel.font = UIFont.systemFont(ofSize: 17)
@@ -47,7 +45,7 @@ final class ChosenTrackerController: UIViewController {
         limitWarningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
-    func configureSaveAndCancelButtons(){
+    private func configureSaveAndCancelButtons(){
         
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
@@ -87,7 +85,7 @@ final class ChosenTrackerController: UIViewController {
         ])
     }
     
-    func configureTitleLabelView(){
+    private func configureTitleLabelView(){
         titleLabel.text = "Новая привычка"
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         
@@ -100,7 +98,7 @@ final class ChosenTrackerController: UIViewController {
         ])
     }
     
-    func configureTextFieldAndClearButton(){
+    private func configureTextFieldAndClearButton(){
         
         textField.delegate = self
         textField.backgroundColor = UIColor(named: "YPLightGray")
@@ -134,7 +132,7 @@ final class ChosenTrackerController: UIViewController {
         ])
     }
     
-    func configureTableView(){
+    private func configureTableView(){
         
         tableView.backgroundColor = .black
         
@@ -165,7 +163,7 @@ final class ChosenTrackerController: UIViewController {
         }
     }
     
-    func highLightButton(){
+    private func highLightButton(){
         
         UIView.animate(withDuration: 0.2) {
             
@@ -184,12 +182,11 @@ final class ChosenTrackerController: UIViewController {
         }
     }
     
-    func setDefaultPositionOfLimitWarningLabel(){
+    private func setDefaultPositionOfLimitWarningLabel(){
         view.insertSubview(textField, aboveSubview: limitWarningLabel)
-        
     }
     
-    func showLimitWarningLabel(with text: String){
+    private func showLimitWarningLabel(with text: String){
         
         limitWarningLabel.text = text
         isTextFieldAndSaveButtonEnabled(bool: false)
@@ -215,21 +212,12 @@ final class ChosenTrackerController: UIViewController {
         })
     }
     
-    func isTextFieldAndSaveButtonEnabled(bool: Bool){
+    private func isTextFieldAndSaveButtonEnabled(bool: Bool){
         saveButton.isEnabled = bool
         textField.isEnabled = bool
     }
     
-    func configureTwoTableVeiwCells(){
-        tableViewCells.append("Категория")
-        tableViewCells.append("Рассписание")
-    }
-    
-    func configureOneTableVeiwCell(){
-        tableViewCells.append("Категория")
-    }
-    
-    func shouldActivateSaveButton(){
+    private func shouldActivateSaveButton(){
         
         if tableViewCells.count > 1 {
             guard !scheduleOfTracker.isEmpty else { return }
@@ -246,6 +234,16 @@ final class ChosenTrackerController: UIViewController {
         
         saveButton.backgroundColor = .ypBlack
     }
+    
+    func configureTwoTableVeiwCells(){
+        tableViewCells.append("Категория")
+        tableViewCells.append("Рассписание")
+    }
+    
+    func configureOneTableVeiwCell(){
+        tableViewCells.append("Категория")
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()

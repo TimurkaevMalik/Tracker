@@ -16,7 +16,7 @@ final class CategoryCellView: UITableViewCell {
     private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     
     
-    func configureCategoryNameLabel(){
+    private func configureCategoryNameLabel(){
         categoryNameLabel.text = nameOfCategory
         categoryNameLabel.font = UIFont.systemFont(ofSize: 16)
         
@@ -30,7 +30,7 @@ final class CategoryCellView: UITableViewCell {
         ])
     }
     
-    func configureTextFieldAndClearButton(){
+    private func configureTextFieldAndClearButton(){
         
         textField.delegate = self
         textField.backgroundColor = UIColor(named: "YPLightGray")

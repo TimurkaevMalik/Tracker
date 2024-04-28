@@ -17,7 +17,7 @@ final class TrackerTypeController: UIViewController {
     let titleLabel = UILabel()
     
     
-    func configureCreatingTrackerView(){
+    private func configureCreatingTrackerView(){
         view.backgroundColor = UIColor(named: "YPWhite")
         
         habbit.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
@@ -58,7 +58,7 @@ final class TrackerTypeController: UIViewController {
         ])
     }
     
-    func configureTitleLable(){
+    private func configureTitleLable(){
         
         titleLabel.text = "Создание трекера"
         titleLabel.font = UIFont.systemFont(ofSize: 16)
