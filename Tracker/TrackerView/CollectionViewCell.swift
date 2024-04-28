@@ -31,7 +31,7 @@ final class CollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
-    func configureView(){
+    private func configureView(){
         
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
@@ -47,7 +47,7 @@ final class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configureLabels(){
+    private func configureLabels(){
         
         nameLable.textAlignment = .left
         nameLable.numberOfLines = 2
@@ -86,7 +86,7 @@ final class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func configureButton(){
+    private func configureButton(){
         
         doneButton.addTarget(self, action: #selector(didTapDoneButton), for: .touchUpInside)
         
@@ -104,7 +104,7 @@ final class CollectionViewCell: UICollectionViewCell {
         ])
     }
     
-    func highLightButton(){
+    private func highLightButton(){
         
         UIView.animate(withDuration: 0.4) {
             
@@ -155,7 +155,6 @@ final class CollectionViewCell: UICollectionViewCell {
             return false
         }
     }
-    
     
     @objc func didTapDoneButton(){
         

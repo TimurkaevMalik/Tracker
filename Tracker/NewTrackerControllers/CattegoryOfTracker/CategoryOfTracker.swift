@@ -19,7 +19,7 @@ final class CategoryOfTracker: UIViewController {
     private var categories: [String] = ["Важное"]
     private var chosenCategory: String?
     
-    func configureTitleLabelView(){
+    private func configureTitleLabelView(){
         titleLabel.text = "Категория"
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         
@@ -32,7 +32,7 @@ final class CategoryOfTracker: UIViewController {
         ])
     }
     
-    func configureTableView(){
+    private func configureTableView(){
         
         tableView.backgroundColor = .black
         
@@ -63,7 +63,7 @@ final class CategoryOfTracker: UIViewController {
         ])
     }
     
-    func configureDoneButton(){
+    private func configureDoneButton(){
         
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
@@ -86,7 +86,7 @@ final class CategoryOfTracker: UIViewController {
         ])
     }
     
-    func highLightButton(){
+    private func highLightButton(){
         
         UIView.animate(withDuration: 0.3) {
             

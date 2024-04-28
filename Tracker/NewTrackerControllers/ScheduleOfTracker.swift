@@ -16,11 +16,9 @@ final class ScheduleOfTracker: UIViewController {
     private let titleLabel = UILabel()
     private let tableView = UITableView()
     private let weekdays = ["Понедельник", "Вторинк", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
-    
     private var dates: [String] = []
     
-    
-    func configureTitleLabelView(){
+    private func configureTitleLabelView(){
         titleLabel.text = "Новая привычка"
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         
@@ -33,7 +31,7 @@ final class ScheduleOfTracker: UIViewController {
         ])
     }
     
-    func configureTableView(){
+    private func configureTableView(){
         
         tableView.backgroundColor = .black
         
@@ -58,7 +56,7 @@ final class ScheduleOfTracker: UIViewController {
         ])
     }
     
-    func configureDoneButton(){
+    private func configureDoneButton(){
         
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
@@ -81,7 +79,7 @@ final class ScheduleOfTracker: UIViewController {
         ])
     }
     
-    func highLightButton(){
+    private func highLightButton(){
         
         UIView.animate(withDuration: 0.3) {
             
