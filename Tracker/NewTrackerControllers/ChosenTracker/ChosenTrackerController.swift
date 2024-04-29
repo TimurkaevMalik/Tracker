@@ -7,7 +7,7 @@
 
 import UIKit
 
-final class ChosenTrackerController: UIViewController {
+class ChosenTrackerController: UIViewController {
     
     var delegate: ChosenTrackerControllerDelegate?
     
@@ -29,6 +29,42 @@ final class ChosenTrackerController: UIViewController {
     private var scheduleOfTracker: [String] = []
     
     private var newTracker: Tracker?
+    
+    private lazy var emojiCollection = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
+    
+    private let params = GeomitricParams(cellCount: 6, leftInset: 18, rightInset: 18, cellSpacing: 5)
+    private let reuseCellIdentifier = "emojiCollectioCell"
+    private let reuseHeaderIdentifier = "emojiColectionHeader"
+    private let emojis: [String] = ["🙂", "🐶", "🌺", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
+    
+    func configureCollectionUnder(tableView: UITableView, of viewController: UIViewController){
+        
+        emojiCollection.delegate = self
+        emojiCollection.dataSource = self
+        emojiCollection.backgroundColor = .clear
+        emojiCollection.allowsMultipleSelection = false
+        emojiCollection.isScrollEnabled = false
+        
+        emojiCollection.contentInset = UIEdgeInsets(top: 24, left: params.leftInset, bottom: -24, right: params.rightInset)
+        
+        emojiCollection.translatesAutoresizingMaskIntoConstraints = false
+        viewController.view.addSubview(emojiCollection)
+        
+        NSLayoutConstraint.activate([
+            emojiCollection.heightAnchor.constraint(equalToConstant: 204),
+            emojiCollection.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 50),
+            emojiCollection.trailingAnchor.constraint(equalTo: viewController.view.trailingAnchor),
+            emojiCollection.leadingAnchor.constraint(equalTo: viewController.view.leadingAnchor)
+        ])
+        
+        registerCollectionViewsSubviews()
+    }
+    
+    private func registerCollectionViewsSubviews(){
+        emojiCollection.register(EmojiPresenterCell.self, forCellWithReuseIdentifier: reuseCellIdentifier)
+        
+        emojiCollection.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: reuseHeaderIdentifier)
+    }
     
     private func configureLimitWarningLabel(){
         
@@ -163,6 +199,15 @@ final class ChosenTrackerController: UIViewController {
         }
     }
     
+    private func configureEmojiCollection(){
+        configureCollectionUnder(tableView: tableView, of: self)
+//        let emojiCollectionPresenter = EmojiCollectionPresenter()
+//        
+//        emojiCollectionPresenter.awakeFromNib()
+//        emojiCollectionPresenter.viewDidLoad()
+//        emojiCollectionPresenter.configureCollectionUnder(tableView: tableView, of: self)
+    }
+    
     private func highLightButton(){
         
         UIView.animate(withDuration: 0.2) {
@@ -255,7 +300,7 @@ final class ChosenTrackerController: UIViewController {
         configureLimitWarningLabel()
         configureTableView()
         configureSaveAndCancelButtons()
-        
+        configureEmojiCollection()
         setDefaultPositionOfLimitWarningLabel()
     }
     
@@ -392,6 +437,58 @@ extension ChosenTrackerController: UITextFieldDelegate {
         }
         
         return true
+    }
+}
+
+
+extension ChosenTrackerController: UICollectionViewDataSource {
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+        
+        return 16
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
+        
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseCellIdentifier, for: indexPath) as? EmojiPresenterCell else {
+            return UICollectionViewCell()
+        }
+        
+        cell.cellLabel.text = emojis[indexPath.row]
+        cell.layer.masksToBounds = true
+        cell.layer.cornerRadius = 16
+        
+        return cell
+    }
+}
+
+extension ChosenTrackerController: UICollectionViewDelegate {
+    
+    func collectionView(_ collectionView: UICollectionView, shouldSelectItemAt indexPath: IndexPath) -> Bool {
+        
+        guard
+            let cell = collectionView.cellForItem(at: indexPath),
+            !cell.isSelected
+        else {
+            
+            collectionView.deselectItem(at: indexPath, animated: true)
+            collectionView.cellForItem(at: indexPath)?.backgroundColor = .clear
+            
+            return false
+        }
+        
+        return true
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
+        
+        let cell = collectionView.cellForItem(at: indexPath)
+        cell?.backgroundColor = .ypLightGray
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, didDeselectItemAt indexPath: IndexPath) {
+        
+        let cell = collectionView.cellForItem(at: indexPath)
+        cell?.backgroundColor = .clear
     }
 }
 
