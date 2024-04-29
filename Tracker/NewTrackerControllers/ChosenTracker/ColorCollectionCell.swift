@@ -7,12 +7,14 @@
 
 import UIKit
 
-class CollorCollectionCell: UICollectionViewCell {
+class ColorCollectionCell: UICollectionViewCell {
     
     let colorCell = UIView()
     
     override init(frame: CGRect) {
         super.init(frame: frame)
+        
+        configureColorCell()
     }
     
     required init?(coder: NSCoder) {
@@ -20,14 +22,18 @@ class CollorCollectionCell: UICollectionViewCell {
     }
     
     private func configureColorCell(){
+        
+        colorCell.layer.masksToBounds = true
+        colorCell.layer.cornerRadius = 16
+        
         colorCell.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(colorCell)
         
         NSLayoutConstraint.activate([
-            colorCell.topAnchor.constraint(equalTo: contentView.topAnchor),
-            colorCell.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            colorCell.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            colorCell.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            colorCell.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 6),
+            colorCell.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -6),
+            colorCell.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 6),
+            colorCell.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -6)
         ])
     }
 }

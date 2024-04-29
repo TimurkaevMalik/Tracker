@@ -12,6 +12,7 @@
 		BC40A3AC2BDF7A2C00A86345 /* EmojiCollectionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC40A3AB2BDF7A2C00A86345 /* EmojiCollectionPresenter.swift */; };
 		BC40A3AE2BDF7A3A00A86345 /* ColorCollectionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC40A3AD2BDF7A3A00A86345 /* ColorCollectionPresenter.swift */; };
 		BC40A3B02BDF822F00A86345 /* EmojiPresenterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC40A3AF2BDF822F00A86345 /* EmojiPresenterCell.swift */; };
+		BC47D6032BDFC0FF00B63417 /* ColorCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC47D6022BDFC0FF00B63417 /* ColorCollectionCell.swift */; };
 		BC5915772BD1C7E8005058ED /* ScheduleOfTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5915762BD1C7E8005058ED /* ScheduleOfTracker.swift */; };
 		BC5E5DBC2BC9A17A00BD7655 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */; };
 		BC5E5DBE2BC9A18800BD7655 /* TrackerRecord.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5E5DBD2BC9A18800BD7655 /* TrackerRecord.swift */; };
@@ -40,6 +41,7 @@
 		BC40A3AB2BDF7A2C00A86345 /* EmojiCollectionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionPresenter.swift; sourceTree = "<group>"; };
 		BC40A3AD2BDF7A3A00A86345 /* ColorCollectionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionPresenter.swift; sourceTree = "<group>"; };
 		BC40A3AF2BDF822F00A86345 /* EmojiPresenterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPresenterCell.swift; sourceTree = "<group>"; };
+		BC47D6022BDFC0FF00B63417 /* ColorCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionCell.swift; sourceTree = "<group>"; };
 		BC5915762BD1C7E8005058ED /* ScheduleOfTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleOfTracker.swift; sourceTree = "<group>"; };
 		BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
 		BC5E5DBD2BC9A18800BD7655 /* TrackerRecord.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecord.swift; sourceTree = "<group>"; };
@@ -107,6 +109,7 @@
 				BC40A3AB2BDF7A2C00A86345 /* EmojiCollectionPresenter.swift */,
 				BC40A3AD2BDF7A3A00A86345 /* ColorCollectionPresenter.swift */,
 				BC40A3AF2BDF822F00A86345 /* EmojiPresenterCell.swift */,
+				BC47D6022BDFC0FF00B63417 /* ColorCollectionCell.swift */,
 			);
 			path = ChosenTracker;
 			sourceTree = "<group>";
@@ -294,6 +297,7 @@
 				BC70457E2BCC3B9F002F8F12 /* ChosenTrackerController.swift in Sources */,
 				BC8C8A0E2BD9A70A00AB04EC /* DateFormatManager.swift in Sources */,
 				BC5E5DC92BC9BF7200BD7655 /* Delegates.swift in Sources */,
+				BC47D6032BDFC0FF00B63417 /* ColorCollectionCell.swift in Sources */,
 				BCF6219C2BBF4561001DE986 /* TabBarControler.swift in Sources */,
 				BC5E5DBE2BC9A18800BD7655 /* TrackerRecord.swift in Sources */,
 				BC5E5DC02BC9A5E700BD7655 /* Tracker.swift in Sources */,
