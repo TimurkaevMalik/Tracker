@@ -17,3 +17,30 @@ extension UIView {
     }
 }
 
+extension Date {
+    func startOfWeek(using calendar: Calendar) -> Date {
+        
+        guard let sunday = calendar.dateComponents([.calendar, .yearForWeekOfYear, .weekOfYear], from: self).date else {
+            return Date()
+        }
+        
+        var dateComponents = DateComponents()
+        dateComponents.day = 1
+        
+        guard let monday = calendar.date(byAdding: dateComponents, to: sunday) else {
+            return Date()
+        }
+        
+        return monday
+    }
+    
+    func getDefaultDateWith(formatter: DateFormatter) -> Date? {
+        
+        let stringDate = formatter.string(from: self)
+        guard let date = formatter.date(from: stringDate) else {
+            return nil
+        }
+        
+        return date
+    }
+}

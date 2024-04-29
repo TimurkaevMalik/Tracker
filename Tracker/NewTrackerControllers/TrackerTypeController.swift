@@ -8,15 +8,16 @@
 import Foundation
 import UIKit
 
-class CreatingTracker: UIViewController {
+final class TrackerTypeController: UIViewController {
+    
+    var delegate: ChosenTrackerControllerDelegate?
     
     let habbit = UIButton()
     let irregularEvent = UIButton()
     let titleLabel = UILabel()
     
-    var delegate: CreatingTrackerDelegate?
     
-    func configureCreatingTrackerView(){
+    private func configureCreatingTrackerView(){
         view.backgroundColor = UIColor(named: "YPWhite")
         
         habbit.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
@@ -57,7 +58,7 @@ class CreatingTracker: UIViewController {
         ])
     }
     
-    func configureTitleLable(){
+    private func configureTitleLable(){
         
         titleLabel.text = "Создание трекера"
         titleLabel.font = UIFont.systemFont(ofSize: 16)
@@ -69,19 +70,13 @@ class CreatingTracker: UIViewController {
             titleLabel.widthAnchor.constraint(equalToConstant: 149),
             titleLabel.heightAnchor.constraint(equalToConstant: 22),
             titleLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            titleLabel.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -712)
+            titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
     }
     
-    override func viewDidDisappear(_ animated: Bool) {
-        super.viewDidDisappear(animated)
-        
-        delegate?.CreatingTrackerViewDidDismiss()
-    }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
+    override func viewDidLoad() {
+        super.viewDidLoad()
         
         configureTitleLable()
         configureCreatingTrackerView()
@@ -90,11 +85,21 @@ class CreatingTracker: UIViewController {
     
     @objc func habbitButtonTapped(){
         
-        print("Habbit Button Tapped")
+        let viewController = ChosenTrackerController()
+        
+        viewController.delegate = delegate
+        viewController.configureTwoTableVeiwCells()
+        
+        present(viewController, animated: true)
     }
     
     @objc func irregularEventButtonTapped(){
         
-        print("Irregular Event Button Tapped")
+        let viewController = ChosenTrackerController()
+        
+        viewController.delegate = delegate
+        viewController.configureOneTableVeiwCell()
+        
+        present(viewController, animated: true)
     }
 }

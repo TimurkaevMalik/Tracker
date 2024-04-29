@@ -19,8 +19,12 @@ final class TabBarControler: UITabBarController {
     
     func addTabBarItems(){
         
+        let navigationController = UINavigationController()
+        
         let trackerViewController = TrackerViewController()
         let statisticViewController = StatisticViewController()
+        
+        navigationController.viewControllers = [trackerViewController]
         
         trackerViewController.tabBarItem = UITabBarItem(
             title: "Трекеры",
@@ -33,8 +37,8 @@ final class TabBarControler: UITabBarController {
             selectedImage: nil)
         
         self.viewControllers = [
-            trackerViewController,
-            statisticViewController
+            navigationController,
+            statisticViewController,
         ]
     }
     
