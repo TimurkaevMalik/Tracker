@@ -33,8 +33,8 @@ class ChosenTrackerController: UIViewController {
     private var newTracker: Tracker?
     
     private let params = GeomitricParams(cellCount: 6, leftInset: 18, rightInset: 18, cellSpacing: 5)
-    private let reuseCellIdentifier = "emojiCollectioCell"
-    private let reuse2CellIdentifier = "emoji2CollectioCell"
+    private let emojiCellIdentifier = "emojiCollectioCell"
+    private let colorCellIdentifier = "colorCollectioCell"
     private let reuseHeaderIdentifier = "emojiColectionHeader"
     
     private let emojisArray: [String] = ["🙂", "😻", "🐶", "🌺", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
@@ -49,10 +49,6 @@ class ChosenTrackerController: UIViewController {
         collectionView.dataSource = self
         collectionView.backgroundColor = .clear
         collectionView.allowsMultipleSelection = true
-        
-//        emojiCollection.isScrollEnabled = false
-        
-//        collectionView.contentInset = UIEdgeInsets(top: 24, left: params.leftInset, bottom: -24, right: params.rightInset)
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         viewController.view.addSubview(collectionView)
@@ -281,11 +277,13 @@ class ChosenTrackerController: UIViewController {
         }
         
         guard 
-            nameOfTracker != nil,
+            nameOfTracker  != nil,
             nameOfCategory != nil,
             emojiOfTracker != nil,
             colorOfTracker != nil
         else {
+            
+            saveButton.backgroundColor = .ypDarkGray
             return
         }
         
@@ -351,6 +349,7 @@ class ChosenTrackerController: UIViewController {
         else {
             nameOfTracker = nil
             clearTextFieldButtonTapped()
+            shouldActivateSaveButton()
             return
         }
         
@@ -490,10 +489,10 @@ extension ChosenTrackerController: UICollectionViewDataSource {
         
         if section == 0 {
             count = emojisArray.count
-            collectionView.register(EmojiPresenterCell.self, forCellWithReuseIdentifier: reuseCellIdentifier)
+            collectionView.register(EmojiPresenterCell.self, forCellWithReuseIdentifier: emojiCellIdentifier)
             
         } else {
-            collectionView.register(ColorCollectionCell.self, forCellWithReuseIdentifier: reuse2CellIdentifier)
+            collectionView.register(ColorCollectionCell.self, forCellWithReuseIdentifier: colorCellIdentifier)
             
             count = colorsArray.count
         }
@@ -505,7 +504,7 @@ extension ChosenTrackerController: UICollectionViewDataSource {
         
         if indexPath.section == 0 {
             
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseCellIdentifier, for: indexPath) as? EmojiPresenterCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: emojiCellIdentifier, for: indexPath) as? EmojiPresenterCell else {
                 return UICollectionViewCell()
             }
             
@@ -517,7 +516,7 @@ extension ChosenTrackerController: UICollectionViewDataSource {
             
         } else {
             
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuse2CellIdentifier, for: indexPath) as? ColorCollectionCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: colorCellIdentifier, for: indexPath) as? ColorCollectionCell else {
                 return UICollectionViewCell()
             }
             
