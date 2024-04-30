@@ -17,6 +17,15 @@ extension UIView {
     }
 }
 
+extension UIScrollView {
+    func addSubviewsToScrollView(_ subviews: [UIView]){
+        
+        for subview in subviews {
+            addSubview(subview)
+        }
+    }
+}
+
 extension Date {
     func startOfWeek(using calendar: Calendar) -> Date {
         
