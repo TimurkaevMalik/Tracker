@@ -43,7 +43,7 @@ class EmojiCollectionPresenter: UIViewController {
     }
     
     private func registerCollectionViewsSubviews(){
-        emojiCollection.register(EmojiPresenterCell.self, forCellWithReuseIdentifier: reuseCellIdentifier)
+        emojiCollection.register(EmojiCollectionCell.self, forCellWithReuseIdentifier: reuseCellIdentifier)
         
         emojiCollection.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: reuseHeaderIdentifier)
     }
@@ -77,7 +77,7 @@ extension EmojiCollectionPresenter: UICollectionViewDataSource {
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         
-        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseCellIdentifier, for: indexPath) as? EmojiPresenterCell else {
+        guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: reuseCellIdentifier, for: indexPath) as? EmojiCollectionCell else {
             return UICollectionViewCell()
         }
         

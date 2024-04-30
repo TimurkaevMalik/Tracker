@@ -42,9 +42,9 @@ class ChosenTrackerController: UIViewController {
     private var colorOfTracker: UIColor?
     private var emojiOfTracker: String?
     
-    private let emojiCellIdentifier = "emojiCollectioCell"
-    private let colorCellIdentifier = "colorCollectioCell"
-    private let collectionHeaderIdentifier = "emojiColectionHeader"
+    private let emojiCellIdentifier = "emojiCollectionCell"
+    private let colorCellIdentifier = "colorCollectionCell"
+    private let collectionHeaderIdentifier = "collectionHeaderIdentifier"
     
     private let emojisArray: [String] = ["🙂", "😻", "🐶", "🌺", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let colorsArray: [UIColor] = [.red, .orange, .blue, .purple, .green, .ypCyan, .ypLightPink, .ypMediumLightBlue, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypBlue, .ypDarkViolet, .ypMediumDarkViolet, .violet, .ypMediumLightGreen]
@@ -83,11 +83,14 @@ class ChosenTrackerController: UIViewController {
     
     private func configureCollection(){
         
+        collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: collectionHeaderIdentifier)
+        
         collectionView.delegate = self
         collectionView.dataSource = self
         collectionView.backgroundColor = .clear
         collectionView.allowsMultipleSelection = true
         collectionView.isScrollEnabled = false
+        collectionView.contentInset = UIEdgeInsets(top: 0, left: params.leftInset, bottom: 0, right: params.rightInset)
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(collectionView)
@@ -100,13 +103,6 @@ class ChosenTrackerController: UIViewController {
             
             collectionView.bottomAnchor.constraint(lessThanOrEqualTo: scrollContentView.bottomAnchor)
         ])
-        
-        registerCollectionViewsSubviews()
-    }
-    
-    private func registerCollectionViewsSubviews(){
-        
-        collectionView.register(UICollectionReusableView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: collectionHeaderIdentifier)
     }
     
     private func configureLimitWarningLabel(){
@@ -136,7 +132,6 @@ class ChosenTrackerController: UIViewController {
         saveButton.layer.cornerRadius = 16
         saveButton.layer.masksToBounds = true
         
-        
         cancelButton.setTitle("Отменить", for: .normal)
         cancelButton.setTitleColor(.ypRed, for: .normal)
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
@@ -152,20 +147,20 @@ class ChosenTrackerController: UIViewController {
         view.addSubviews([buttonsContainer, saveButton, cancelButton])
         
         NSLayoutConstraint.activate([
-            buttonsContainer.heightAnchor.constraint(equalToConstant: 70),
+            buttonsContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            buttonsContainer.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -70),
             buttonsContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonsContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            buttonsContainer.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             saveButton.widthAnchor.constraint(equalToConstant: 161),
             saveButton.heightAnchor.constraint(equalToConstant: 60),
             saveButton.leadingAnchor.constraint(equalTo: buttonsContainer.centerXAnchor, constant: 4),
-            saveButton.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor),
+            saveButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
             
             cancelButton.widthAnchor.constraint(equalToConstant: 161),
             cancelButton.heightAnchor.constraint(equalToConstant: 60),
             cancelButton.trailingAnchor.constraint(equalTo: buttonsContainer.centerXAnchor, constant: -4),
-            cancelButton.bottomAnchor.constraint(equalTo: buttonsContainer.bottomAnchor)
+            cancelButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor)
         ])
     }
     
@@ -540,7 +535,7 @@ extension ChosenTrackerController: UICollectionViewDataSource {
         
         if section == 0 {
             count = emojisArray.count
-            collectionView.register(EmojiPresenterCell.self, forCellWithReuseIdentifier: emojiCellIdentifier)
+            collectionView.register(EmojiCollectionCell.self, forCellWithReuseIdentifier: emojiCellIdentifier)
             
         } else {
             collectionView.register(ColorCollectionCell.self, forCellWithReuseIdentifier: colorCellIdentifier)
@@ -555,7 +550,7 @@ extension ChosenTrackerController: UICollectionViewDataSource {
         
         if indexPath.section == 0 {
             
-            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: emojiCellIdentifier, for: indexPath) as? EmojiPresenterCell else {
+            guard let cell = collectionView.dequeueReusableCell(withReuseIdentifier: emojiCellIdentifier, for: indexPath) as? EmojiCollectionCell else {
                 return UICollectionViewCell()
             }
             
@@ -577,6 +572,34 @@ extension ChosenTrackerController: UICollectionViewDataSource {
             
             return cell
         }
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, viewForSupplementaryElementOfKind kind: String, at indexPath: IndexPath) -> UICollectionReusableView {
+        
+        var id: String
+        
+        switch kind {
+        case UICollectionView.elementKindSectionHeader:
+            id = collectionHeaderIdentifier
+        default:
+            id = ""
+        }
+        
+        guard
+            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
+        else {
+            return UICollectionReusableView()
+        }
+        
+        if id == collectionHeaderIdentifier {
+            if indexPath.section == 0 {
+                headerView.titleLabel.text = "Эмодзи"
+            } else {
+                headerView.titleLabel.text = "Цвет"
+            }
+        }
+        
+        return headerView
     }
 }
 
@@ -644,7 +667,20 @@ extension ChosenTrackerController: UICollectionViewDelegateFlowLayout {
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
         
-        return UIEdgeInsets(top: 16, left: params.leftInset, bottom: 16, right: params.rightInset)
+        return UIEdgeInsets(top: 10, left: 0, bottom: 24, right: 0)
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {
+        
+        let indexPath = IndexPath(row: 0, section: section)
+        
+        let headerView = self.collectionView(collectionView, viewForSupplementaryElementOfKind: UICollectionView.elementKindSectionHeader, at: indexPath)
+        
+        
+        return headerView.systemLayoutSizeFitting(
+            CGSize(width: collectionView.frame.width, height: 18),
+            withHorizontalFittingPriority: .required,
+            verticalFittingPriority: .fittingSizeLevel)
     }
 }
 

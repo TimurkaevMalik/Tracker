@@ -25,7 +25,7 @@ final class TrackerViewController: UIViewController {
     private var currentDate: Date?
     
     private let cellIdentifier = "collectionCell"
-    private let headerIdentifier = "footerIdentifier"
+    private let headerIdentifier = "headerIdentifier"
     
     private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
     
