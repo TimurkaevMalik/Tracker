@@ -208,12 +208,13 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureEmojiCollection(){
-        configureCollectionUnder(tableView: tableView, of: self)
-//        let emojiCollectionPresenter = EmojiCollectionPresenter()
-//        
-//        emojiCollectionPresenter.awakeFromNib()
-//        emojiCollectionPresenter.viewDidLoad()
-//        emojiCollectionPresenter.configureCollectionUnder(tableView: tableView, of: self)
+//        self.configureCollectionUnder(tableView: tableView, of: self)
+        
+        let emojiCollectionPresenter = EmojiCollectionPresenter()
+        
+        emojiCollectionPresenter.awakeFromNib()
+        emojiCollectionPresenter.viewDidLoad()
+        emojiCollectionPresenter.configureCollectionUnder(tableView: tableView, of: self)
     }
     
     private func highLightButton(){

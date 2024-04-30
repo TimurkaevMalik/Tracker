@@ -39,7 +39,7 @@ class EmojiCollectionPresenter: UIViewController {
         registerCollectionViewsSubviews()
         
 //        callCellMethods()
-        
+        emojiCollection.reloadData()
     }
     
     private func registerCollectionViewsSubviews(){
@@ -53,7 +53,7 @@ class EmojiCollectionPresenter: UIViewController {
         emojiCollection.performBatchUpdates {
             var indexPaths = [IndexPath]()
             
-            for index in 0...16 {
+            for index in 0..<emojis.count {
                 
                 indexPaths.append(IndexPath(row: index, section: 0))
             }
@@ -70,9 +70,10 @@ class EmojiCollectionPresenter: UIViewController {
 
 
 extension EmojiCollectionPresenter: UICollectionViewDataSource {
+    
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
-        return 16
+        return emojis.count
     }
     
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
