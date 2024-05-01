@@ -11,7 +11,7 @@
 		BC2B8CD42BD2F5FE0098D664 /* CategoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B8CD32BD2F5FE0098D664 /* CategoryCellView.swift */; };
 		BC40A3AC2BDF7A2C00A86345 /* EmojiCollectionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC40A3AB2BDF7A2C00A86345 /* EmojiCollectionPresenter.swift */; };
 		BC40A3AE2BDF7A3A00A86345 /* ColorCollectionPresenter.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC40A3AD2BDF7A3A00A86345 /* ColorCollectionPresenter.swift */; };
-		BC40A3B02BDF822F00A86345 /* EmojiPresenterCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC40A3AF2BDF822F00A86345 /* EmojiPresenterCell.swift */; };
+		BC40A3B02BDF822F00A86345 /* EmojiCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC40A3AF2BDF822F00A86345 /* EmojiCollectionCell.swift */; };
 		BC47D6032BDFC0FF00B63417 /* ColorCollectionCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC47D6022BDFC0FF00B63417 /* ColorCollectionCell.swift */; };
 		BC5915772BD1C7E8005058ED /* ScheduleOfTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5915762BD1C7E8005058ED /* ScheduleOfTracker.swift */; };
 		BC5E5DBC2BC9A17A00BD7655 /* TrackerCategory.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */; };
@@ -26,6 +26,7 @@
 		BC9A9F852BCB2F8800558F38 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */; };
 		BC9A9F872BCB429900558F38 /* GeomitricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F862BCB429900558F38 /* GeomitricParams.swift */; };
 		BCA853612BCE402500173B4A /* SupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA853602BCE402500173B4A /* SupplementaryView.swift */; };
+		BCA899FB2BE29298005C3934 /* TableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA899FA2BE29298005C3934 /* TableViewCell.swift */; };
 		BCC82EE42BBEE8710042D467 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC82EE32BBEE8710042D467 /* AppDelegate.swift */; };
 		BCC82EE62BBEE8710042D467 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC82EE52BBEE8710042D467 /* SceneDelegate.swift */; };
 		BCC82EED2BBEE8720042D467 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCC82EEC2BBEE8720042D467 /* Assets.xcassets */; };
@@ -40,7 +41,7 @@
 		BC2B8CD32BD2F5FE0098D664 /* CategoryCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCellView.swift; sourceTree = "<group>"; };
 		BC40A3AB2BDF7A2C00A86345 /* EmojiCollectionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionPresenter.swift; sourceTree = "<group>"; };
 		BC40A3AD2BDF7A3A00A86345 /* ColorCollectionPresenter.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionPresenter.swift; sourceTree = "<group>"; };
-		BC40A3AF2BDF822F00A86345 /* EmojiPresenterCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiPresenterCell.swift; sourceTree = "<group>"; };
+		BC40A3AF2BDF822F00A86345 /* EmojiCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = EmojiCollectionCell.swift; sourceTree = "<group>"; };
 		BC47D6022BDFC0FF00B63417 /* ColorCollectionCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ColorCollectionCell.swift; sourceTree = "<group>"; };
 		BC5915762BD1C7E8005058ED /* ScheduleOfTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ScheduleOfTracker.swift; sourceTree = "<group>"; };
 		BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategory.swift; sourceTree = "<group>"; };
@@ -55,6 +56,7 @@
 		BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		BC9A9F862BCB429900558F38 /* GeomitricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomitricParams.swift; path = ../TrackerView/GeomitricParams.swift; sourceTree = "<group>"; };
 		BCA853602BCE402500173B4A /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
+		BCA899FA2BE29298005C3934 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		BCC82EE02BBEE8710042D467 /* Tracker.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Tracker.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		BCC82EE32BBEE8710042D467 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		BCC82EE52BBEE8710042D467 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
@@ -108,8 +110,9 @@
 				BC70457D2BCC3B9F002F8F12 /* ChosenTrackerController.swift */,
 				BC40A3AB2BDF7A2C00A86345 /* EmojiCollectionPresenter.swift */,
 				BC40A3AD2BDF7A3A00A86345 /* ColorCollectionPresenter.swift */,
-				BC40A3AF2BDF822F00A86345 /* EmojiPresenterCell.swift */,
+				BC40A3AF2BDF822F00A86345 /* EmojiCollectionCell.swift */,
 				BC47D6022BDFC0FF00B63417 /* ColorCollectionCell.swift */,
+				BCA899FA2BE29298005C3934 /* TableViewCell.swift */,
 			);
 			path = ChosenTracker;
 			sourceTree = "<group>";
@@ -304,7 +307,8 @@
 				BCF621A02BBF45A8001DE986 /* StatisticViewController.swift in Sources */,
 				BC9A9F872BCB429900558F38 /* GeomitricParams.swift in Sources */,
 				BCC82EE42BBEE8710042D467 /* AppDelegate.swift in Sources */,
-				BC40A3B02BDF822F00A86345 /* EmojiPresenterCell.swift in Sources */,
+				BC40A3B02BDF822F00A86345 /* EmojiCollectionCell.swift in Sources */,
+				BCA899FB2BE29298005C3934 /* TableViewCell.swift in Sources */,
 				BCA853612BCE402500173B4A /* SupplementaryView.swift in Sources */,
 				BC8C8A0B2BD9618500AB04EC /* Schedule.swift in Sources */,
 				BCC82EE62BBEE8710042D467 /* SceneDelegate.swift in Sources */,
