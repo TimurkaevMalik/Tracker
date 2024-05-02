@@ -42,6 +42,7 @@ class ChosenTrackerController: UIViewController {
     private var colorOfTracker: UIColor?
     private var emojiOfTracker: String?
     
+    private let tableCellIdentifier = "tableCellIdentifier"
     private let emojiCellIdentifier = "emojiCollectionCell"
     private let colorCellIdentifier = "colorCollectionCell"
     private let collectionHeaderIdentifier = "collectionHeaderIdentifier"
@@ -220,13 +221,12 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureTableView(){
-        
         tableView.backgroundColor = .black
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: tableCellIdentifier)
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.backgroundColor = .white
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
@@ -453,12 +453,14 @@ extension ChosenTrackerController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: tableCellIdentifier, for: indexPath) as? TableViewCell else {
+            return UITableViewCell()
+        }
         
         cell.backgroundColor = .ypLightGray
         cell.accessoryType = .disclosureIndicator
-        cell.textLabel?.text = tableViewCells[indexPath.row]
-        
+//        cell.textLabel?.text = tableViewCells[indexPath.row]
+        cell.cellText.text = tableViewCells[indexPath.row]
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
         return cell
