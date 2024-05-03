@@ -692,8 +692,37 @@ extension ChosenTrackerController: UICollectionViewDelegateFlowLayout {
 
 extension ChosenTrackerController: ScheduleOfTrackerDelegate {
     func didRecieveDatesArray(dates: [String]) {
+        scheduleOfTracker = dates
         
-        self.scheduleOfTracker = dates
+        let week: [String] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        
+        let sortedDates = dates.sorted { week.firstIndex(of: $0) ?? 0 < week.firstIndex(of: $1) ?? 1}
+        print(dates)
+        print(sortedDates)
+        let datesString: String = sortedDates.map({ date in
+            
+            if date == "Monday" {
+                return "Пн"
+            } else if date == "Tuesday" {
+                return "Вт"
+            } else if date == "Wednesday" {
+                return "Ср"
+            } else if date == "Thursday" {
+                return "Чт"
+            } else if date == "Friday" {
+                return "Пт"
+            } else if date == "Saturday" {
+                return "Сб"
+            } else if date == "Sunday" {
+                return "Вс"
+            }
+            
+            return ""
+        }).joined(separator: ", ")
+        
+        let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TableViewCell
+        cell?.updateTextOfCellWith(name: tableViewCells[1], text: datesString)
+        
         shouldActivateSaveButton()
     }
 }
@@ -703,6 +732,10 @@ extension ChosenTrackerController: CategoryOfTrackerDelegate{
     func didChooseCategory(_ category: String) {
         
         nameOfCategory = category
+        
+        let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TableViewCell
+        cell?.updateTextOfCellWith(name: tableViewCells[0], text: category)
+        
         shouldActivateSaveButton()
     }
 }
