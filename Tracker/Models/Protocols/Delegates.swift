@@ -22,11 +22,15 @@ protocol ChosenTrackerControllerDelegate {
 protocol ScheduleOfTrackerDelegate {
     
     func didRecieveDatesArray(dates: [String])
+    
+    func didDismissScreenWithChanges(dates: [String])
 }
 
 protocol CategoryOfTrackerDelegate {
     
     func didChooseCategory(_ category: String)
+    
+    func didDismissScreenWithChangesIn(_ category: String?)
 }
 
 protocol CollectionViewCellDelegate {

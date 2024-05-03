@@ -693,8 +693,21 @@ extension ChosenTrackerController: UICollectionViewDelegateFlowLayout {
 
 
 extension ChosenTrackerController: ScheduleOfTrackerDelegate {
+    func didDismissScreenWithChanges(dates: [String]) {
+        scheduleOfTracker = dates
+        
+        shouldAddDatesOnCellTitle(dates: dates)
+        shouldActivateSaveButton()
+    }
+    
     func didRecieveDatesArray(dates: [String]) {
         scheduleOfTracker = dates
+        
+        shouldAddDatesOnCellTitle(dates: dates)
+        shouldActivateSaveButton()
+    }
+    
+    private func shouldAddDatesOnCellTitle(dates: [String]){
         
         let week: [String] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         
@@ -724,20 +737,29 @@ extension ChosenTrackerController: ScheduleOfTrackerDelegate {
         
         let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TableViewCell
         cell?.updateTextOfCellWith(name: tableViewCells[1], text: datesString)
-        
-        shouldActivateSaveButton()
     }
 }
 
 
 extension ChosenTrackerController: CategoryOfTrackerDelegate{
+    func didDismissScreenWithChangesIn(_ category: String?) {
+        
+        nameOfCategory = category
+        shouldAddCategoryOnCellTitle(category: category)
+        shouldActivateSaveButton()
+    }
+    
     func didChooseCategory(_ category: String) {
         
         nameOfCategory = category
         
-        let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TableViewCell
-        cell?.updateTextOfCellWith(name: tableViewCells[0], text: category)
-        
+        shouldAddCategoryOnCellTitle(category: category)
         shouldActivateSaveButton()
+    }
+    
+    private func shouldAddCategoryOnCellTitle(category: String?){
+        
+        let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TableViewCell
+        cell?.updateTextOfCellWith(name: tableViewCells[0], text: category ?? "")
     }
 }

@@ -135,6 +135,13 @@ final class CategoryOfTracker: UIViewController {
         configureDoneButton()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        delegate?.didDismissScreenWithChangesIn(chosenCategory)
+    }
+    
+    
     @objc func doneButtonTapped(){
         guard let chosenCategory else {
             

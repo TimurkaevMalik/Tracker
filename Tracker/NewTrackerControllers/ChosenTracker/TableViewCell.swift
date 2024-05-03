@@ -45,6 +45,8 @@ class TableViewCell: UITableViewCell {
         if !text.isEmpty {
             cellText.attributedText = attributedString
             
+        } else {
+            cellText.text = name
         }
     }
 }

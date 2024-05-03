@@ -128,6 +128,12 @@ final class ScheduleOfTracker: UIViewController {
         configureTableView()
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        delegate?.didDismissScreenWithChanges(dates: dates)
+    }
+    
     @objc func doneButtonTapped(){
         
         guard !dates.isEmpty else {
