@@ -42,12 +42,14 @@ class ChosenTrackerController: UIViewController {
     private var colorOfTracker: UIColor?
     private var emojiOfTracker: String?
     
+    private let tableCellIdentifier = "tableCellIdentifier"
     private let emojiCellIdentifier = "emojiCollectionCell"
     private let colorCellIdentifier = "colorCollectionCell"
     private let collectionHeaderIdentifier = "collectionHeaderIdentifier"
     
     private let emojisArray: [String] = ["🙂", "😻", "🐶", "🌺", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let colorsArray: [UIColor] = [.red, .orange, .blue, .purple, .green, .ypCyan, .ypLightPink, .ypMediumLightBlue, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypBlue, .ypDarkViolet, .ypMediumDarkViolet, .violet, .ypMediumLightGreen]
+    
     
     func vibrancyEffectView(forBlurEffectView blurEffectView:UIVisualEffectView) -> UIVisualEffectView {
             let vibrancy = UIVibrancyEffect(blurEffect: blurEffectView.effect as! UIBlurEffect)
@@ -219,13 +221,12 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureTableView(){
-        
         tableView.backgroundColor = .black
         
         tableView.delegate = self
         tableView.dataSource = self
+        tableView.register(TableViewCell.self, forCellReuseIdentifier: tableCellIdentifier)
         
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
         tableView.backgroundColor = .white
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
@@ -361,7 +362,7 @@ class ChosenTrackerController: UIViewController {
     
     func configureTwoTableVeiwCells(){
         tableViewCells.append("Категория")
-        tableViewCells.append("Рассписание")
+        tableViewCells.append("Расписание")
     }
     
     func configureOneTableVeiwCell(){
@@ -452,11 +453,15 @@ extension ChosenTrackerController: UITableViewDataSource {
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath)
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: tableCellIdentifier, for: indexPath) as? TableViewCell else {
+            return UITableViewCell()
+        }
         
         cell.backgroundColor = .ypLightGray
         cell.accessoryType = .disclosureIndicator
-        cell.textLabel?.text = tableViewCells[indexPath.row]
+
+        cell.cellText.text = tableViewCells[indexPath.row]
+//        cell.updateTextOfCellWith(name: tableViewCells[indexPath.row], text: "Вт" + ", " + "Cб")
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
@@ -480,6 +485,7 @@ extension ChosenTrackerController: UITableViewDelegate {
             
             let viewControler = CategoryOfTracker()
             viewControler.delegate = self
+            viewControler.ifWasCategoryChosenBefore(category: nameOfCategory)
             
             present(viewControler, animated: true)
         }
@@ -488,6 +494,7 @@ extension ChosenTrackerController: UITableViewDelegate {
             
             let viewControler = ScheduleOfTracker()
             viewControler.delegate = self
+            viewControler.IfDatesWasChosenBefore(dates: scheduleOfTracker)
             
             present(viewControler, animated: true)
         }
@@ -686,18 +693,73 @@ extension ChosenTrackerController: UICollectionViewDelegateFlowLayout {
 
 
 extension ChosenTrackerController: ScheduleOfTrackerDelegate {
-    func didRecieveDatesArray(dates: [String]) {
+    func didDismissScreenWithChanges(dates: [String]) {
+        scheduleOfTracker = dates
         
-        self.scheduleOfTracker = dates
+        shouldAddDatesOnCellTitle(dates: dates)
         shouldActivateSaveButton()
+    }
+    
+    func didRecieveDatesArray(dates: [String]) {
+        scheduleOfTracker = dates
+        
+        shouldAddDatesOnCellTitle(dates: dates)
+        shouldActivateSaveButton()
+    }
+    
+    private func shouldAddDatesOnCellTitle(dates: [String]){
+        
+        let week: [String] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        
+        let sortedDates = dates.sorted { week.firstIndex(of: $0) ?? 0 < week.firstIndex(of: $1) ?? 1}
+        print(dates)
+        print(sortedDates)
+        let datesString: String = sortedDates.map({ date in
+            
+            if date == "Monday" {
+                return "Пн"
+            } else if date == "Tuesday" {
+                return "Вт"
+            } else if date == "Wednesday" {
+                return "Ср"
+            } else if date == "Thursday" {
+                return "Чт"
+            } else if date == "Friday" {
+                return "Пт"
+            } else if date == "Saturday" {
+                return "Сб"
+            } else if date == "Sunday" {
+                return "Вс"
+            }
+            
+            return ""
+        }).joined(separator: ", ")
+        
+        let cell = tableView.cellForRow(at: IndexPath(row: 1, section: 0)) as? TableViewCell
+        cell?.updateTextOfCellWith(name: tableViewCells[1], text: datesString)
     }
 }
 
 
 extension ChosenTrackerController: CategoryOfTrackerDelegate{
+    func didDismissScreenWithChangesIn(_ category: String?) {
+        
+        nameOfCategory = category
+        shouldAddCategoryOnCellTitle(category: category)
+        shouldActivateSaveButton()
+    }
+    
     func didChooseCategory(_ category: String) {
         
         nameOfCategory = category
+        
+        shouldAddCategoryOnCellTitle(category: category)
         shouldActivateSaveButton()
+    }
+    
+    private func shouldAddCategoryOnCellTitle(category: String?){
+        
+        let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TableViewCell
+        cell?.updateTextOfCellWith(name: tableViewCells[0], text: category ?? "")
     }
 }
