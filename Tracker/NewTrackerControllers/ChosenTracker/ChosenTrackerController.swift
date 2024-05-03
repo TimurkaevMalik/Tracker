@@ -461,7 +461,6 @@ extension ChosenTrackerController: UITableViewDataSource {
         cell.accessoryType = .disclosureIndicator
 
         cell.cellText.text = tableViewCells[indexPath.row]
-//        cell.updateTextOfCellWith(name: tableViewCells[indexPath.row], text: "Вт" + ", " + "Cб")
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
@@ -745,6 +744,7 @@ extension ChosenTrackerController: CategoryOfTrackerDelegate{
     func didDismissScreenWithChangesIn(_ category: String?) {
         
         nameOfCategory = category
+        
         shouldAddCategoryOnCellTitle(category: category)
         shouldActivateSaveButton()
     }
