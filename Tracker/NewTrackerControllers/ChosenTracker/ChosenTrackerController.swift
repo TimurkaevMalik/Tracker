@@ -362,7 +362,7 @@ class ChosenTrackerController: UIViewController {
     
     func configureTwoTableVeiwCells(){
         tableViewCells.append("Категория")
-        tableViewCells.append("Рассписание")
+        tableViewCells.append("Расписание")
     }
     
     func configureOneTableVeiwCell(){
@@ -459,8 +459,10 @@ extension ChosenTrackerController: UITableViewDataSource {
         
         cell.backgroundColor = .ypLightGray
         cell.accessoryType = .disclosureIndicator
-//        cell.textLabel?.text = tableViewCells[indexPath.row]
+
         cell.cellText.text = tableViewCells[indexPath.row]
+//        cell.updateTextOfCellWith(name: tableViewCells[indexPath.row], text: "Вт" + ", " + "Cб")
+        
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
         return cell

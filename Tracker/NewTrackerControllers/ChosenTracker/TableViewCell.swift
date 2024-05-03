@@ -24,18 +24,27 @@ class TableViewCell: UITableViewCell {
     
     private func configureCell(){
         
+        cellText.numberOfLines = 2
+        cellText.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubview(cellText)
+        
         NSLayoutConstraint.activate([
-            cellText.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 15),
-            cellText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -14),
-            cellText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            cellText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor)
+            cellText.topAnchor.constraint(equalTo: contentView.topAnchor),
+            cellText.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            cellText.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 16),
+            cellText.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -56)
         ])
     }
     
+   
+    
     func updateTextOfCellWith(name: String, text: String){
-        
+        let attributedString = NSMutableAttributedString(string:"\(name)\n\(text)")
+        attributedString.setColor(UIColor.lightGray, forText: text)
+
         if !text.isEmpty {
-            self.cellText.text = "\(name)\n\(text)"
+            cellText.attributedText = attributedString
+            
         }
     }
 }
