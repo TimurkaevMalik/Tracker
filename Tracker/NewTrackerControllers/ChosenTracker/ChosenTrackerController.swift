@@ -485,6 +485,7 @@ extension ChosenTrackerController: UITableViewDelegate {
             
             let viewControler = CategoryOfTracker()
             viewControler.delegate = self
+            viewControler.ifWasCategoryChosenBefore(category: nameOfCategory)
             
             present(viewControler, animated: true)
         }
@@ -493,6 +494,7 @@ extension ChosenTrackerController: UITableViewDelegate {
             
             let viewControler = ScheduleOfTracker()
             viewControler.delegate = self
+            viewControler.IfDatesWasChosenBefore(dates: scheduleOfTracker)
             
             present(viewControler, animated: true)
         }

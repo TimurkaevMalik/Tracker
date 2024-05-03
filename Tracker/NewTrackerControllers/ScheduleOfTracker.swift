@@ -15,7 +15,8 @@ final class ScheduleOfTracker: UIViewController {
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
-    private let weekdays = ["Понедельник", "Вторинк", "Среда", "Четверг", "Пятница", "Суббота", "Воскресенье"]
+    private let weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    private var datesWasChosenBefore: [String] = []
     private var dates: [String] = []
     
     private func configureTitleLabelView(){
@@ -98,6 +99,25 @@ final class ScheduleOfTracker: UIViewController {
         }
     }
     
+    private func shouldSetSwitchOnForCell(_ indexPath: IndexPath) -> Bool {
+        
+        for date in datesWasChosenBefore {
+            if date == weekdays[indexPath.row] {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
+    func IfDatesWasChosenBefore(dates: [String]){
+        
+        if !dates.isEmpty {
+            datesWasChosenBefore = dates
+            self.dates = dates
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -170,7 +190,7 @@ extension ScheduleOfTracker: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath)
         
         let switchView = UISwitch(frame: .zero)
-        switchView.setOn(false, animated: true)
+        switchView.isOn = shouldSetSwitchOnForCell(indexPath)
         switchView.onTintColor = .ypBlue
         switchView.tag = indexPath.row
         switchView.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)

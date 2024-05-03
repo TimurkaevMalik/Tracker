@@ -16,7 +16,8 @@ final class CategoryOfTracker: UIViewController {
     private let titleLabel = UILabel()
     private let tableView = UITableView()
     
-    private var categories: [String] = ["Важное"]
+    private var categories: [String] = ["Важное", "Не важное", "Очень важное"]
+    private var categoryWasChosenBefore: String?
     private var chosenCategory: String?
     
     private func configureTitleLabelView(){
@@ -105,6 +106,25 @@ final class CategoryOfTracker: UIViewController {
         }
     }
     
+    private func shouldSetCheckmarkForCell(_ indexPath: IndexPath) -> UITableViewCell.AccessoryType {
+        
+        if let categoryWasChosenBefore {
+            if categoryWasChosenBefore == categories[indexPath.row] {
+                return .checkmark
+            }
+        }
+        
+        return .none
+    }
+    
+    func ifWasCategoryChosenBefore(category: String?){
+        
+        if let category = category {
+            categoryWasChosenBefore = category
+            self.chosenCategory = category
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -141,6 +161,7 @@ extension CategoryOfTracker: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        cell.accessoryType = shouldSetCheckmarkForCell(indexPath)
         cell.layer.masksToBounds = true
         cell.setCornerRadiusForCell(at: indexPath, of: tableView)
         
