@@ -283,17 +283,18 @@ final class TrackerViewController: UIViewController {
         
         
         storeCategory()
-        trackerCategoryStore.fetchCategories()
+        store()
+//        trackerCategoryStore.fetchCategories()
     }
     
     func storeCategory(){
         
-        trackerCategoryStore.storeCategory(TrackerCategory(titleOfCategory: "Category", trackersArray: [Tracker(id: UUID(), name: "NAME", color: .blue, emoji: "🔰", schedule: [nil])]))
+        trackerCategoryStore.storeCategory(TrackerCategory(titleOfCategory: "NewCategory", trackersArray: [Tracker(id: UUID(), name: "NAME", color: .blue, emoji: "🔰", schedule: [nil])]))
     }
     
     func store () {
         
-        trackerStore.storeNewTracker(Tracker(id: UUID(), name: "NAME", color: .green, emoji: "🚫", schedule: ["monday", "sunday"]))
+        trackerStore.storeNewTracker(Tracker(id: UUID(), name: "NAME", color: .green, emoji: "🚫", schedule: ["monday", "sunday"]), for: "NewCategory")
     }
     
     

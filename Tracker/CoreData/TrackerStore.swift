@@ -10,6 +10,7 @@ import CoreData
 
 final class TrackerStore {
     
+    private let trackerCategoryStore = TrackerCategoryStore()
     private let context: NSManagedObjectContext
     private let appDelegate: AppDelegate
     private let uiColorMarshalling = UIColorMarshalling()
@@ -31,10 +32,9 @@ final class TrackerStore {
     
     
     
-    func storeNewTracker(_ tracker: Tracker) {
+    func storeNewTracker(_ tracker: Tracker, for categoryTitle: String) {
         
         let trackerCoreData = TrackerCoreData(context: context)
-        let TrackerCategoryCoreData = TrackerCategoryCoreData(context: context)
         
         trackerCoreData.name = tracker.name
         trackerCoreData.id = tracker.id
@@ -57,11 +57,12 @@ final class TrackerStore {
             trackerCoreData.schedule = nil
         }
         
-        TrackerCategoryCoreData.titleOfCategory = "TITLE"
-        trackerCoreData.trackerCategory = TrackerCategoryCoreData
+        let categoryCoreData = trackerCategoryStore.fetchCategory(with: categoryTitle)
+        
+        categoryCoreData?.titleOfCategory = categoryTitle
+        categoryCoreData?.addToTrackersArray(trackerCoreData)
         
         print(trackerCoreData)
-        print(TrackerCategoryCoreData)
         appDelegate.saveContext()
     }
 }

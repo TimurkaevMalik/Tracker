@@ -55,64 +55,110 @@
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "98ADFB41-5F5A-4A46-8504-F154A187B286"
+            uuid = "39CCEA31-1244-4844-A97C-4D981DF9A900"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Tracker/CoreData/TrackerCategoryStore.swift"
+            filePath = "Tracker/TrackerView/TrackerViewController.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "58"
-            endingLineNumber = "58"
-            landmarkName = "fetchCategories()"
+            startingLineNumber = "286"
+            endingLineNumber = "286"
+            landmarkName = "viewDidLoad()"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "01813F61-DF87-496E-92C0-9E3E9B5E9D3C"
+            uuid = "3F79CA54-E0ED-4FB8-AD1C-6DBE2B59DA6C"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
-            filePath = "Tracker/CoreData/TrackerCategoryStore.swift"
+            filePath = "Tracker/TrackerView/TrackerViewController.swift"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "285"
+            endingLineNumber = "285"
+            landmarkName = "viewDidLoad()"
+            landmarkType = "7">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            uuid = "82D7A48E-A069-4FE8-BAF5-AD0DE4F62D61"
+            shouldBeEnabled = "Yes"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "Tracker/CoreData/TrackerStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
             startingLineNumber = "60"
             endingLineNumber = "60"
-            landmarkName = "fetchCategories()"
+            landmarkName = "storeNewTracker(_:for:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "D746A1EF-61D8-48AC-B7B5-9516DD181F95"
+            uuid = "9DD0EB8A-3704-44E0-9C4B-9F5D119CFC22"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Tracker/CoreData/TrackerCategoryStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "62"
-            endingLineNumber = "62"
-            landmarkName = "fetchCategories()"
+            startingLineNumber = "74"
+            endingLineNumber = "74"
+            landmarkName = "fetchCategory(with:)"
             landmarkType = "7">
+            <Locations>
+               <Location
+                  uuid = "9DD0EB8A-3704-44E0-9C4B-9F5D119CFC22 - 6709289d907ed9b5"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "Tracker.TrackerCategoryStore.fetchCategory(with: Swift.String) -&gt; Swift.Optional&lt;Tracker.TrackerCategoryCoreData&gt;"
+                  moduleName = "Tracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/malik_timurkaev/Documents/App.Folder/Tracker/Tracker/CoreData/TrackerCategoryStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "74"
+                  endingLineNumber = "74">
+               </Location>
+               <Location
+                  uuid = "9DD0EB8A-3704-44E0-9C4B-9F5D119CFC22 - 8f98da71c2390d5d"
+                  shouldBeEnabled = "Yes"
+                  ignoreCount = "0"
+                  continueAfterRunningActions = "No"
+                  symbolName = "closure #1 (Tracker.TrackerCategoryCoreData) -&gt; Swift.Bool in Tracker.TrackerCategoryStore.fetchCategory(with: Swift.String) -&gt; Swift.Optional&lt;Tracker.TrackerCategoryCoreData&gt;"
+                  moduleName = "Tracker"
+                  usesParentBreakpointCondition = "Yes"
+                  urlString = "file:///Users/malik_timurkaev/Documents/App.Folder/Tracker/Tracker/CoreData/TrackerCategoryStore.swift"
+                  startingColumnNumber = "9223372036854775807"
+                  endingColumnNumber = "9223372036854775807"
+                  startingLineNumber = "75"
+                  endingLineNumber = "75">
+               </Location>
+            </Locations>
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
          BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
          <BreakpointContent
-            uuid = "C1A2BFBB-EEDB-4F13-8BDD-EF04D6329423"
+            uuid = "C7AF4CDA-603B-4FAF-A01E-1AA7ED4C6800"
             shouldBeEnabled = "Yes"
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "Tracker/CoreData/TrackerCategoryStore.swift"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "61"
-            endingLineNumber = "61"
-            landmarkName = "fetchCategories()"
+            startingLineNumber = "78"
+            endingLineNumber = "78"
+            landmarkName = "fetchCategory(with:)"
             landmarkType = "7">
          </BreakpointContent>
       </BreakpointProxy>

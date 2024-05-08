@@ -48,17 +48,34 @@ final class TrackerCategoryStore {
     }
     
     
-    func fetchCategories() -> [TrackerCategory]? {
+    func fetchCategories() -> [TrackerCategoryCoreData]? {
+        
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCategoryCoreData")
         
         do {
-            let response = try context.fetch(fetchRequest) as? [TrackerCategory]
-            print(response)
+            
+            let response = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData]
             
             return response
         } catch {
             print(error.localizedDescription)
-            print(error)
+            return nil
+        }
+    }
+    
+    func fetchCategory(with title: String) -> TrackerCategoryCoreData? {
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCategoryCoreData")
+        
+        do {
+            guard let categories = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData] else {
+                return nil
+            }
+            
+            return categories.first(where: { category in
+                category.titleOfCategory == title
+            })
+        } catch {
+            print(error.localizedDescription)
             return nil
         }
     }
