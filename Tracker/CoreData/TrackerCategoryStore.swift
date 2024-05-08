@@ -70,7 +70,7 @@ final class TrackerCategoryStore {
             guard let categories = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData] else {
                 return nil
             }
-            
+             
             return categories.first(where: { category in
                 category.titleOfCategory == title
             })
