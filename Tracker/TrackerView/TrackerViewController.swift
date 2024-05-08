@@ -17,6 +17,8 @@ final class TrackerViewController: UIViewController {
     private lazy var searchController = UISearchController(searchResultsController: nil)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
+    private let trackerStore = TrackerStore()
+    private let trackerCategoryStore = TrackerCategoryStore()
     private var categories: [TrackerCategory] = []
     private var visibleTrackers: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
@@ -278,6 +280,20 @@ final class TrackerViewController: UIViewController {
         
         currentDate = datePicker.date
         configureTrackerViews()
+        
+        
+        storeCategory()
+        trackerCategoryStore.fetchCategories()
+    }
+    
+    func storeCategory(){
+        
+        trackerCategoryStore.storeCategory(TrackerCategory(titleOfCategory: "Category", trackersArray: [Tracker(id: UUID(), name: "NAME", color: .blue, emoji: "🔰", schedule: [nil])]))
+    }
+    
+    func store () {
+        
+        trackerStore.storeNewTracker(Tracker(id: UUID(), name: "NAME", color: .green, emoji: "🚫", schedule: ["monday", "sunday"]))
     }
     
     
