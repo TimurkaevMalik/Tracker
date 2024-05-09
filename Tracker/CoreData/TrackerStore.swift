@@ -34,7 +34,11 @@ final class TrackerStore {
     
     func storeNewTracker(_ tracker: Tracker, for categoryTitle: String) {
         
-        let trackerCoreData = TrackerCoreData(context: context)
+        guard let trackerEntityDescription = NSEntityDescription.entity(forEntityName: "TrackerCoreData", in: context ) else {
+            return
+        }
+        
+        let trackerCoreData = TrackerCoreData(entity: trackerEntityDescription, insertInto: context)
         
         trackerCoreData.name = tracker.name
         trackerCoreData.id = tracker.id
@@ -43,13 +47,11 @@ final class TrackerStore {
         trackerCoreData.color = uiColorMarshalling.hexString(from: tracker.color)
         
         if !tracker.schedule.isEmpty {
-            
-            var weekdays: String = ""
-            
-            for weekday in tracker.schedule {
-                weekdays += " " + (weekday ?? " ")
+            let schedule: [String] = tracker.schedule.map { element in
                 
+                return element ?? ""
             }
+            var weekdays: String = schedule.joined(separator: " ")
             
             trackerCoreData.schedule = weekdays
             
@@ -65,4 +67,55 @@ final class TrackerStore {
         print(trackerCoreData)
         appDelegate.saveContext()
     }
+    
+    func fetchAllTrackers() -> [TrackerCoreData]? {
+        
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCoreData")
+        
+        do {
+            
+            guard let response = try context.fetch(fetchRequest) as? [TrackerCoreData] else {
+                return nil
+            }
+            
+            print(response.count)
+            print(response.first?.name)
+            print(response.first?.trackerCategory)
+            print(response.first?.trackerCategory?.titleOfCategory)
+            
+            return response
+        } catch {
+            print(error.localizedDescription)
+            return nil
+        }
+    }
+    
+    func convertResponseToType(_ response: [TrackerCoreData]) -> [Tracker] {
+        
+        var trackerArray: [Tracker] = []
+        
+        for trackerCoreData in response {
+            
+            let schedule = trackerCoreData.schedule != nil ? trackerCoreData.schedule : nil
+            
+            if
+                let id = trackerCoreData.id,
+                let name = trackerCoreData.name,
+                let colorHexString = trackerCoreData.color,
+                let emoji = trackerCoreData.emoji
+            {
+                let tracker = Tracker(
+                    id: id,
+                    name: name,
+                    color: uiColorMarshalling.color(from: colorHexString),
+                    emoji: emoji,
+                    schedule: schedule?.components(separatedBy: " ") ?? [])
+                
+                trackerArray.append(tracker)
+            }
+        }
+        
+        return trackerArray
+    }
 }
+

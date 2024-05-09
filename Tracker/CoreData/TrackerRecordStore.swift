@@ -28,5 +28,9 @@ final class TrackerRecordStore {
         self.context = appDelegate.persistentContainer.viewContext
     }
     
+    func stroreTracerRecord(_ record: TrackerRecord){
+        
+    }
+    
     
 }

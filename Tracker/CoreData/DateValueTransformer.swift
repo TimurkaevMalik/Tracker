@@ -9,7 +9,7 @@ import UIKit
 import CoreData
 
 @objc
-final class ScheduleValueTransformer: ValueTransformer {
+final class DateValueTransformer: ValueTransformer {
     
     override class func transformedValueClass() -> AnyClass {
         return NSData.self
@@ -39,7 +39,7 @@ final class ScheduleValueTransformer: ValueTransformer {
     
     static func register() {
         ValueTransformer.setValueTransformer(
-            ScheduleValueTransformer(),
-            forName: NSValueTransformerName(rawValue: String(describing: ScheduleValueTransformer.self)))
+            DateValueTransformer(),
+            forName: NSValueTransformerName(rawValue: String(describing: DateValueTransformer.self)))
     }
 }

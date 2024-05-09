@@ -31,31 +31,31 @@ final class TrackerCategoryStore {
     
     func storeCategory(_ category: TrackerCategory) {
         
+        guard fetchCategory(with: category.titleOfCategory) == nil else {
+            return
+        }
+        
         guard let categoryEntityDescription = NSEntityDescription.entity(forEntityName: "TrackerCategoryCoreData", in: context ) else {
             return
         }
         
-        let TrackerCategoryCoreData = TrackerCategoryCoreData(entity: categoryEntityDescription, insertInto: context)
+        let trackerCategoryCoreData = TrackerCategoryCoreData(entity: categoryEntityDescription, insertInto: context)
         
-        TrackerCategoryCoreData.titleOfCategory = category.titleOfCategory
+        trackerCategoryCoreData.titleOfCategory = category.titleOfCategory
         
-        print(TrackerCategoryCoreData)
+        print(trackerCategoryCoreData)
         appDelegate.saveContext()
     }
     
-    func updateStoredCategory(_ category: TrackerCategory){
-        
-    }
     
-    
-    func fetchCategories() -> [TrackerCategoryCoreData]? {
+    func fetchAllCategories() -> [TrackerCategoryCoreData]? {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCategoryCoreData")
         
         do {
             
             let response = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData]
-            
+
             return response
         } catch {
             print(error.localizedDescription)
@@ -70,7 +70,7 @@ final class TrackerCategoryStore {
             guard let categories = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData] else {
                 return nil
             }
-             
+            print(categories.count)
             return categories.first(where: { category in
                 category.titleOfCategory == title
             })
@@ -78,5 +78,20 @@ final class TrackerCategoryStore {
             print(error.localizedDescription)
             return nil
         }
+    }
+    
+    func convertResponseToType( _ response: [TrackerCategoryCoreData]) -> [TrackerCategory] {
+        
+        var categoryArray: [TrackerCategory] = []
+        for categoryCoreData in response {
+            
+            if 
+               let title = categoryCoreData.titleOfCategory {
+                let category = TrackerCategory(titleOfCategory: title, trackersArray: [])
+                categoryArray.append(category)
+            }
+        }
+        
+        return categoryArray
     }
 }
