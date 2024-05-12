@@ -11,9 +11,9 @@ import CoreData
 final class TrackerStore {
     
     let context: NSManagedObjectContext
+    let uiColorMarshalling = UIColorMarshalling()
     private let trackerCategoryStore = TrackerCategoryStore()
     private let appDelegate: AppDelegate
-    private let uiColorMarshalling = UIColorMarshalling()
     
     convenience init(){
         
@@ -86,7 +86,11 @@ final class TrackerStore {
         }
     }
     
-    func convertResponseToType(_ response: [TrackerCoreData]) -> [Tracker] {
+    func deleteTracker(){
+        
+    }
+    
+    private func convertResponseToType(_ response: [TrackerCoreData]) -> [Tracker] {
         
         var trackerArray: [Tracker] = []
         

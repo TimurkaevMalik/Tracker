@@ -17,7 +17,6 @@ final class TrackerViewController: UIViewController {
     private lazy var searchController = UISearchController(searchResultsController: nil)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    private let uiColorMarshalling = UIColorMarshalling()
     private let trackerStore = TrackerStore()
     private let trackerCategoryStore = TrackerCategoryStore()
     private var categories: [TrackerCategory] = []
@@ -279,71 +278,7 @@ final class TrackerViewController: UIViewController {
         return false
     }
     
-    func updateCategoriesArray(_ categoriesCoreData: [TrackerCategoryCoreData], _ trackersCoreData: [TrackerCoreData]){
-        
-        
-        
-        for categoryCoreData in categoriesCoreData {
-            
-            self.trackers.removeAll()
-            
-            if let category: TrackerCategory = convertResponseToType(categoryCoreData) {
-                
-                for trackerCoreData in trackersCoreData {
-                    
-                    if category.titleOfCategory == trackerCoreData.trackerCategory?.titleOfCategory {
-                        
-                        if let tracker = convertResponseToType(trackerCoreData) {
-                            
-                            self.trackers.append(tracker)
-                        }
-                    }
-                }
-                categories.append(TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers))
-                print(categories)
-            }
-        }
-    }
-    
-    func convertResponseToType(_ trackerCoreData: TrackerCoreData) -> Tracker? {
-        
-        var tracker: Tracker
-        let schedule = trackerCoreData.schedule != nil ? trackerCoreData.schedule : nil
-        
-            if
-                let id = trackerCoreData.id,
-                let name = trackerCoreData.name,
-                let colorHexString = trackerCoreData.color,
-                let emoji = trackerCoreData.emoji
-            {
-                tracker = Tracker(
-                    id: id,
-                    name: name,
-                    color: uiColorMarshalling.color(from: colorHexString),
-                    emoji: emoji,
-                    schedule: schedule?.components(separatedBy: " ") ?? [])
-                
-                return tracker
-            }
-        
-        return nil
-    }
-    
-    func convertResponseToType( _ categoryCoreData: TrackerCategoryCoreData) -> TrackerCategory? {
-        
-        var category: TrackerCategory
 
-            if let title = categoryCoreData.titleOfCategory {
-                
-                category = TrackerCategory(titleOfCategory: title, trackersArray: [])
-                
-                return category
-            }
-        
-        return nil
-    }
-    
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -352,15 +287,10 @@ final class TrackerViewController: UIViewController {
         currentDate = datePicker.date
         configureTrackerViews()
         
-        guard
-            categories.isEmpty,
-            let trackers = trackerStore.fetchAllTrackers(),
-            let categories = trackerCategoryStore.fetchAllCategories()
-        else {
-            return
+        if categories.isEmpty {
+            categories = trackerStoreProvider?.updateCategoriesArray() ?? []
+            showVisibleTrackers(dateDescription: datePicker.date.description(with: .current))
         }
-        updateCategoriesArray(categories, trackers)
-        showVisibleTrackers(dateDescription: datePicker.date.description(with: .current))
     }
     
     
@@ -383,36 +313,8 @@ extension TrackerViewController: ChosenTrackerControllerDelegate {
         
         self.dismiss(animated: true)
         
-//        trackers.removeAll()
-//        
-//        var newCategorie: TrackerCategory
-//        
-//        if !categories.isEmpty {
-//            
-//            for index in 0..<categories[0].trackersArray.count {
-//                trackers.append(categories[0].trackersArray[index])
-//            }
-//            trackers.append(trackerCategory.trackersArray[0])
-//            
-//            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: trackers)
-//            
-//            categories[0] = newCategorie
-//        } else {
-//            
-//            trackers.append(trackerCategory.trackersArray[0])
-//            
-//            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: trackers)
-//            categories.append(newCategorie)
-//        }
-        
         trackerCategoryStore.storeCategory(trackerCategory)
         trackerStore.storeNewTracker(trackerCategory.trackersArray[0], for: trackerCategory.titleOfCategory)
-        
-//        guard let actualDate = currentDate?.description(with: .current) else {
-//            return
-//        }
-        
-//        showVisibleTrackers(dateDescription: actualDate)
     }
     
     func dismisTrackerTypeController() {
@@ -524,6 +426,8 @@ extension TrackerViewController: CollectionViewCellDelegate {
         if visibleTrackers[indexPath.section].trackersArray[indexPath.row].schedule.isEmpty {
             
             guard let bool = cell.shouldTapButton(cell, date: actualDate) else { return }
+            
+            ////trackerStore.deleteCell -> tracerStoreProvider.notifie
             
             closeCollectionCellAt(indexPath: indexPath, idOfCell: idOfCell)
         } else {
@@ -648,7 +552,7 @@ extension TrackerViewController: TrackerStoreProviderDelegate {
         trackers.removeAll()
         
         guard 
-            let convertedTracker = convertResponseToType(tracker),
+            let convertedTracker = trackerStoreProvider?.convertCoreDataToTracker(tracker),
             let title = tracker.trackerCategory?.titleOfCategory
         else {
             return
