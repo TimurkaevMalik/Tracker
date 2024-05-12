@@ -32,6 +32,8 @@ final class TrackerViewController: UIViewController {
     
     private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
     
+    private var trackerStoreProvider: TrackerStoreProvider?
+    
     private var dateFormatter: DateFormatter {
         
         let formatter = DateFormatter()
@@ -41,6 +43,7 @@ final class TrackerViewController: UIViewController {
         
         return formatter
     }
+
     
     private func configureTrackerButtonsViews() {
         
@@ -284,7 +287,7 @@ final class TrackerViewController: UIViewController {
             
             self.trackers.removeAll()
             
-            if var category: TrackerCategory = convertResponseToType(categoryCoreData) {
+            if let category: TrackerCategory = convertResponseToType(categoryCoreData) {
                 
                 for trackerCoreData in trackersCoreData {
                     
@@ -344,11 +347,11 @@ final class TrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        trackerStoreProvider = TrackerStoreProvider(delegate: self, trackerStore: trackerStore)
+        
         currentDate = datePicker.date
         configureTrackerViews()
         
-        
-
         guard
             categories.isEmpty,
             let trackers = trackerStore.fetchAllTrackers(),
@@ -380,45 +383,36 @@ extension TrackerViewController: ChosenTrackerControllerDelegate {
         
         self.dismiss(animated: true)
         
-        trackers.removeAll()
-        
-        var oldCount: Int
-        var newCount: Int
-        var newCategorie: TrackerCategory
-        
-        if !categories.isEmpty {
-            
-            oldCount = categories[0].trackersArray.count
-            
-            for index in 0..<categories[0].trackersArray.count {
-                trackers.append(categories[0].trackersArray[index])
-            }
-            trackers.append(trackerCategory.trackersArray[0])
-            
-            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: trackers)
-            
-            categories[0] = newCategorie
-            
-            newCount = categories[0].trackersArray.count
-        } else {
-            oldCount = 0
-            
-            trackers.append(trackerCategory.trackersArray[0])
-            
-            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: trackers)
-            categories.append(newCategorie)
-            
-            newCount = categories[0].trackersArray.count
-        }
+//        trackers.removeAll()
+//        
+//        var newCategorie: TrackerCategory
+//        
+//        if !categories.isEmpty {
+//            
+//            for index in 0..<categories[0].trackersArray.count {
+//                trackers.append(categories[0].trackersArray[index])
+//            }
+//            trackers.append(trackerCategory.trackersArray[0])
+//            
+//            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: trackers)
+//            
+//            categories[0] = newCategorie
+//        } else {
+//            
+//            trackers.append(trackerCategory.trackersArray[0])
+//            
+//            newCategorie = TrackerCategory(titleOfCategory: trackerCategory.titleOfCategory, trackersArray: trackers)
+//            categories.append(newCategorie)
+//        }
         
         trackerCategoryStore.storeCategory(trackerCategory)
         trackerStore.storeNewTracker(trackerCategory.trackersArray[0], for: trackerCategory.titleOfCategory)
         
-        guard let actualDate = currentDate?.description(with: .current) else {
-            return
-        }
+//        guard let actualDate = currentDate?.description(with: .current) else {
+//            return
+//        }
         
-        showVisibleTrackers(dateDescription: actualDate)
+//        showVisibleTrackers(dateDescription: actualDate)
     }
     
     func dismisTrackerTypeController() {
@@ -646,6 +640,48 @@ extension TrackerViewController: CollectionViewCellDelegate {
             }
         }
     }
+}
+
+extension TrackerViewController: TrackerStoreProviderDelegate {
+    func didAddTracker(_ tracker: TrackerCoreData) {
+        
+        trackers.removeAll()
+        
+        guard 
+            let convertedTracker = convertResponseToType(tracker),
+            let title = tracker.trackerCategory?.titleOfCategory
+        else {
+            return
+        }
+        
+        if categories.contains(where: { category in
+            category.titleOfCategory == title
+        }) {
+            for index in 0..<categories.count {
+                
+                let category = categories[index]
+                trackers = category.trackersArray
+                trackers.append(convertedTracker)
+                
+                if category.titleOfCategory == title {
+                    
+                    categories[index] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+                    print(categories)
+                }
+            }
+        } else {
+            
+            categories.append(TrackerCategory(titleOfCategory: title, trackersArray: [convertedTracker]))
+        }
+        
+        guard let actualDate = currentDate?.description(with: .current) else {
+            return
+        }
+        
+        showVisibleTrackers(dateDescription: actualDate)
+    }
+    
+    func didUpdate(_ update: TrackerCoreData) {}
 }
 
 extension TrackerViewController: UICollectionViewDelegate {

@@ -31,6 +31,4 @@ final class TrackerRecordStore {
     func stroreTracerRecord(_ record: TrackerRecord){
         
     }
-    
-    
 }

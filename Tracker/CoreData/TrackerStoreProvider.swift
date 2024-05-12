@@ -8,59 +8,64 @@
 import Foundation
 import CoreData
 
-protocol DataProviderdelegate: AnyObject {
+protocol TrackerStoreProviderDelegate: AnyObject {
     func didUpdate(_ update: TrackerCoreData)
+    func didAddTracker(_ tracker: TrackerCoreData)
 }
 
-final class FetchTrackerController: NSObject {
+final class TrackerStoreProvider: NSObject {
     
     enum FetchTrackerControllerError: Error {
         case failedToInitializeContext
     }
     
-    weak var delegate: DataProviderdelegate?
+    weak var delegate: TrackerStoreProviderDelegate?
     
     private let context: NSManagedObjectContext
     private let trackerStore: TrackerStore
     
-    private lazy var fectchedResultController: NSFetchedResultsController<TrackerCoreData> = {
+    private var fectchedResultController: NSFetchedResultsController<TrackerCoreData>?
+    
+    init(delegate: TrackerStoreProviderDelegate, trackerStore: TrackerStore) {
         
-        let sortDescription = NSSortDescriptor(key: "name", ascending: false)
+        self.delegate = delegate
+        self.context = trackerStore.context
+        self.trackerStore = trackerStore
+        super.init()
+        
+        let sortDescription = NSSortDescriptor(keyPath: \TrackerCoreData.name, ascending: true)
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         fetchRequest.sortDescriptors = [sortDescription]
         
-        let fetchResultsController = NSFetchedResultsController(
+        let controller = NSFetchedResultsController(
             fetchRequest: fetchRequest,
             managedObjectContext: context,
             sectionNameKeyPath: nil,
             cacheName: nil)
         
-        fetchResultsController.delegate = self
-        try? fetchResultsController.performFetch()
+        controller.delegate = self
+        self.fectchedResultController = controller
+        try? controller.performFetch()
         
-        return fetchResultsController
-    }()
-    
-    init(delegate: DataProviderdelegate, trackerStore: TrackerStore) {
-        
-        self.delegate = delegate
-        self.context = trackerStore.context
-        self.trackerStore = trackerStore
     }
 }
 
-extension FetchTrackerController: NSFetchedResultsControllerDelegate {
+extension TrackerStoreProvider: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        guard let tracker = anObject as? TrackerCoreData else {
+            return
+        }
         
         switch type {
             
         case .insert:
-            <#code#>
+            delegate?.didAddTracker(tracker)
         case .delete:
-            <#code#>
+            break
         case .update:
-            <#code#>
+            break
         default:
             break
         }

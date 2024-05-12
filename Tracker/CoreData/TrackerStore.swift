@@ -10,8 +10,8 @@ import CoreData
 
 final class TrackerStore {
     
+    let context: NSManagedObjectContext
     private let trackerCategoryStore = TrackerCategoryStore()
-    private let context: NSManagedObjectContext
     private let appDelegate: AppDelegate
     private let uiColorMarshalling = UIColorMarshalling()
     
@@ -51,7 +51,7 @@ final class TrackerStore {
                 
                 return element ?? ""
             }
-            var weekdays: String = schedule.joined(separator: " ")
+            let weekdays: String = schedule.joined(separator: " ")
             
             trackerCoreData.schedule = weekdays
             
@@ -70,18 +70,14 @@ final class TrackerStore {
     
     func fetchAllTrackers() -> [TrackerCoreData]? {
         
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCoreData")
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         
         do {
             
-            guard let response = try context.fetch(fetchRequest) as? [TrackerCoreData] else {
-                return nil
-            }
+            let response = try context.fetch(fetchRequest)
             
             print(response.count)
-            print(response.first?.name)
-            print(response.first?.trackerCategory)
-            print(response.first?.trackerCategory?.titleOfCategory)
+            print(response.first?.trackerCategory?.titleOfCategory as Any)
             
             return response
         } catch {

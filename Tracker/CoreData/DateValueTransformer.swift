@@ -21,7 +21,7 @@ final class DateValueTransformer: ValueTransformer {
     
     override func transformedValue(_ value: Any?) -> Any? {
         
-        guard let value = value as? [String] else {
+        guard let value = value as? [Date] else {
             return nil
         }
         
@@ -34,7 +34,7 @@ final class DateValueTransformer: ValueTransformer {
             return nil
         }
         
-        return try? JSONDecoder().decode([String].self, from: data as Data)
+        return try? JSONDecoder().decode([Date].self, from: data as Data)
     }
     
     static func register() {

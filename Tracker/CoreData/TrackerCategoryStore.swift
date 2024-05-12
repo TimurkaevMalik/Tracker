@@ -64,13 +64,13 @@ final class TrackerCategoryStore {
     }
     
     func fetchCategory(with title: String) -> TrackerCategoryCoreData? {
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCategoryCoreData")
+        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
         
         do {
-            guard let categories = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData] else {
-                return nil
-            }
+            let categories = try context.fetch(fetchRequest)
+            
             print(categories.count)
+            
             return categories.first(where: { category in
                 category.titleOfCategory == title
             })
