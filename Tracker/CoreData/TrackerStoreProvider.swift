@@ -10,7 +10,8 @@ import CoreData
 
 protocol TrackerStoreProviderDelegate: AnyObject {
     func didUpdate(_ update: TrackerCoreData)
-    func didAddTracker(_ tracker: TrackerCoreData)
+    func didDelete(tracker: TrackerCoreData)
+    func didAdd(tracker: TrackerCoreData)
 }
 
 final class TrackerStoreProvider: NSObject {
@@ -85,6 +86,10 @@ final class TrackerStoreProvider: NSObject {
         return categories
     }
     
+    func deleteTrackerWithId(id: UUID){
+        trackerStore.deleteTrackerWith(id: id)
+    }
+    
     func convertCoreDataToTracker(_ trackerCoreData: TrackerCoreData) -> Tracker? {
         
         var tracker: Tracker
@@ -135,9 +140,12 @@ extension TrackerStoreProvider: NSFetchedResultsControllerDelegate {
         switch type {
             
         case .insert:
-            delegate?.didAddTracker(tracker)
+            delegate?.didAdd(tracker: tracker)
         case .delete:
-            break
+            print(indexPath)
+            print(tracker)
+            delegate?.didDelete(tracker: tracker)
+            
         case .update:
             break
         default:

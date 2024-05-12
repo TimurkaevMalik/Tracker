@@ -86,8 +86,36 @@ final class TrackerStore {
         }
     }
     
-    func deleteTracker(){
+    func deleteAllTrackers() {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
         
+        do {
+            
+            let trackers = try context.fetch(fetchRequest)
+            trackers.forEach({ context.delete($0) })
+            
+            appDelegate.saveContext()
+            
+        } catch let error as NSError {
+            print(error)
+        }
+    }
+    
+    func deleteTrackerWith(id: UUID){
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+
+        do {
+            
+            let trackers = try context.fetch(fetchRequest)
+            
+            guard let tracker = trackers.first(where: { $0.id == id }) else { return }
+            
+            context.delete(tracker)
+            appDelegate.saveContext()
+            
+        } catch let error as NSError {
+            
+        }
     }
     
     private func convertResponseToType(_ response: [TrackerCoreData]) -> [Tracker] {

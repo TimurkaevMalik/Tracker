@@ -42,7 +42,7 @@ final class TrackerViewController: UIViewController {
         
         return formatter
     }
-
+    
     
     private func configureTrackerButtonsViews() {
         
@@ -158,6 +158,7 @@ final class TrackerViewController: UIViewController {
         let actualTracker = visibleTrackers[indexPath.section].trackersArray[indexPath.row]
         
         cell.delegate = self
+        cell.idOfCell = actualTracker.id
         cell.emoji.text = actualTracker.emoji
         cell.nameLable.text = actualTracker.name
         cell.view.backgroundColor = actualTracker.color
@@ -278,7 +279,7 @@ final class TrackerViewController: UIViewController {
         return false
     }
     
-
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -426,10 +427,8 @@ extension TrackerViewController: CollectionViewCellDelegate {
         if visibleTrackers[indexPath.section].trackersArray[indexPath.row].schedule.isEmpty {
             
             guard let bool = cell.shouldTapButton(cell, date: actualDate) else { return }
-            
-            ////trackerStore.deleteCell -> tracerStoreProvider.notifie
-            
-            closeCollectionCellAt(indexPath: indexPath, idOfCell: idOfCell)
+            print(indexPath)
+            trackerStoreProvider?.deleteTrackerWithId(id: idOfCell)
         } else {
             
             guard let bool = cell.shouldTapButton(cell, date: actualDate) else { return }
@@ -439,7 +438,17 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
     }
     
-    private func closeCollectionCellAt(indexPath: IndexPath, idOfCell: UUID){
+    private func closeCollectionCellAt(idOfCell: UUID){
+        
+        trackers.removeAll()
+        
+        let cells = collectionView.visibleCells as? [CollectionViewCell]
+        guard 
+            let cell = cells?.first(where: { $0.idOfCell == idOfCell }),
+            let indexPath = collectionView.indexPath(for: cell)
+        else { return }
+        print(indexPath)
+        
         
         let cattegorie = categories[indexPath.section]
         
@@ -452,13 +461,12 @@ extension TrackerViewController: CollectionViewCellDelegate {
                     trackers.append(tracker)
                 }
             }
-            categories.remove(at: indexPath.section)
+//            categories.remove(at: indexPath.section)
             
-            categories.append(TrackerCategory(titleOfCategory: cattegorie.titleOfCategory, trackersArray: trackers))
+            categories[indexPath.section] = TrackerCategory(titleOfCategory: cattegorie.titleOfCategory, trackersArray: trackers)
         } else {
             categories.remove(at: indexPath.section)
         }
-        
         
         checkForVisibleTrackersAt(dateDescription: datePicker.date.description(with: .current))
         
@@ -547,11 +555,22 @@ extension TrackerViewController: CollectionViewCellDelegate {
 }
 
 extension TrackerViewController: TrackerStoreProviderDelegate {
-    func didAddTracker(_ tracker: TrackerCoreData) {
+    func didDelete(tracker: TrackerCoreData) {
+        
+        guard
+            let id = tracker.id
+        else {
+            return
+        }
+        
+        closeCollectionCellAt(idOfCell: id)
+    }
+    
+    func didAdd(tracker: TrackerCoreData) {
         
         trackers.removeAll()
         
-        guard 
+        guard
             let convertedTracker = trackerStoreProvider?.convertCoreDataToTracker(tracker),
             let title = tracker.trackerCategory?.titleOfCategory
         else {
