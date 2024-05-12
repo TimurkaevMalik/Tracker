@@ -6,6 +6,7 @@
 //
 
 import UIKit
+import CoreData
 
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -13,6 +14,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
+        
+        DateValueTransformer.register()
         
         return true
     }
@@ -29,5 +32,35 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     }
     
     func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {}
+    
+    lazy var persistentContainer: NSPersistentContainer = {
+        
+        let container = NSPersistentContainer(name: "CoreDataModel")
+        
+        container.loadPersistentStores { description, error in
+            
+            if let error = error as NSError? {
+                
+                print("catched error while loading Persistent Stores. Description: \(error.localizedDescription)")
+            }
+        }
+        
+        return container
+    }()
+    
+    func saveContext(){
+        
+        let context = persistentContainer.viewContext
+        
+        if context.hasChanges {
+            
+            do {
+                try context.save()
+            } catch {
+                print(error.localizedDescription)
+                context.rollback()
+            }
+        }
+    }
 }
 

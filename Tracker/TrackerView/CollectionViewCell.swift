@@ -123,7 +123,7 @@ final class CollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func shouldAddDay(_ cell: CollectionViewCell, date selectedDate: Date) -> Bool? {
+    func shouldTapButton(_ cell: CollectionViewCell, date selectedDate: Date) -> Bool? {
         
         guard
             var count = cell.count,
