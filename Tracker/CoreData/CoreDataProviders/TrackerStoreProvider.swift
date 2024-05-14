@@ -23,15 +23,15 @@ final class TrackerStoreProvider: NSObject {
     weak var delegate: TrackerStoreProviderDelegate?
     
     private let context: NSManagedObjectContext
-    private let trackerStore: TrackerStore
+    private let managedObject: TrackerMangedObjectProtocol
     
     private var fectchedResultController: NSFetchedResultsController<TrackerCoreData>?
     
-    init(delegate: TrackerStoreProviderDelegate, trackerStore: TrackerStore) {
+    init(delegate: TrackerStoreProviderDelegate) {
         
         self.delegate = delegate
-        self.context = trackerStore.context
-        self.trackerStore = trackerStore
+        self.managedObject = TrackerStore()
+        self.context = managedObject.context
         super.init()
         
         let sortDescription = NSSortDescriptor(keyPath: \TrackerCoreData.name, ascending: true)
@@ -52,7 +52,7 @@ final class TrackerStoreProvider: NSObject {
     
     func updateCategoriesArray() -> [TrackerCategory]? {
         
-        guard let trackersCoreData = trackerStore.fetchAllTrackers() else {
+        guard let trackersCoreData = managedObject.fetchAllTrackers() else {
             return nil
         }
         
@@ -87,7 +87,7 @@ final class TrackerStoreProvider: NSObject {
     }
     
     func deleteTrackerWithId(id: UUID){
-        trackerStore.deleteTrackerWith(id: id)
+        managedObject.deleteTrackerWith(id: id)
     }
     
     func convertCoreDataToTracker(_ trackerCoreData: TrackerCoreData) -> Tracker? {
@@ -104,7 +104,7 @@ final class TrackerStoreProvider: NSObject {
             tracker = Tracker(
                 id: id,
                 name: name,
-                color:trackerStore.uiColorMarshalling.color(from: colorHexString),
+                color: managedObject.uiColorMarshalling.color(from: colorHexString),
                 emoji: emoji,
                 schedule: schedule?.components(separatedBy: " ") ?? [])
             

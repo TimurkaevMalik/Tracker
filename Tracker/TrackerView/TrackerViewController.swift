@@ -32,7 +32,8 @@ final class TrackerViewController: UIViewController {
     
     private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
     
-    private var trackerStoreProvider: TrackerStoreProvider?
+    private lazy var trackerStoreProvider = TrackerStoreProvider(delegate: self)
+    private lazy var recordStoreProvider = TrackerRecordStoreProvider(delegate: self)
     
     private var dateFormatter: DateFormatter {
         
@@ -43,7 +44,7 @@ final class TrackerViewController: UIViewController {
         
         return formatter
     }
-    
+
     
     private func configureTrackerButtonsViews() {
         
@@ -284,8 +285,6 @@ final class TrackerViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        trackerStoreProvider = TrackerStoreProvider(delegate: self, trackerStore: trackerStore)
-        
         currentDate = datePicker.date
         configureTrackerViews()
         
@@ -294,11 +293,11 @@ final class TrackerViewController: UIViewController {
         let date2 = Date()
 //        trackerRecordStore.stroreRecord(TrackerRecord(id: UUID(), date: [date1, date2]))
         if completedTrackers.isEmpty {
-            completedTrackers = trackerRecordStore.fetchAllRecords()
+            completedTrackers = recordStoreProvider.fetchAllRecords()
         }
         
         if categories.isEmpty {
-            categories = trackerStoreProvider?.updateCategoriesArray() ?? []
+            categories = trackerStoreProvider.updateCategoriesArray() ?? []
             showVisibleTrackers(dateDescription: datePicker.date.description(with: .current))
         }
     }
@@ -437,7 +436,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             guard let bool = cell.shouldTapButton(cell, date: actualDate) else { return }
             
-            trackerStoreProvider?.deleteTrackerWithId(id: idOfCell)
+            trackerStoreProvider.deleteTrackerWithId(id: idOfCell)
         } else {
             
             guard let bool = cell.shouldTapButton(cell, date: actualDate) else { return }
@@ -522,14 +521,14 @@ extension TrackerViewController: CollectionViewCellDelegate {
 //                        completedTrackers.remove(at: index)
                         completedTrackers[index] = TrackerRecord(id: id, date: records)
                         
-                        trackerRecordStore.updateRecord(TrackerRecord(id: id, date: records))
+                        recordStoreProvider.updateRecord(TrackerRecord(id: id, date: records))
                         break
                     }
                 }
             } else {
                 
                 completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
-                trackerRecordStore.storeRecord(TrackerRecord(id: id, date: [actualDate]))
+                recordStoreProvider.storeRecord(TrackerRecord(id: id, date: [actualDate]))
             }
 //        } else {
 //            completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
@@ -557,11 +556,12 @@ extension TrackerViewController: CollectionViewCellDelegate {
                     
 //                    completedTrackers.remove(at: index)
                     completedTrackers[index] = TrackerRecord(id: id, date: records)
-                    trackerRecordStore.deleteRecord(TrackerRecord(id: id, date: records))
+                    recordStoreProvider.deleteRecord(of: TrackerRecord(id: id, date: records))
                 } else {
                     
                     completedTrackers.remove(at: index)
-                    trackerRecordStore.deleteRecord(TrackerRecord(id: id, date: records))
+                    
+                    recordStoreProvider.deleteRecord(of: TrackerRecord(id: id, date: []))
                 }
             }
         }
@@ -585,7 +585,7 @@ extension TrackerViewController: TrackerStoreProviderDelegate {
         trackers.removeAll()
         
         guard
-            let convertedTracker = trackerStoreProvider?.convertCoreDataToTracker(tracker),
+            let convertedTracker = trackerStoreProvider.convertCoreDataToTracker(tracker),
             let title = tracker.trackerCategory?.titleOfCategory
         else {
             return
@@ -619,6 +619,20 @@ extension TrackerViewController: TrackerStoreProviderDelegate {
     }
     
     func didUpdate(_ update: TrackerCoreData) {}
+}
+
+extension TrackerViewController: RecordStoreProviderDelegate {
+    func didAdd(tracker: TrackerRecordCoreData) {
+        
+    }
+    
+    func didDelete(tracker: TrackerRecordCoreData) {
+        
+    }
+    
+    func didUpdate(_ update: TrackerRecordCoreData) {
+        
+    }
 }
 
 extension TrackerViewController: UICollectionViewDelegate {

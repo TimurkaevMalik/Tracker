@@ -8,10 +8,21 @@
 import UIKit
 import CoreData
 
+protocol TrackerMangedObjectProtocol {
+    var context: NSManagedObjectContext { get }
+    var uiColorMarshalling: UIColorMarshalling { get }
+    
+    func storeNewTracker(_ tracker: Tracker, for categoryTitle: String)
+    func fetchAllTrackers() -> [TrackerCoreData]?
+    func deleteAllTrackers()
+    func deleteTrackerWith(id: UUID)
+
+}
+
 final class TrackerStore {
     
-    let context: NSManagedObjectContext
-    let uiColorMarshalling = UIColorMarshalling()
+    internal let context: NSManagedObjectContext
+    internal let uiColorMarshalling = UIColorMarshalling()
     private let trackerCategoryStore = TrackerCategoryStore()
     private let appDelegate: AppDelegate
     
@@ -29,8 +40,9 @@ final class TrackerStore {
         self.appDelegate = appDelegate
         self.context = appDelegate.persistentContainer.viewContext
     }
+}
     
-    
+extension TrackerStore: TrackerMangedObjectProtocol {
     
     func storeNewTracker(_ tracker: Tracker, for categoryTitle: String) {
         
