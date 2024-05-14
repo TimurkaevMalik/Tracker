@@ -56,8 +56,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             
             do {
                 try context.save()
-            } catch {
-                print(error.localizedDescription)
+            } catch let error as NSError {
+                print(error)
                 context.rollback()
             }
         }

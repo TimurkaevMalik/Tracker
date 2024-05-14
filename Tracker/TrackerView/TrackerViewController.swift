@@ -17,8 +17,9 @@ final class TrackerViewController: UIViewController {
     private lazy var searchController = UISearchController(searchResultsController: nil)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    private let trackerStore = TrackerStore()
-    private let trackerCategoryStore = TrackerCategoryStore()
+    let trackerRecordStore = TrackerRecordStore()
+    let trackerStore = TrackerStore()
+    let trackerCategoryStore = TrackerCategoryStore()
     private var categories: [TrackerCategory] = []
     private var visibleTrackers: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
@@ -288,6 +289,14 @@ final class TrackerViewController: UIViewController {
         currentDate = datePicker.date
         configureTrackerViews()
         
+        let date1 = Date()
+        sleep(2)
+        let date2 = Date()
+//        trackerRecordStore.stroreRecord(TrackerRecord(id: UUID(), date: [date1, date2]))
+        if completedTrackers.isEmpty {
+            completedTrackers = trackerRecordStore.fetchAllRecords()
+        }
+        
         if categories.isEmpty {
             categories = trackerStoreProvider?.updateCategoriesArray() ?? []
             showVisibleTrackers(dateDescription: datePicker.date.description(with: .current))
@@ -427,7 +436,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         if visibleTrackers[indexPath.section].trackersArray[indexPath.row].schedule.isEmpty {
             
             guard let bool = cell.shouldTapButton(cell, date: actualDate) else { return }
-            print(indexPath)
+            
             trackerStoreProvider?.deleteTrackerWithId(id: idOfCell)
         } else {
             
@@ -461,7 +470,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
                     trackers.append(tracker)
                 }
             }
-//            categories.remove(at: indexPath.section)
             
             categories[indexPath.section] = TrackerCategory(titleOfCategory: cattegorie.titleOfCategory, trackersArray: trackers)
         } else {
@@ -499,8 +507,8 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     private func addRecordDate(id: UUID, actualDate: Date){
         
-        if !completedTrackers.isEmpty {
-            
+//        if !completedTrackers.isEmpty {
+//            
             if completedTrackers.contains(where: { element in
                 element.id == id
             }) {
@@ -511,18 +519,22 @@ extension TrackerViewController: CollectionViewCellDelegate {
                         records = completedTrackers[index].date
                         records.append(actualDate)
                         
-                        completedTrackers.remove(at: index)
-                        completedTrackers.append(TrackerRecord(id: id, date: records))
+//                        completedTrackers.remove(at: index)
+                        completedTrackers[index] = TrackerRecord(id: id, date: records)
+                        
+                        trackerRecordStore.updateRecord(TrackerRecord(id: id, date: records))
                         break
                     }
                 }
             } else {
                 
                 completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
+                trackerRecordStore.shouldUpdateOrStore(record: TrackerRecord(id: id, date: [actualDate]))
             }
-        } else {
-            completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
-        }
+//        } else {
+//            completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
+//            trackerRecordStore.stroreRecord(TrackerRecord(id: id, date: [actualDate]))
+//        }
     }
     
     private func removeRecordDate(id: UUID, actualDate: Date){
