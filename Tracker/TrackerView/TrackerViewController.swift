@@ -288,10 +288,6 @@ final class TrackerViewController: UIViewController {
         currentDate = datePicker.date
         configureTrackerViews()
         
-        let date1 = Date()
-        sleep(2)
-        let date2 = Date()
-//        trackerRecordStore.stroreRecord(TrackerRecord(id: UUID(), date: [date1, date2]))
         if completedTrackers.isEmpty {
             completedTrackers = recordStoreProvider.fetchAllRecords()
         }
@@ -508,26 +504,29 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
 //        if !completedTrackers.isEmpty {
 //            
-            if completedTrackers.contains(where: { element in
+            if var dates = completedTrackers.first(where: { $0.id == id })?.date
+                /*completedTrackers.contains(where: { element in
                 element.id == id
-            }) {
+                 })*/{
                 
-                for index in 0..<completedTrackers.count {
-                    if completedTrackers[index].id == id {
-                        
-                        records = completedTrackers[index].date
-                        records.append(actualDate)
-                        
-//                        completedTrackers.remove(at: index)
-                        completedTrackers[index] = TrackerRecord(id: id, date: records)
-                        
-                        recordStoreProvider.updateRecord(TrackerRecord(id: id, date: records))
-                        break
-                    }
-                }
-            } else {
+                dates.append(actualDate)
+                recordStoreProvider.updateRecord(TrackerRecord(id: id, date: dates))
+//                for index in 0..<completedTrackers.count {
+//                    if completedTrackers[index].id == id {
+//                        
+//                        records = completedTrackers[index].date
+//                        records.append(actualDate)
+//                        
+////                        completedTrackers.remove(at: index)
+//                        completedTrackers[index] = TrackerRecord(id: id, date: records)
+//                        
+//                        recordStoreProvider.updateRecord(TrackerRecord(id: id, date: records))
+//                        break
+//                    }
+//                }
+                    } else {
                 
-                completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
+//                completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
                 recordStoreProvider.storeRecord(TrackerRecord(id: id, date: [actualDate]))
             }
 //        } else {
@@ -569,38 +568,25 @@ extension TrackerViewController: CollectionViewCellDelegate {
 }
 
 extension TrackerViewController: TrackerStoreProviderDelegate {
-    func didDelete(tracker: TrackerCoreData) {
+    
+    func didAdd(tracker: Tracker, with categoryTitle: String) {
         
-        guard
-            let id = tracker.id
-        else {
+        guard let actualDate = currentDate?.description(with: .current) else {
             return
         }
-        
-        closeCollectionCellAt(idOfCell: id)
-    }
-    
-    func didAdd(tracker: TrackerCoreData) {
         
         trackers.removeAll()
         
-        guard
-            let convertedTracker = trackerStoreProvider.convertCoreDataToTracker(tracker),
-            let title = tracker.trackerCategory?.titleOfCategory
-        else {
-            return
-        }
-        
         if categories.contains(where: { category in
-            category.titleOfCategory == title
+            category.titleOfCategory == categoryTitle
         }) {
             for index in 0..<categories.count {
                 
                 let category = categories[index]
                 trackers = category.trackersArray
-                trackers.append(convertedTracker)
+                trackers.append(tracker)
                 
-                if category.titleOfCategory == title {
+                if category.titleOfCategory == categoryTitle {
                     
                     categories[index] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
                     print(categories)
@@ -608,40 +594,52 @@ extension TrackerViewController: TrackerStoreProviderDelegate {
             }
         } else {
             
-            categories.append(TrackerCategory(titleOfCategory: title, trackersArray: [convertedTracker]))
-        }
-        
-        guard let actualDate = currentDate?.description(with: .current) else {
-            return
+            categories.append(TrackerCategory(titleOfCategory: categoryTitle, trackersArray: [tracker]))
         }
         
         showVisibleTrackers(dateDescription: actualDate)
     }
     
-    func didUpdate(_ update: TrackerCoreData) {}
+    func didDelete(tracker: Tracker) {
+        
+        closeCollectionCellAt(idOfCell: tracker.id)
+    }
+    
+    func didUpdate(tracker: Tracker) {}
 }
 
 extension TrackerViewController: RecordStoreProviderDelegate {
-    func didAdd(tracker: TrackerRecordCoreData) {
+    func didAdd(record: TrackerRecord) {
+        
+        completedTrackers.append(record)
+        print(completedTrackers)
+    }
+    
+    func didDelete(record: TrackerRecord) {
         
     }
     
-    func didDelete(tracker: TrackerRecordCoreData) {
+    func didUpdate(record: TrackerRecord) {
         
+        for index in 0..<completedTrackers.count {
+            
+            if completedTrackers[index].id == record.id {
+                
+                completedTrackers[index] = record
+                print(completedTrackers)
+                break
+            }
+        }
     }
-    
-    func didUpdate(_ update: TrackerRecordCoreData) {
-        
-    }
-}
-
-extension TrackerViewController: UICollectionViewDelegate {
-    
 }
 
 extension TrackerViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController){}
+}
+
+extension TrackerViewController: UICollectionViewDelegate {
+    
 }
 
 extension TrackerViewController: UISearchBarDelegate {

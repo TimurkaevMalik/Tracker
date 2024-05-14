@@ -9,9 +9,9 @@ import Foundation
 import CoreData
 
 protocol TrackerStoreProviderDelegate: AnyObject {
-    func didUpdate(_ update: TrackerCoreData)
-    func didDelete(tracker: TrackerCoreData)
-    func didAdd(tracker: TrackerCoreData)
+    func didUpdate(tracker: Tracker)
+    func didDelete(tracker: Tracker)
+    func didAdd(tracker: Tracker, with categoryTitle: String)
 }
 
 final class TrackerStoreProvider: NSObject {
@@ -133,14 +133,17 @@ extension TrackerStoreProvider: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        guard let tracker = anObject as? TrackerCoreData else {
+        guard 
+            let trackerCoreData = anObject as? TrackerCoreData,
+            let title = trackerCoreData.trackerCategory?.titleOfCategory,
+            let tracker = convertCoreDataToTracker(trackerCoreData) else {
             return
         }
         
         switch type {
             
         case .insert:
-            delegate?.didAdd(tracker: tracker)
+            delegate?.didAdd(tracker: tracker, with: title)
         case .delete:
             print(indexPath)
             print(tracker)
