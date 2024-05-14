@@ -12,6 +12,7 @@ final class CollectionViewCell: UICollectionViewCell {
     
     var delegate: CollectionViewCellDelegate?
     
+    var idOfCell: UUID?
     let view = UIView()
     let nameLable = UILabel()
     let emoji = UILabel()

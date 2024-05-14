@@ -9,8 +9,9 @@ import Foundation
 import CoreData
 
 protocol TrackerStoreProviderDelegate: AnyObject {
-    func didUpdate(_ update: TrackerCoreData)
-    func didAddTracker(_ tracker: TrackerCoreData)
+    func didUpdate(tracker: Tracker)
+    func didDelete(tracker: Tracker)
+    func didAdd(tracker: Tracker, with categoryTitle: String)
 }
 
 final class TrackerStoreProvider: NSObject {
@@ -22,15 +23,15 @@ final class TrackerStoreProvider: NSObject {
     weak var delegate: TrackerStoreProviderDelegate?
     
     private let context: NSManagedObjectContext
-    private let trackerStore: TrackerStore
+    private let managedObject: TrackerMangedObjectProtocol
     
     private var fectchedResultController: NSFetchedResultsController<TrackerCoreData>?
     
-    init(delegate: TrackerStoreProviderDelegate, trackerStore: TrackerStore) {
+    init(delegate: TrackerStoreProviderDelegate) {
         
         self.delegate = delegate
-        self.context = trackerStore.context
-        self.trackerStore = trackerStore
+        self.managedObject = TrackerStore()
+        self.context = managedObject.context
         super.init()
         
         let sortDescription = NSSortDescriptor(keyPath: \TrackerCoreData.name, ascending: true)
@@ -51,7 +52,7 @@ final class TrackerStoreProvider: NSObject {
     
     func updateCategoriesArray() -> [TrackerCategory]? {
         
-        guard let trackersCoreData = trackerStore.fetchAllTrackers() else {
+        guard let trackersCoreData = managedObject.fetchAllTrackers() else {
             return nil
         }
         
@@ -85,6 +86,10 @@ final class TrackerStoreProvider: NSObject {
         return categories
     }
     
+    func deleteTrackerWithId(id: UUID){
+        managedObject.deleteTrackerWith(id: id)
+    }
+    
     func convertCoreDataToTracker(_ trackerCoreData: TrackerCoreData) -> Tracker? {
         
         var tracker: Tracker
@@ -99,7 +104,7 @@ final class TrackerStoreProvider: NSObject {
             tracker = Tracker(
                 id: id,
                 name: name,
-                color:trackerStore.uiColorMarshalling.color(from: colorHexString),
+                color: managedObject.uiColorMarshalling.color(from: colorHexString),
                 emoji: emoji,
                 schedule: schedule?.components(separatedBy: " ") ?? [])
             
@@ -128,16 +133,22 @@ extension TrackerStoreProvider: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        guard let tracker = anObject as? TrackerCoreData else {
+        guard
+            let trackerCoreData = anObject as? TrackerCoreData,
+            let tracker = convertCoreDataToTracker(trackerCoreData) else {
             return
         }
         
         switch type {
             
         case .insert:
-            delegate?.didAddTracker(tracker)
+            if let title = trackerCoreData.trackerCategory?.titleOfCategory {
+                delegate?.didAdd(tracker: tracker, with: title)
+            }
+            
         case .delete:
-            break
+            delegate?.didDelete(tracker: tracker)
+            
         case .update:
             break
         default:

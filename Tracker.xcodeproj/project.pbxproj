@@ -37,6 +37,7 @@
 		BCC82EE62BBEE8710042D467 /* SceneDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCC82EE52BBEE8710042D467 /* SceneDelegate.swift */; };
 		BCC82EED2BBEE8720042D467 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = BCC82EEC2BBEE8720042D467 /* Assets.xcassets */; };
 		BCC82EF02BBEE8720042D467 /* Base in Resources */ = {isa = PBXBuildFile; fileRef = BCC82EEF2BBEE8720042D467 /* Base */; };
+		BCE64D2E2BF3A8F9005754CC /* TrackerRecordStoreProvider.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCE64D2D2BF3A8F9005754CC /* TrackerRecordStoreProvider.swift */; };
 		BCF6219C2BBF4561001DE986 /* TabBarControler.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF6219B2BBF4561001DE986 /* TabBarControler.swift */; };
 		BCF6219E2BBF4595001DE986 /* TrackerViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF6219D2BBF4595001DE986 /* TrackerViewController.swift */; };
 		BCF621A02BBF45A8001DE986 /* StatisticViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCF6219F2BBF45A8001DE986 /* StatisticViewController.swift */; };
@@ -75,6 +76,7 @@
 		BCC82EEC2BBEE8720042D467 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		BCC82EEF2BBEE8720042D467 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		BCC82EF12BBEE8720042D467 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		BCE64D2D2BF3A8F9005754CC /* TrackerRecordStoreProvider.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerRecordStoreProvider.swift; sourceTree = "<group>"; };
 		BCF6219B2BBF4561001DE986 /* TabBarControler.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarControler.swift; sourceTree = "<group>"; };
 		BCF6219D2BBF4595001DE986 /* TrackerViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerViewController.swift; sourceTree = "<group>"; };
 		BCF6219F2BBF45A8001DE986 /* StatisticViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticViewController.swift; sourceTree = "<group>"; };
@@ -194,6 +196,7 @@
 				BC2D1FB72BE970C500609ECF /* TrackerRecordStore.swift */,
 				BC807F352BEA23C0008218C8 /* DateValueTransformer.swift */,
 				BCA8F8CE2BF13E4600E93BE7 /* TrackerStoreProvider.swift */,
+				BCE64D2D2BF3A8F9005754CC /* TrackerRecordStoreProvider.swift */,
 			);
 			path = CoreData;
 			sourceTree = "<group>";
@@ -326,6 +329,7 @@
 				BC2D1FB82BE970C500609ECF /* TrackerRecordStore.swift in Sources */,
 				BC2B8CD22BD2F0C60098D664 /* CategoryOfTracker.swift in Sources */,
 				BC2D1FBA2BE9768700609ECF /* UIColorMarshalling.swift in Sources */,
+				BCE64D2E2BF3A8F9005754CC /* TrackerRecordStoreProvider.swift in Sources */,
 				BC70457E2BCC3B9F002F8F12 /* ChosenTrackerController.swift in Sources */,
 				BC8C8A0E2BD9A70A00AB04EC /* DateFormatManager.swift in Sources */,
 				BC2D1FB42BE970AC00609ECF /* TrackerStore.swift in Sources */,
