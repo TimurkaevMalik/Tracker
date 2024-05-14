@@ -529,7 +529,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
             } else {
                 
                 completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
-                trackerRecordStore.shouldUpdateOrStore(record: TrackerRecord(id: id, date: [actualDate]))
+                trackerRecordStore.storeRecord(TrackerRecord(id: id, date: [actualDate]))
             }
 //        } else {
 //            completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
@@ -555,11 +555,13 @@ extension TrackerViewController: CollectionViewCellDelegate {
                         }
                     }
                     
-                    completedTrackers.remove(at: index)
-                    completedTrackers.append(TrackerRecord(id: id, date: records))
+//                    completedTrackers.remove(at: index)
+                    completedTrackers[index] = TrackerRecord(id: id, date: records)
+                    trackerRecordStore.deleteRecord(TrackerRecord(id: id, date: records))
                 } else {
                     
                     completedTrackers.remove(at: index)
+                    trackerRecordStore.deleteRecord(TrackerRecord(id: id, date: records))
                 }
             }
         }

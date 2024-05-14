@@ -96,6 +96,38 @@ final class TrackerRecordStore {
         appDelegate.saveContext()
     }
     
+    func deleteRecord(_ record: TrackerRecord) {
+        
+        guard let recordCoreData = fetchRecordWithCoreData(id: record.id) else { return }
+        
+        let dates = getDateArrayFromStrings(of: recordCoreData)
+        let datesString = record.date.map({ "\($0)"})
+        
+        if dates.count != 1 {
+            recordCoreData.datesString = datesString.joined(separator: ",")
+        } else {
+            context.delete(recordCoreData)
+        }
+        
+        appDelegate.saveContext()
+    }
+    
+    func getDateArrayFromStrings(of record: TrackerRecordCoreData) -> [Date] {
+        
+        var dates: [Date] = []
+        if  let datesString = record.datesString?.components(separatedBy: ",") {
+            print(datesString)
+            for dateString in datesString {
+                
+                if let date = dateFormatter.date(from: dateString) {
+                    print(date)
+                    dates.append(date)
+                }
+            }
+            
+        }
+        return dates
+    }
     func fetchAllRecords() -> [TrackerRecord] {
         let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: recordName)
         
@@ -106,22 +138,14 @@ final class TrackerRecordStore {
             var convertedRecords: [TrackerRecord] = []
             
             for record in records {
+            
                 if let id = record.id {
-                    var dates: [Date] = []
                     
-                    if  let datesString = record.datesString?.components(separatedBy: ",") {
-                        print(datesString)
-                        for dateString in datesString {
-                            
-                            if let date = dateFormatter.date(from: dateString) {
-                                print(date)
-                                dates.append(date)
-                            }
-                        }
-                    }
+                    var dates: [Date] = getDateArrayFromStrings(of: record)
                     convertedRecords.append(TrackerRecord(id: id, date: dates))
+                    }
                 }
-            }
+            
             
             print(convertedRecords)
             
