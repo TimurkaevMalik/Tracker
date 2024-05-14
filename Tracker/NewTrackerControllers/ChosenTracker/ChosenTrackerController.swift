@@ -21,7 +21,7 @@ class ChosenTrackerController: UIViewController {
     private let saveButton = UIButton()
     private let cancelButton = UIButton()
     private let buttonsContainer = UIView()
-
+    
     private let scrollView = UIScrollView()
     private let scrollContentView = UIView()
     
@@ -50,14 +50,6 @@ class ChosenTrackerController: UIViewController {
     private let emojisArray: [String] = ["🙂", "😻", "🐶", "🌺", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let colorsArray: [UIColor] = [.red, .orange, .blue, .purple, .green, .ypCyan, .ypLightPink, .ypMediumLightBlue, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypBlue, .ypDarkViolet, .ypMediumDarkViolet, .violet, .ypMediumLightGreen]
     
-    
-    func vibrancyEffectView(forBlurEffectView blurEffectView:UIVisualEffectView) -> UIVisualEffectView {
-            let vibrancy = UIVibrancyEffect(blurEffect: blurEffectView.effect as! UIBlurEffect)
-            let vibrancyView = UIVisualEffectView(effect: vibrancy)
-            vibrancyView.frame = blurEffectView.bounds
-            vibrancyView.autoresizingMask = [.flexibleWidth, .flexibleHeight]
-            return vibrancyView
-        }
     
     private func configureScrollView(){
         
@@ -251,11 +243,6 @@ class ChosenTrackerController: UIViewController {
     
     private func configureEmojiCollection(){
         configureCollection()
-        //        let emojiCollectionPresenter = EmojiCollectionPresenter()
-        //
-        //        emojiCollectionPresenter.awakeFromNib()
-        //        emojiCollectionPresenter.viewDidLoad()
-        //        emojiCollectionPresenter.configureCollectionUnder(tableView: tableView, of: self)
     }
     
     private func highLightButton(){
@@ -459,9 +446,8 @@ extension ChosenTrackerController: UITableViewDataSource {
         
         cell.backgroundColor = .ypLightGray
         cell.accessoryType = .disclosureIndicator
-
+        
         cell.cellText.text = tableViewCells[indexPath.row]
-//        cell.updateTextOfCellWith(name: tableViewCells[indexPath.row], text: "Вт" + ", " + "Cб")
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
@@ -712,8 +698,7 @@ extension ChosenTrackerController: ScheduleOfTrackerDelegate {
         let week: [String] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
         
         let sortedDates = dates.sorted { week.firstIndex(of: $0) ?? 0 < week.firstIndex(of: $1) ?? 1}
-        print(dates)
-        print(sortedDates)
+        
         let datesString: String = sortedDates.map({ date in
             
             if date == "Monday" {
@@ -745,6 +730,7 @@ extension ChosenTrackerController: CategoryOfTrackerDelegate{
     func didDismissScreenWithChangesIn(_ category: String?) {
         
         nameOfCategory = category
+        
         shouldAddCategoryOnCellTitle(category: category)
         shouldActivateSaveButton()
     }

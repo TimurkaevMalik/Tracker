@@ -58,7 +58,7 @@ extension NSMutableAttributedString {
     
     func setColor(_ color: UIColor, forText: String) {
         
-        var range: NSRange = self.mutableString.range(of: forText, options: .caseInsensitive)
+        let range: NSRange = self.mutableString.range(of: forText, options: .caseInsensitive)
         self.addAttribute(NSAttributedString.Key.foregroundColor, value: color, range: range)
     }
 }

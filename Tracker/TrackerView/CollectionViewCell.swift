@@ -12,6 +12,7 @@ final class CollectionViewCell: UICollectionViewCell {
     
     var delegate: CollectionViewCellDelegate?
     
+    var idOfCell: UUID?
     let view = UIView()
     let nameLable = UILabel()
     let emoji = UILabel()
@@ -123,7 +124,7 @@ final class CollectionViewCell: UICollectionViewCell {
         }
     }
     
-    func shouldAddDay(_ cell: CollectionViewCell, date selectedDate: Date) -> Bool? {
+    func shouldTapButton(_ cell: CollectionViewCell, date selectedDate: Date) -> Bool? {
         
         guard
             var count = cell.count,
