@@ -16,7 +16,6 @@ protocol TrackerMangedObjectProtocol {
     func fetchAllTrackers() -> [TrackerCoreData]?
     func deleteAllTrackers()
     func deleteTrackerWith(id: UUID)
-
 }
 
 final class TrackerStore {
@@ -126,7 +125,7 @@ extension TrackerStore: TrackerMangedObjectProtocol {
             appDelegate.saveContext()
             
         } catch let error as NSError {
-            
+            print(error)
         }
     }
     

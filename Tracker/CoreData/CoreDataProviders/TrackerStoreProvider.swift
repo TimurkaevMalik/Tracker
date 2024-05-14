@@ -133,9 +133,8 @@ extension TrackerStoreProvider: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        guard 
+        guard
             let trackerCoreData = anObject as? TrackerCoreData,
-            let title = trackerCoreData.trackerCategory?.titleOfCategory,
             let tracker = convertCoreDataToTracker(trackerCoreData) else {
             return
         }
@@ -143,7 +142,10 @@ extension TrackerStoreProvider: NSFetchedResultsControllerDelegate {
         switch type {
             
         case .insert:
-            delegate?.didAdd(tracker: tracker, with: title)
+            if let title = trackerCoreData.trackerCategory?.titleOfCategory {
+                delegate?.didAdd(tracker: tracker, with: title)
+            }
+            
         case .delete:
             print(indexPath)
             print(tracker)

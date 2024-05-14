@@ -444,8 +444,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     private func closeCollectionCellAt(idOfCell: UUID){
         
-        trackers.removeAll()
-        
         let cells = collectionView.visibleCells as? [CollectionViewCell]
         guard 
             let cell = cells?.first(where: { $0.idOfCell == idOfCell }),
@@ -496,73 +494,38 @@ extension TrackerViewController: CollectionViewCellDelegate {
             addRecordDate(id: idOfCell, actualDate: actualDate)
         } else {
             
-            removeRecordDate(id: idOfCell, actualDate: actualDate)
+            removeRecordDate(for: actualDate, id: idOfCell)
         }
     }
     
     private func addRecordDate(id: UUID, actualDate: Date){
         
-//        if !completedTrackers.isEmpty {
-//            
-            if var dates = completedTrackers.first(where: { $0.id == id })?.date
-                /*completedTrackers.contains(where: { element in
-                element.id == id
-                 })*/{
-                
-                dates.append(actualDate)
-                recordStoreProvider.updateRecord(TrackerRecord(id: id, date: dates))
-//                for index in 0..<completedTrackers.count {
-//                    if completedTrackers[index].id == id {
-//                        
-//                        records = completedTrackers[index].date
-//                        records.append(actualDate)
-//                        
-////                        completedTrackers.remove(at: index)
-//                        completedTrackers[index] = TrackerRecord(id: id, date: records)
-//                        
-//                        recordStoreProvider.updateRecord(TrackerRecord(id: id, date: records))
-//                        break
-//                    }
-//                }
-                    } else {
-                
-//                completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
-                recordStoreProvider.storeRecord(TrackerRecord(id: id, date: [actualDate]))
-            }
-//        } else {
-//            completedTrackers.append(TrackerRecord(id: id, date: [actualDate]))
-//            trackerRecordStore.stroreRecord(TrackerRecord(id: id, date: [actualDate]))
-//        }
+        if var dates = completedTrackers.first(where: { $0.id == id })?.date {
+            
+            dates.append(actualDate)
+            recordStoreProvider.updateRecord(TrackerRecord(id: id, date: dates))
+            
+        } else {
+            
+            recordStoreProvider.storeRecord(TrackerRecord(id: id, date: [actualDate]))
+        }
     }
     
-    private func removeRecordDate(id: UUID, actualDate: Date){
+    private func removeRecordDate(for actualDate: Date, id: UUID){
         
-        for index in (0..<completedTrackers.count).reversed() {
+        records.removeAll()
+        
+        if let record = completedTrackers.first(where: { $0.id == id }) {
             
-            let recordToCheck = completedTrackers[index]
-            
-            if id == recordToCheck.id {
+            for index in 0..<record.date.count {
                 
-                if recordToCheck.date.count != 1 {
+                if actualDate != record.date[index] {
                     
-                    for dateIndex in 0..<recordToCheck.date.count {
-                        
-                        if actualDate != recordToCheck.date[dateIndex] {
-                            
-                            records.append(recordToCheck.date[dateIndex])
-                        }
-                    }
-                    
-//                    completedTrackers.remove(at: index)
-                    completedTrackers[index] = TrackerRecord(id: id, date: records)
-                    recordStoreProvider.deleteRecord(of: TrackerRecord(id: id, date: records))
-                } else {
-                    
-                    completedTrackers.remove(at: index)
-                    
-                    recordStoreProvider.deleteRecord(of: TrackerRecord(id: id, date: []))
+                    records.append(record.date[index])
                 }
             }
+            
+            recordStoreProvider.deleteRecord(of: TrackerRecord(id: id, date: records))
         }
     }
 }
@@ -583,10 +546,11 @@ extension TrackerViewController: TrackerStoreProviderDelegate {
             for index in 0..<categories.count {
                 
                 let category = categories[index]
-                trackers = category.trackersArray
-                trackers.append(tracker)
                 
                 if category.titleOfCategory == categoryTitle {
+                    
+                    trackers = category.trackersArray
+                    trackers.append(tracker)
                     
                     categories[index] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
                     print(categories)
@@ -612,11 +576,17 @@ extension TrackerViewController: RecordStoreProviderDelegate {
     func didAdd(record: TrackerRecord) {
         
         completedTrackers.append(record)
-        print(completedTrackers)
     }
     
     func didDelete(record: TrackerRecord) {
-        
+
+        for index in 0..<completedTrackers.count {
+            
+            if completedTrackers[index].id == record.id {
+                    
+                completedTrackers.remove(at: index)
+            }
+        }
     }
     
     func didUpdate(record: TrackerRecord) {
