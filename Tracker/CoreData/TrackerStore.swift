@@ -25,6 +25,8 @@ final class TrackerStore {
     private let trackerCategoryStore = TrackerCategoryStore()
     private let appDelegate: AppDelegate
     
+    private let trackerName = "TrackerCoreData"
+    
     convenience init(){
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -40,12 +42,12 @@ final class TrackerStore {
         self.context = appDelegate.persistentContainer.viewContext
     }
 }
-    
+
 extension TrackerStore: TrackerMangedObjectProtocol {
     
     func storeNewTracker(_ tracker: Tracker, for categoryTitle: String) {
         
-        guard let trackerEntityDescription = NSEntityDescription.entity(forEntityName: "TrackerCoreData", in: context ) else {
+        guard let trackerEntityDescription = NSEntityDescription.entity(forEntityName: trackerName, in: context ) else {
             return
         }
         
@@ -75,30 +77,26 @@ extension TrackerStore: TrackerMangedObjectProtocol {
         categoryCoreData?.titleOfCategory = categoryTitle
         categoryCoreData?.addToTrackersArray(trackerCoreData)
         
-        print(trackerCoreData)
         appDelegate.saveContext()
     }
     
     func fetchAllTrackers() -> [TrackerCoreData]? {
         
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
         
         do {
             
-            let response = try context.fetch(fetchRequest)
+            let tracker = try context.fetch(fetchRequest)
             
-            print(response.count)
-            print(response.first?.trackerCategory?.titleOfCategory as Any)
-            
-            return response
-        } catch {
-            print(error.localizedDescription)
+            return tracker
+        } catch let error as NSError{
+            print(error)
             return nil
         }
     }
     
     func deleteAllTrackers() {
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
         
         do {
             
@@ -113,8 +111,8 @@ extension TrackerStore: TrackerMangedObjectProtocol {
     }
     
     func deleteTrackerWith(id: UUID){
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: "TrackerCoreData")
-
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
+        
         do {
             
             let trackers = try context.fetch(fetchRequest)

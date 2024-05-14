@@ -20,8 +20,6 @@ class EmojiCollectionCell: UICollectionViewCell {
     
     private func configureCell(){
         
-//        cellLabel.backgroundColor = .ypWhite
-//        cellLabel.text = emoji
         cellLabel.font = UIFont.systemFont(ofSize: 32)
         cellLabel.textAlignment = .center
         cellLabel.layer.masksToBounds = true

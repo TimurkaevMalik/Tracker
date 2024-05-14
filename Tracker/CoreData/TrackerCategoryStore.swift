@@ -43,7 +43,6 @@ final class TrackerCategoryStore {
         
         trackerCategoryCoreData.titleOfCategory = category.titleOfCategory
         
-        print(trackerCategoryCoreData)
         appDelegate.saveContext()
     }
     
@@ -55,10 +54,10 @@ final class TrackerCategoryStore {
         do {
             
             let response = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData]
-
+            
             return response
-        } catch {
-            print(error.localizedDescription)
+        } catch let error as NSError {
+            print(error)
             return nil
         }
     }
@@ -69,13 +68,11 @@ final class TrackerCategoryStore {
         do {
             let categories = try context.fetch(fetchRequest)
             
-            print(categories.count)
-            
             return categories.first(where: { category in
                 category.titleOfCategory == title
             })
-        } catch {
-            print(error.localizedDescription)
+        } catch let error as NSError {
+            print(error)
             return nil
         }
     }
@@ -86,7 +83,7 @@ final class TrackerCategoryStore {
         for categoryCoreData in response {
             
             if 
-               let title = categoryCoreData.titleOfCategory {
+                let title = categoryCoreData.titleOfCategory {
                 let category = TrackerCategory(titleOfCategory: title, trackersArray: [])
                 categoryArray.append(category)
             }

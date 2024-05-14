@@ -44,7 +44,7 @@ final class TrackerViewController: UIViewController {
         
         return formatter
     }
-
+    
     
     private func configureTrackerButtonsViews() {
         
@@ -448,9 +448,9 @@ extension TrackerViewController: CollectionViewCellDelegate {
         guard 
             let cell = cells?.first(where: { $0.idOfCell == idOfCell }),
             let indexPath = collectionView.indexPath(for: cell)
-        else { return }
-        print(indexPath)
-        
+        else {
+            return
+        }
         
         let cattegorie = categories[indexPath.section]
         
@@ -553,7 +553,6 @@ extension TrackerViewController: TrackerStoreProviderDelegate {
                     trackers.append(tracker)
                     
                     categories[index] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
-                    print(categories)
                 }
             }
         } else {
@@ -579,11 +578,11 @@ extension TrackerViewController: RecordStoreProviderDelegate {
     }
     
     func didDelete(record: TrackerRecord) {
-
+        
         for index in 0..<completedTrackers.count {
             
             if completedTrackers[index].id == record.id {
-                    
+                
                 completedTrackers.remove(at: index)
             }
         }
@@ -596,7 +595,6 @@ extension TrackerViewController: RecordStoreProviderDelegate {
             if completedTrackers[index].id == record.id {
                 
                 completedTrackers[index] = record
-                print(completedTrackers)
                 break
             }
         }

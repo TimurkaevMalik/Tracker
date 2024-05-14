@@ -45,38 +45,28 @@ extension TrackerRecordStore: RecordManagedObjectProtocol {
     func storeRecord(_ record: TrackerRecord){
         
         guard let recordEntityDescription = NSEntityDescription.entity(forEntityName: recordName, in: context) else { return }
-         
+        
         let recordCoreData = TrackerRecordCoreData(entity: recordEntityDescription, insertInto: context)
-
+        
         recordCoreData.id = record.id
         
         let dates = record.date.map({ "\($0)"})
         recordCoreData.datesString = dates.joined(separator: ",")
         
-        print(recordCoreData)
-        print(recordCoreData.id)
-        print(recordCoreData.datesString)
-
         appDelegate.saveContext()
     }
     
     func updateRecord(_ record: TrackerRecord) {
         
         guard let recordCoreData = fetchRecordWith(id: record.id) else { return }
-
+        
         recordCoreData.id = record.id
         
         let dates = record.date.map({ "\($0)"})
         recordCoreData.datesString = dates.joined(separator: ",")
         
-        print(recordCoreData)
-        print(recordCoreData.id)
-        print(recordCoreData.datesString)
-        
         let allRecords = fetchAllRecords()
         
-        print(allRecords)
-
         appDelegate.saveContext()
     }
     

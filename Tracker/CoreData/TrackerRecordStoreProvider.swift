@@ -80,23 +80,20 @@ class TrackerRecordStoreProvider: NSObject {
         var convertedRecords: [TrackerRecord] = []
         
         for record in records {
-        
+            
             if let id = record.id {
                 
                 var dates: [Date] = getDateArrayFromStrings(of: record)
                 convertedRecords.append(TrackerRecord(id: id, date: dates))
-                }
             }
-        
-        
-        print(convertedRecords)
+        }
         
         return convertedRecords
     }
     
     func fetchRecordWith(id: UUID) -> TrackerRecord? {
         
-        guard 
+        guard
             let recordCoreData = managedObject.fetchRecordWith(id: id),
             let  datesStringArray = recordCoreData.datesString?.components(separatedBy: ",")
         else {
@@ -117,8 +114,6 @@ class TrackerRecordStoreProvider: NSObject {
         
         let record = TrackerRecord(id: id, date: dates)
         
-        print(record)
-        
         return record
     }
     
@@ -126,11 +121,11 @@ class TrackerRecordStoreProvider: NSObject {
         
         var dates: [Date] = []
         if  let datesString = record.datesString?.components(separatedBy: ",") {
-            print(datesString)
+            
             for dateString in datesString {
                 
                 if let date = dateFormatter.date(from: dateString) {
-                    print(date)
+                    
                     dates.append(date)
                 }
             }
@@ -145,7 +140,7 @@ extension TrackerRecordStoreProvider: NSFetchedResultsControllerDelegate {
     
     func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        guard 
+        guard
             let recordCoreData = anObject as? TrackerRecordCoreData,
             let id = recordCoreData.id
         else {

@@ -147,8 +147,6 @@ extension TrackerStoreProvider: NSFetchedResultsControllerDelegate {
             }
             
         case .delete:
-            print(indexPath)
-            print(tracker)
             delegate?.didDelete(tracker: tracker)
             
         case .update:
