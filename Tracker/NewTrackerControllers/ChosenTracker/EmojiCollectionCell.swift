@@ -23,7 +23,7 @@ class EmojiCollectionCell: UICollectionViewCell {
         cellLabel.font = UIFont.systemFont(ofSize: 32)
         cellLabel.textAlignment = .center
         cellLabel.layer.masksToBounds = true
-        cellLabel.layer.cornerRadius = 16
+        cellLabel.layer.cornerRadius = 8
         
         
         cellLabel.translatesAutoresizingMaskIntoConstraints = false

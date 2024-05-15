@@ -16,7 +16,7 @@ final class CategoryOfTracker: UIViewController {
     private let titleLabel = UILabel()
     private let tableView = UITableView()
     
-    private var categories: [String] = ["Важное", "Не важное", "Очень важное"]
+    private var categories: [String] = ["Важное"]
     private var categoryWasChosenBefore: String?
     private var chosenCategory: String?
     

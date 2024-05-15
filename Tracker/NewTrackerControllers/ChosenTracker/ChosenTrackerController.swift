@@ -47,8 +47,8 @@ class ChosenTrackerController: UIViewController {
     private let colorCellIdentifier = "colorCollectionCell"
     private let collectionHeaderIdentifier = "collectionHeaderIdentifier"
     
-    private let emojisArray: [String] = ["🙂", "😻", "🐶", "🌺", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
-    private let colorsArray: [UIColor] = [.red, .orange, .blue, .purple, .green, .ypCyan, .ypLightPink, .ypMediumLightBlue, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypBlue, .ypDarkViolet, .ypMediumDarkViolet, .violet, .ypMediumLightGreen]
+    private let emojisArray: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
+    private let colorsArray: [UIColor] = [.ypRed, .ypOrange, .ypMediumBlue, .ypElectricViolet, .ypGreen, .ypViolet, .ypLightPink, .ypCyan, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypMediumLightBlue, .ypFrenchViolet, .ypGrape, .ypSlateBlue, .ypMediumLightGreen]
     
     
     private func configureScrollView(){
@@ -71,7 +71,7 @@ class ChosenTrackerController: UIViewController {
             scrollContentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: -2),
             
             scrollContentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -4),
-            scrollContentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.2)
+            scrollContentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.27)
         ])
     }
     
@@ -90,8 +90,8 @@ class ChosenTrackerController: UIViewController {
         view.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
-            collectionView.heightAnchor.constraint(equalToConstant: 460),
-            collectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 50),
+            collectionView.heightAnchor.constraint(equalToConstant: 484),
+            collectionView.topAnchor.constraint(equalTo: tableView.bottomAnchor, constant: 32),
             collectionView.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor),
             collectionView.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor),
             
@@ -549,6 +549,8 @@ extension ChosenTrackerController: UICollectionViewDataSource {
             
             cell.cellLabel.text = emojisArray[indexPath.row]
             cell.layer.masksToBounds = true
+            
+            
             cell.layer.cornerRadius = 16
             
             return cell
@@ -561,7 +563,7 @@ extension ChosenTrackerController: UICollectionViewDataSource {
             
             cell.colorCell.backgroundColor = colorsArray[indexPath.row]
             cell.layer.masksToBounds = true
-            cell.layer.cornerRadius = 16
+            cell.layer.cornerRadius = 8
             
             return cell
         }
@@ -612,20 +614,23 @@ extension ChosenTrackerController: UICollectionViewDelegate {
     func collectionView(_ collectionView: UICollectionView, didSelectItemAt indexPath: IndexPath) {
         
         let cell = collectionView.cellForItem(at: indexPath)
-        cell?.backgroundColor = .ypMediumLightGray
+        
         
         if indexPath.section == 0 {
+            cell?.backgroundColor = .ypMediumLightGray
             chosenEmojiCell = cell
             emojiOfTracker = emojisArray[indexPath.row]
             
         } else {
+            
+            cell?.layer.borderWidth = 3
+            cell?.layer.borderColor = colorsArray[indexPath.row].withAlphaComponent(0.3).cgColor
             chosenColorCell = cell
             colorOfTracker = colorsArray[indexPath.row]
         }
         
         if indexPath.section == 1 {
-            cell?.layer.borderWidth = 3
-            cell?.layer.borderColor = colorsArray[indexPath.row].withAlphaComponent(0.4).cgColor
+            
         }
         
         shouldActivateSaveButton()
@@ -651,7 +656,7 @@ extension ChosenTrackerController: UICollectionViewDelegateFlowLayout {
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, minimumLineSpacingForSectionAt section: Int) -> CGFloat {
         
-        return 0
+        return 16
     }
     
     func collectionView(
@@ -660,7 +665,7 @@ extension ChosenTrackerController: UICollectionViewDelegateFlowLayout {
         insetForSectionAt section: Int
     ) -> UIEdgeInsets {
         
-        return UIEdgeInsets(top: 10, left: 0, bottom: 24, right: 0)
+        return UIEdgeInsets(top: 24, left: 0, bottom: 24, right: 0)
     }
     
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, referenceSizeForHeaderInSection section: Int) -> CGSize {

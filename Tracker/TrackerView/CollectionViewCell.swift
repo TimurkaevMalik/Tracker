@@ -107,9 +107,9 @@ final class CollectionViewCell: UICollectionViewCell {
     
     private func highLightButton(){
         
-        UIView.animate(withDuration: 0.4) {
+        UIView.animate(withDuration: 0.2) {
             
-            self.doneButton.backgroundColor = .ypRed
+            self.doneButton.backgroundColor = .red
             
         } completion: { isCompleted in
             if isCompleted {
@@ -118,7 +118,7 @@ final class CollectionViewCell: UICollectionViewCell {
         }
         
         func resetButtonColor(){
-            UIView.animate(withDuration: 0.1) {
+            UIView.animate(withDuration: 0.2) {
                 self.doneButton.backgroundColor = self.view.backgroundColor
             }
         }

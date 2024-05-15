@@ -59,6 +59,7 @@ final class TrackerViewController: UIViewController {
         datePicker.layer.cornerRadius = 8
         datePicker.layer.masksToBounds = true
         datePicker.timeZone = TimeZone.current
+        datePicker.calendar = .current
         
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: plusButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
@@ -75,7 +76,7 @@ final class TrackerViewController: UIViewController {
         NSLayoutConstraint.activate([
             centralPlugLabel.widthAnchor.constraint(equalToConstant: 150),
             centralPlugLabel.heightAnchor.constraint(equalToConstant: 18),
-            centralPlugLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 403),
+            centralPlugLabel.topAnchor.constraint(equalTo: centralPlugImage.bottomAnchor, constant: 8),
             centralPlugLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
@@ -90,7 +91,7 @@ final class TrackerViewController: UIViewController {
             centralPlugImage.widthAnchor.constraint(equalToConstant: 80),
             centralPlugImage.heightAnchor.constraint(equalToConstant: 80),
             centralPlugImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
-            centralPlugImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 315)
+            centralPlugImage.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30)
         ])
     }
     
@@ -165,7 +166,6 @@ final class TrackerViewController: UIViewController {
         cell.nameLable.text = actualTracker.name
         cell.view.backgroundColor = actualTracker.color
         cell.doneButton.backgroundColor = actualTracker.color
-        
         
         if wasCellButtonTapped(at: indexPath) == true {
             

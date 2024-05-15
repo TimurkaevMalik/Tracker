@@ -65,8 +65,6 @@ extension TrackerRecordStore: RecordManagedObjectProtocol {
         let dates = record.date.map({ "\($0)"})
         recordCoreData.datesString = dates.joined(separator: ",")
         
-        let allRecords = fetchAllRecords()
-        
         appDelegate.saveContext()
     }
     

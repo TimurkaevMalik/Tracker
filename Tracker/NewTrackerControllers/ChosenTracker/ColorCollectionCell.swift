@@ -24,7 +24,7 @@ class ColorCollectionCell: UICollectionViewCell {
     private func configureColorCell(){
         
         colorCell.layer.masksToBounds = true
-        colorCell.layer.cornerRadius = 16
+        colorCell.layer.cornerRadius = 8
         
         colorCell.translatesAutoresizingMaskIntoConstraints = false
         contentView.addSubview(colorCell)

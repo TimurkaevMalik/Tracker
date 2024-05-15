@@ -83,7 +83,7 @@ class TrackerRecordStoreProvider: NSObject {
             
             if let id = record.id {
                 
-                var dates: [Date] = getDateArrayFromStrings(of: record)
+                let dates: [Date] = getDateArrayFromStrings(of: record)
                 convertedRecords.append(TrackerRecord(id: id, date: dates))
             }
         }
