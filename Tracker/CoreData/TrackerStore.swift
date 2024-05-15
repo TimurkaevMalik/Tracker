@@ -8,6 +8,7 @@
 import UIKit
 import CoreData
 
+
 protocol TrackerMangedObjectProtocol {
     var context: NSManagedObjectContext { get }
     var uiColorMarshalling: UIColorMarshalling { get }
