@@ -9,7 +9,7 @@ import UIKit
 
 class ChosenTrackerController: UIViewController {
     
-    var delegate: ChosenTrackerControllerDelegate?
+    private let delegate: TrackerViewControllerDelegate
     
     private let textField = UITextField()
     private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
@@ -28,6 +28,7 @@ class ChosenTrackerController: UIViewController {
     private let tableView = UITableView()
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
+    private let trackerType: TrackerType
     private let params = GeomitricParams(cellCount: 6, leftInset: 18, rightInset: 18, cellSpacing: 5)
     
     private var tableViewCells: [String] = []
@@ -50,6 +51,19 @@ class ChosenTrackerController: UIViewController {
     private let emojisArray: [String] = ["🙂", "😻", "🌺", "🐶", "❤️", "😱", "😇", "😡", "🥶", "🤔", "🙌", "🍔", "🥦", "🏓", "🥇", "🎸", "🏝️", "😪"]
     private let colorsArray: [UIColor] = [.ypRed, .ypOrange, .ypMediumBlue, .ypElectricViolet, .ypGreen, .ypViolet, .ypLightPink, .ypCyan, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypMediumLightBlue, .ypFrenchViolet, .ypGrape, .ypSlateBlue, .ypMediumLightGreen]
     
+    
+    init(trackerType: TrackerType, delegate: TrackerViewControllerDelegate){
+        self.trackerType = trackerType
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+        
+        updateTableVeiwCells()
+    }
+    
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private func configureScrollView(){
         
@@ -87,7 +101,7 @@ class ChosenTrackerController: UIViewController {
         collectionView.contentInset = UIEdgeInsets(top: 0, left: params.leftInset, bottom: 0, right: params.rightInset)
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(collectionView)
+        scrollView.addSubview(collectionView)
         
         NSLayoutConstraint.activate([
             collectionView.heightAnchor.constraint(equalToConstant: 484),
@@ -104,7 +118,7 @@ class ChosenTrackerController: UIViewController {
         limitWarningLabel.textColor = .ypRed
         limitWarningLabel.font = UIFont.systemFont(ofSize: 17)
         
-        view.addSubview(limitWarningLabel)
+        scrollView.addSubview(limitWarningLabel)
         limitWarningLabel.translatesAutoresizingMaskIntoConstraints = false
         
         warningLabelBottomConstraint.append(limitWarningLabel.bottomAnchor.constraint(equalTo: textField.bottomAnchor))
@@ -138,7 +152,7 @@ class ChosenTrackerController: UIViewController {
         buttonsContainer.translatesAutoresizingMaskIntoConstraints = false
         saveButton.translatesAutoresizingMaskIntoConstraints = false
         cancelButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviews([buttonsContainer, saveButton, cancelButton])
+        scrollView.addSubviewsToScrollView([buttonsContainer, saveButton, cancelButton])
         
         NSLayoutConstraint.activate([
             buttonsContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
@@ -200,7 +214,7 @@ class ChosenTrackerController: UIViewController {
         clearTextFieldButton.contentHorizontalAlignment = .leading
         
         textField.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviews([textField])
+        view.addSubview(textField)
         
         NSLayoutConstraint.activate([
             textField.heightAnchor.constraint(equalToConstant: 75),
@@ -226,7 +240,7 @@ class ChosenTrackerController: UIViewController {
         
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviews([tableView])
+        scrollView.addSubview(tableView)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: limitWarningLabel.bottomAnchor, constant: 24),
@@ -239,10 +253,6 @@ class ChosenTrackerController: UIViewController {
         } else {
             tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 74).isActive = true
         }
-    }
-    
-    private func configureEmojiCollection(){
-        configureCollection()
     }
     
     private func highLightButton(){
@@ -262,10 +272,6 @@ class ChosenTrackerController: UIViewController {
                 self.saveButton.backgroundColor = .ypDarkGray
             }
         }
-    }
-    
-    private func setDefaultPositionOfLimitWarningLabel(){
-        view.insertSubview(textField, aboveSubview: limitWarningLabel)
     }
     
     private func showLimitWarningLabel(with text: String){
@@ -324,11 +330,10 @@ class ChosenTrackerController: UIViewController {
     
     private func deselectPreviousColor(of collectionView: UICollectionView){
         
-        guard let previousColorCell = chosenColorCell,
-              let previousColorIndex = collectionView.indexPath(for: previousColorCell)
-        else {
-            return
-        }
+        guard 
+            let previousColorCell = chosenColorCell,
+            let previousColorIndex = collectionView.indexPath(for: previousColorCell)
+        else { return }
         
         collectionView.deselectItem(at: previousColorIndex, animated: true)
         chosenColorCell?.layer.borderWidth = 0
@@ -337,23 +342,22 @@ class ChosenTrackerController: UIViewController {
     
     private func deselectPreviousEmoji(of collectionView: UICollectionView){
         
-        guard let previousColorCell = chosenEmojiCell,
-              let previousEmojiIndex = collectionView.indexPath(for: previousColorCell)
-        else {
-            return
-        }
+        guard 
+            let previousColorCell = chosenEmojiCell,
+            let previousEmojiIndex = collectionView.indexPath(for: previousColorCell)
+        else { return }
         
         collectionView.deselectItem(at: previousEmojiIndex, animated: true)
         chosenEmojiCell?.backgroundColor = .clear
     }
     
-    func configureTwoTableVeiwCells(){
-        tableViewCells.append("Категория")
-        tableViewCells.append("Расписание")
-    }
-    
-    func configureOneTableVeiwCell(){
-        tableViewCells.append("Категория")
+    func updateTableVeiwCells(){
+        if trackerType == TrackerType.irregularEvent {
+            tableViewCells.append("Категория")
+        } else {
+            tableViewCells.append("Категория")
+            tableViewCells.append("Расписание")
+        }
     }
     
     
@@ -363,15 +367,12 @@ class ChosenTrackerController: UIViewController {
         view.backgroundColor = .ypWhite
         
         configureScrollView()
-        
         configureTextFieldAndClearButton()
         configureLimitWarningLabel()
         configureTableView()
-        configureEmojiCollection()
-        configureTitleLabelView()
+        configureCollection()
         configureSaveAndCancelButtons()
-        
-        setDefaultPositionOfLimitWarningLabel()
+        configureTitleLabelView()
     }
     
     @objc func didEnterTextInTextField(_ sender: UITextField){
@@ -399,7 +400,7 @@ class ChosenTrackerController: UIViewController {
     
     @objc func saveButtonTapped(){
         
-        if tableViewCells.count == 2 {
+        if trackerType == TrackerType.habbit {
             guard !scheduleOfTracker.isEmpty else {
                 showLimitWarningLabel(with: "Заполните все поля")
                 highLightButton()
@@ -422,11 +423,11 @@ class ChosenTrackerController: UIViewController {
         
         let newCategory = TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: [newTracker])
         
-        delegate?.addNewTracker(trackerCategory: newCategory)
+        delegate.addNewTracker(trackerCategory: newCategory)
     }
     
     @objc func cancelButtonTapped(){
-        delegate?.dismisTrackerTypeController()
+        delegate.dismisTrackerTypeController()
     }
     
 }
@@ -486,34 +487,6 @@ extension ChosenTrackerController: UITableViewDelegate {
         }
     }
 }
-
-
-extension ChosenTrackerController: UITextFieldDelegate {
-    
-    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
-        
-        let maxLength = 38
-        let currentString = (textField.text ?? "") as NSString
-        
-        let newString = currentString.replacingCharacters(in: range, with: string)
-        
-        guard newString.count <= maxLength else {
-            
-            while var text = textField.text,
-                  text.count >= maxLength {
-                
-                text.removeLast()
-                textField.text = text
-            }
-            
-            showLimitWarningLabel(with: "Ограничение 38 символов")
-            return false
-        }
-        
-        return true
-    }
-}
-
 
 extension ChosenTrackerController: UICollectionViewDataSource {
     
@@ -682,7 +655,6 @@ extension ChosenTrackerController: UICollectionViewDelegateFlowLayout {
     }
 }
 
-
 extension ChosenTrackerController: ScheduleOfTrackerDelegate {
     func didDismissScreenWithChanges(dates: [String]) {
         scheduleOfTracker = dates
@@ -752,5 +724,25 @@ extension ChosenTrackerController: CategoryOfTrackerDelegate{
         
         let cell = tableView.cellForRow(at: IndexPath(row: 0, section: 0)) as? TableViewCell
         cell?.updateTextOfCellWith(name: tableViewCells[0], text: category ?? "")
+    }
+}
+
+extension ChosenTrackerController: UITextFieldDelegate {
+    
+    func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
+        
+        let maxLength = 38
+        
+        let currentString = (textField.text ?? "") as NSString
+        
+        let newString = currentString.replacingCharacters(in: range, with: string).trimmingCharacters(in: .newlines)
+        
+        guard newString.count <= maxLength else {
+            
+            showLimitWarningLabel(with: "Ограничение 38 символов")
+            return false
+        }
+        
+        return true
     }
 }

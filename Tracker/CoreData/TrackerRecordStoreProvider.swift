@@ -96,9 +96,7 @@ class TrackerRecordStoreProvider: NSObject {
         guard
             let recordCoreData = managedObject.fetchRecordWith(id: id),
             let  datesStringArray = recordCoreData.datesString?.components(separatedBy: ",")
-        else {
-            return nil
-        }
+        else { return nil }
         
         let datesFormated = datesStringArray.map({ dateFormatter.date(from: $0) })
         
@@ -143,9 +141,7 @@ extension TrackerRecordStoreProvider: NSFetchedResultsControllerDelegate {
         guard
             let recordCoreData = anObject as? TrackerRecordCoreData,
             let id = recordCoreData.id
-        else {
-            return
-        }
+        else { return }
         
         let dates = getDateArrayFromStrings(of: recordCoreData)
         let record = TrackerRecord(id: id, date: dates)

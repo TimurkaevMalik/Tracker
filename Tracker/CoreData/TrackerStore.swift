@@ -8,7 +8,6 @@
 import UIKit
 import CoreData
 
-
 protocol TrackerMangedObjectProtocol {
     var context: NSManagedObjectContext { get }
     var uiColorMarshalling: UIColorMarshalling { get }
@@ -48,9 +47,7 @@ extension TrackerStore: TrackerMangedObjectProtocol {
     
     func storeNewTracker(_ tracker: Tracker, for categoryTitle: String) {
         
-        guard let trackerEntityDescription = NSEntityDescription.entity(forEntityName: trackerName, in: context ) else {
-            return
-        }
+        guard let trackerEntityDescription = NSEntityDescription.entity(forEntityName: trackerName, in: context ) else { return }
         
         let trackerCoreData = TrackerCoreData(entity: trackerEntityDescription, insertInto: context)
         
@@ -136,11 +133,10 @@ extension TrackerStore: TrackerMangedObjectProtocol {
             
             let schedule = trackerCoreData.schedule != nil ? trackerCoreData.schedule : nil
             
-            if
-                let id = trackerCoreData.id,
-                let name = trackerCoreData.name,
-                let colorHexString = trackerCoreData.color,
-                let emoji = trackerCoreData.emoji
+            if let id = trackerCoreData.id,
+               let name = trackerCoreData.name,
+               let colorHexString = trackerCoreData.color,
+               let emoji = trackerCoreData.emoji
             {
                 let tracker = Tracker(
                     id: id,

@@ -206,9 +206,7 @@ final class TrackerViewController: UIViewController {
     }
     
     private func presentCreatingTrackerView(){
-        
-        let viewController = TrackerTypeController()
-        viewController.delegate = self
+        let viewController = TrackerTypeController(delegate: self)
         
         present(viewController, animated: true)
     }
@@ -312,7 +310,7 @@ final class TrackerViewController: UIViewController {
 }
 
 
-extension TrackerViewController: ChosenTrackerControllerDelegate {
+extension TrackerViewController: TrackerViewControllerDelegate {
     
     func addNewTracker(trackerCategory: TrackerCategory) {
         
@@ -365,14 +363,12 @@ extension TrackerViewController: UICollectionViewDataSource {
             id = ""
         }
         
-        guard
-            let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView
-        else {
+        guard let headerView = collectionView.dequeueReusableSupplementaryView(ofKind: kind, withReuseIdentifier: id, for: indexPath) as? SupplementaryView else {
             return UICollectionReusableView()
         }
-        if
-            id == headerIdentifier,
-            !visibleTrackers.isEmpty {
+        
+        if id == headerIdentifier,
+           !visibleTrackers.isEmpty {
             headerView.titleLabel.text = visibleTrackers[indexPath.section].titleOfCategory
         }
         
@@ -419,18 +415,19 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     func didTapCollectionCellButton(_ cell: CollectionViewCell) {
         
-        guard let indexPath = collectionView.indexPath(for: cell) else {
+        guard
+            let indexPath = collectionView.indexPath(for: cell),
+            let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) 
+        else {
             return
         }
-        guard let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) else {
-            return
-        }
+        
         let idOfCell = visibleTrackers[indexPath.section].trackersArray[indexPath.row].id
         
         
         if visibleTrackers[indexPath.section].trackersArray[indexPath.row].schedule.isEmpty {
             
-            guard let bool = cell.shouldTapButton(cell, date: actualDate) else { return }
+            guard cell.shouldTapButton(cell, date: actualDate) != nil else { return }
             
             trackerStoreProvider.deleteTrackerWithId(id: idOfCell)
         } else {
@@ -445,7 +442,8 @@ extension TrackerViewController: CollectionViewCellDelegate {
     private func closeCollectionCellAt(idOfCell: UUID){
         
         let cells = collectionView.visibleCells as? [CollectionViewCell]
-        guard 
+        
+        guard
             let cell = cells?.first(where: { $0.idOfCell == idOfCell }),
             let indexPath = collectionView.indexPath(for: cell)
         else {
@@ -534,9 +532,7 @@ extension TrackerViewController: TrackerStoreProviderDelegate {
     
     func didAdd(tracker: Tracker, with categoryTitle: String) {
         
-        guard let actualDate = currentDate?.description(with: .current) else {
-            return
-        }
+        guard let actualDate = currentDate?.description(with: .current) else { return }
         
         trackers.removeAll()
         

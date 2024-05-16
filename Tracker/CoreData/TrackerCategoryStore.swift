@@ -82,8 +82,7 @@ final class TrackerCategoryStore {
         var categoryArray: [TrackerCategory] = []
         for categoryCoreData in response {
             
-            if 
-                let title = categoryCoreData.titleOfCategory {
+            if let title = categoryCoreData.titleOfCategory {
                 let category = TrackerCategory(titleOfCategory: title, trackersArray: [])
                 categoryArray.append(category)
             }

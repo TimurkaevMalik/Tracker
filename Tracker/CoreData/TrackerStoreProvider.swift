@@ -95,11 +95,10 @@ final class TrackerStoreProvider: NSObject {
         var tracker: Tracker
         let schedule = trackerCoreData.schedule != nil ? trackerCoreData.schedule : nil
         
-        if
-            let id = trackerCoreData.id,
-            let name = trackerCoreData.name,
-            let colorHexString = trackerCoreData.color,
-            let emoji = trackerCoreData.emoji
+        if let id = trackerCoreData.id,
+           let name = trackerCoreData.name,
+           let colorHexString = trackerCoreData.color,
+           let emoji = trackerCoreData.emoji
         {
             tracker = Tracker(
                 id: id,
@@ -135,9 +134,8 @@ extension TrackerStoreProvider: NSFetchedResultsControllerDelegate {
         
         guard
             let trackerCoreData = anObject as? TrackerCoreData,
-            let tracker = convertCoreDataToTracker(trackerCoreData) else {
-            return
-        }
+            let tracker = convertCoreDataToTracker(trackerCoreData)
+        else { return }
         
         switch type {
             

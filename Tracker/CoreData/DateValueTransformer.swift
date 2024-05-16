@@ -21,18 +21,14 @@ final class DateValueTransformer: ValueTransformer {
     
     override func transformedValue(_ value: Any?) -> Any? {
         
-        guard let value = value as? [Date] else {
-            return nil
-        }
+        guard let value = value as? [Date] else { return nil }
         
         return try? JSONEncoder().encode(value)
     }
     
     override func reverseTransformedValue(_ value: Any?) -> Any? {
         
-        guard let data = value as? NSData else {
-            return nil
-        }
+        guard let data = value as? NSData else { return nil }
         
         return try? JSONDecoder().decode([Date].self, from: data as Data)
     }

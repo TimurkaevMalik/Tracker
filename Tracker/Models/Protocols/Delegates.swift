@@ -12,7 +12,7 @@ protocol CreatingTrackerDelegate {
     func CreatingTrackerViewDidDismiss()
 }
 
-protocol ChosenTrackerControllerDelegate {
+protocol TrackerViewControllerDelegate {
     
     func dismisTrackerTypeController()
     
