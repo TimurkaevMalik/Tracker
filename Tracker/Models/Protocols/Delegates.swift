@@ -39,7 +39,8 @@ protocol CollectionViewCellDelegate: AnyObject {
     func didTapCollectionCellButton(_ cell: CollectionViewCell)
 }
 
-protocol CreatingTrackerDelegate {
-    
-    func CreatingTrackerViewDidDismiss()
+protocol RecordStoreProviderDelegate: AnyObject {
+    func didUpdate(record: TrackerRecord)
+    func didDelete(record: TrackerRecord)
+    func didAdd(record: TrackerRecord)
 }

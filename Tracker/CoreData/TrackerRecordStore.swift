@@ -17,6 +17,7 @@ protocol RecordManagedObjectProtocol {
     func fetchAllRecords() -> [TrackerRecordCoreData]
     func fetchRecordWith(id: UUID) -> TrackerRecordCoreData?
 }
+
 final class TrackerRecordStore {
     
     internal let context: NSManagedObjectContext

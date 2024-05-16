@@ -8,12 +8,6 @@
 import Foundation
 import CoreData
 
-protocol RecordStoreProviderDelegate: AnyObject {
-    func didUpdate(record: TrackerRecord)
-    func didDelete(record: TrackerRecord)
-    func didAdd(record: TrackerRecord)
-}
-
 class TrackerRecordStoreProvider: NSObject {
     
     enum FetchTrackerControllerError: Error {
