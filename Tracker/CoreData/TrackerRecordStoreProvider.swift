@@ -20,7 +20,7 @@ class TrackerRecordStoreProvider: NSObject {
         case failedToInitializeContext
     }
     
-    weak var delegate: RecordStoreProviderDelegate?
+    private weak var delegate: RecordStoreProviderDelegate?
     
     private let context: NSManagedObjectContext
     private let managedObject: RecordManagedObjectProtocol

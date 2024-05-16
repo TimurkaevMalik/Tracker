@@ -9,7 +9,7 @@ import UIKit
 
 class ChosenTrackerController: UIViewController {
     
-    private let delegate: TrackerViewControllerDelegate
+    private weak var delegate: TrackerViewControllerDelegate?
     
     private let textField = UITextField()
     private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
@@ -423,11 +423,11 @@ class ChosenTrackerController: UIViewController {
         
         let newCategory = TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: [newTracker])
         
-        delegate.addNewTracker(trackerCategory: newCategory)
+        delegate?.addNewTracker(trackerCategory: newCategory)
     }
     
     @objc func cancelButtonTapped(){
-        delegate.dismisTrackerTypeController()
+        delegate?.dismisTrackerTypeController()
     }
     
 }
@@ -470,8 +470,7 @@ extension ChosenTrackerController: UITableViewDelegate {
         
         if indexPath.row == 0 {
             
-            let viewControler = CategoryOfTracker()
-            viewControler.delegate = self
+            let viewControler = CategoryOfTracker(delegate: self)
             viewControler.ifWasCategoryChosenBefore(category: nameOfCategory)
             
             present(viewControler, animated: true)
@@ -479,8 +478,7 @@ extension ChosenTrackerController: UITableViewDelegate {
         
         if indexPath.row == 1 {
             
-            let viewControler = ScheduleOfTracker()
-            viewControler.delegate = self
+            let viewControler = ScheduleOfTracker(delegate: self)
             viewControler.IfDatesWasChosenBefore(dates: scheduleOfTracker)
             
             present(viewControler, animated: true)

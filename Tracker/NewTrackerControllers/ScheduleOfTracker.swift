@@ -10,7 +10,7 @@ import UIKit
 
 final class ScheduleOfTracker: UIViewController {
     
-    var delegate: ScheduleOfTrackerDelegate?
+    private weak var delegate: ScheduleOfTrackerDelegate?
     
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
@@ -18,6 +18,15 @@ final class ScheduleOfTracker: UIViewController {
     private let weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     private var datesWasChosenBefore: [String] = []
     private var dates: [String] = []
+    
+    init(delegate: ScheduleOfTrackerDelegate){
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private func configureTitleLabelView(){
         titleLabel.text = "Новая привычка"

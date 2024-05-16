@@ -10,7 +10,7 @@ import UIKit
 
 final class CollectionViewCell: UICollectionViewCell {
     
-    var delegate: CollectionViewCellDelegate?
+    weak var delegate: CollectionViewCellDelegate?
     
     var idOfCell: UUID?
     let view = UIView()
@@ -20,9 +20,10 @@ final class CollectionViewCell: UICollectionViewCell {
     let doneButton = UIButton()
     var count: Int?
     
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+    
         configureView()
         configureLabels()
         configureButton()

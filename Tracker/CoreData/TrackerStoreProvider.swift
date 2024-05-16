@@ -8,19 +8,13 @@
 import Foundation
 import CoreData
 
-protocol TrackerStoreProviderDelegate: AnyObject {
-    func didUpdate(tracker: Tracker)
-    func didDelete(tracker: Tracker)
-    func didAdd(tracker: Tracker, with categoryTitle: String)
-}
-
 final class TrackerStoreProvider: NSObject {
     
     enum FetchTrackerControllerError: Error {
         case failedToInitializeContext
     }
     
-    weak var delegate: TrackerStoreProviderDelegate?
+    private weak var delegate: TrackerStoreProviderDelegate?
     
     private let context: NSManagedObjectContext
     private let managedObject: TrackerMangedObjectProtocol

@@ -10,7 +10,7 @@ import UIKit
 
 final class CategoryOfTracker: UIViewController {
     
-    var delegate: CategoryOfTrackerDelegate?
+    private weak var delegate: CategoryOfTrackerDelegate?
     
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
@@ -19,6 +19,16 @@ final class CategoryOfTracker: UIViewController {
     private var categories: [String] = ["Важное"]
     private var categoryWasChosenBefore: String?
     private var chosenCategory: String?
+    
+    init(delegate: CategoryOfTrackerDelegate){
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     private func configureTitleLabelView(){
         titleLabel.text = "Категория"

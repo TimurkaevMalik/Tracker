@@ -574,12 +574,13 @@ extension TrackerViewController: RecordStoreProviderDelegate {
     }
     
     func didDelete(record: TrackerRecord) {
-        
+        print(completedTrackers)
         for index in 0..<completedTrackers.count {
             
             if completedTrackers[index].id == record.id {
                 
                 completedTrackers.remove(at: index)
+                break
             }
         }
     }
