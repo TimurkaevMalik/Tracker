@@ -119,7 +119,7 @@ final class CategoryOfTracker: UIViewController {
     
     func ifWasCategoryChosenBefore(category: String?){
         
-        if let category = category {
+        if let category {
             categoryWasChosenBefore = category
             self.chosenCategory = category
         }

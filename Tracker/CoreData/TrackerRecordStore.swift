@@ -88,13 +88,12 @@ extension TrackerRecordStore: RecordManagedObjectProtocol {
         let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: recordName)
         
         do {
-            
             let records = try context.fetch(fetchRequest)
-            
             return records
+            
         } catch let error as NSError {
             
-            print(error)
+            assertionFailure("\(error)")
             return []
         }
     }
@@ -103,13 +102,12 @@ extension TrackerRecordStore: RecordManagedObjectProtocol {
         let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: recordName)
         
         do {
-            
             let recordCoreData = try context.fetch(fetchRequest).first(where: { $0.id == id })
-            
             return recordCoreData
+            
         } catch let error as NSError {
             
-            print(error)
+            assertionFailure("\(error)")
             return nil
         }
     }

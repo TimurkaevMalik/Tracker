@@ -57,7 +57,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             do {
                 try context.save()
             } catch let error as NSError {
-                print(error)
+                
                 assertionFailure("\(error)")
                 context.rollback()
             }

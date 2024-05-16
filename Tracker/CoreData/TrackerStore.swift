@@ -83,12 +83,11 @@ extension TrackerStore: TrackerMangedObjectProtocol {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
         
         do {
-            
             let tracker = try context.fetch(fetchRequest)
             
             return tracker
         } catch let error as NSError{
-            print(error)
+            assertionFailure("\(error)")
             return nil
         }
     }
@@ -97,14 +96,13 @@ extension TrackerStore: TrackerMangedObjectProtocol {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
         
         do {
-            
             let trackers = try context.fetch(fetchRequest)
             trackers.forEach({ context.delete($0) })
             
             appDelegate.saveContext()
             
         } catch let error as NSError {
-            print(error)
+            assertionFailure("\(error)")
         }
     }
     
@@ -112,7 +110,6 @@ extension TrackerStore: TrackerMangedObjectProtocol {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
         
         do {
-            
             let trackers = try context.fetch(fetchRequest)
             
             guard let tracker = trackers.first(where: { $0.id == id }) else { return }
@@ -121,7 +118,7 @@ extension TrackerStore: TrackerMangedObjectProtocol {
             appDelegate.saveContext()
             
         } catch let error as NSError {
-            print(error)
+            assertionFailure("\(error)")
         }
     }
     

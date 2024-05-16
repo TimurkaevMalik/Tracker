@@ -240,7 +240,7 @@ final class TrackerViewController: UIViewController {
                 if !tracker.schedule.isEmpty {
                     for date in tracker.schedule {
                         
-                        if let date = date, date == selectedDate {
+                        if let date, date == selectedDate {
                             
                             trackers.append(tracker)
                         }

@@ -52,12 +52,11 @@ final class TrackerCategoryStore {
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCategoryCoreData")
         
         do {
-            
             let response = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData]
-            
             return response
+            
         } catch let error as NSError {
-            print(error)
+            assertionFailure("\(error)")
             return nil
         }
     }
@@ -69,10 +68,10 @@ final class TrackerCategoryStore {
             let categories = try context.fetch(fetchRequest)
             
             return categories.first(where: { category in
-                category.titleOfCategory == title
-            })
+                category.titleOfCategory == title })
+            
         } catch let error as NSError {
-            print(error)
+            assertionFailure("\(error)")
             return nil
         }
     }
