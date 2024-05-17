@@ -8,42 +8,125 @@
 import UIKit
 import CoreData
 
-protocol TrackerMangedObjectProtocol {
-    var context: NSManagedObjectContext { get }
-    var uiColorMarshalling: UIColorMarshalling { get }
-    
+protocol TrackerStoreProtocol {
     func storeNewTracker(_ tracker: Tracker, for categoryTitle: String)
-    func fetchAllTrackers() -> [TrackerCoreData]?
-    func deleteAllTrackers()
     func deleteTrackerWith(id: UUID)
+    func updateCategoriesArray() -> [TrackerCategory]?
 }
 
-final class TrackerStore {
+final class TrackerStore: NSObject {
     
+    private weak var delegate: TrackerStoreDelegate?
+    private var appDelegate: AppDelegate
     internal let context: NSManagedObjectContext
+    private var fectchedResultController: NSFetchedResultsController<TrackerCoreData>?
     internal let uiColorMarshalling = UIColorMarshalling()
     private let trackerCategoryStore = TrackerCategoryStore()
-    private let appDelegate: AppDelegate
     
     private let trackerName = "TrackerCoreData"
+
     
-    convenience init(){
+    init(_ delegate: TrackerStoreDelegate, appDelegate: AppDelegate){
+        self.appDelegate = appDelegate
+        self.delegate = delegate
+        self.context = appDelegate.persistentContainer.viewContext
+        super.init()
         
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            self.init()
-            return
-        }
+        let sortDescription = NSSortDescriptor(keyPath: \TrackerCoreData.name, ascending: true)
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
+        fetchRequest.sortDescriptors = [sortDescription]
         
-        self.init(appDelegate: appDelegate)
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        controller.delegate = self
+        self.fectchedResultController = controller
+        try? controller.performFetch()
     }
     
-    private init(appDelegate: AppDelegate){
-        self.appDelegate = appDelegate
-        self.context = appDelegate.persistentContainer.viewContext
+    private func fetchAllTrackers() -> [TrackerCoreData]? {
+        
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
+        
+        do {
+            let tracker = try context.fetch(fetchRequest)
+            
+            return tracker
+        } catch let error as NSError{
+            assertionFailure("\(error)")
+            return nil
+        }
+    }
+    
+    private func deleteAllTrackers() {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
+        
+        do {
+            let trackers = try context.fetch(fetchRequest)
+            trackers.forEach({ context.delete($0) })
+            
+            appDelegate.saveContext()
+            
+        } catch let error as NSError {
+            assertionFailure("\(error)")
+        }
+    }
+    
+    private func convertCoreDataToTracker(_ trackerCoreData: TrackerCoreData) -> Tracker? {
+        
+        var tracker: Tracker
+        let schedule = trackerCoreData.schedule != nil ? trackerCoreData.schedule : nil
+        
+        if let id = trackerCoreData.id,
+           let name = trackerCoreData.name,
+           let colorHexString = trackerCoreData.color,
+           let emoji = trackerCoreData.emoji
+        {
+            tracker = Tracker(
+                id: id,
+                name: name,
+                color: uiColorMarshalling.color(from: colorHexString),
+                emoji: emoji,
+                schedule: schedule?.components(separatedBy: " ") ?? [])
+            
+            return tracker
+        }
+        
+        return nil
+    }
+    
+    private func convertToArrayOfTrackers(_ response: [TrackerCoreData]) -> [Tracker] {
+        
+        var trackerArray: [Tracker] = []
+        
+        for trackerCoreData in response {
+            
+            let schedule = trackerCoreData.schedule != nil ? trackerCoreData.schedule : nil
+            
+            if let id = trackerCoreData.id,
+               let name = trackerCoreData.name,
+               let colorHexString = trackerCoreData.color,
+               let emoji = trackerCoreData.emoji
+            {
+                let tracker = Tracker(
+                    id: id,
+                    name: name,
+                    color: uiColorMarshalling.color(from: colorHexString),
+                    emoji: emoji,
+                    schedule: schedule?.components(separatedBy: " ") ?? [])
+                
+                trackerArray.append(tracker)
+            }
+        }
+        
+        return trackerArray
     }
 }
 
-extension TrackerStore: TrackerMangedObjectProtocol {
+extension TrackerStore: TrackerStoreProtocol {
     
     func storeNewTracker(_ tracker: Tracker, for categoryTitle: String) {
         
@@ -78,35 +161,7 @@ extension TrackerStore: TrackerMangedObjectProtocol {
         appDelegate.saveContext()
     }
     
-    func fetchAllTrackers() -> [TrackerCoreData]? {
-        
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
-        
-        do {
-            let tracker = try context.fetch(fetchRequest)
-            
-            return tracker
-        } catch let error as NSError{
-            assertionFailure("\(error)")
-            return nil
-        }
-    }
-    
-    func deleteAllTrackers() {
-        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
-        
-        do {
-            let trackers = try context.fetch(fetchRequest)
-            trackers.forEach({ context.delete($0) })
-            
-            appDelegate.saveContext()
-            
-        } catch let error as NSError {
-            assertionFailure("\(error)")
-        }
-    }
-    
-    func deleteTrackerWith(id: UUID){
+    func deleteTrackerWith(id: UUID) {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
         
         do {
@@ -122,31 +177,66 @@ extension TrackerStore: TrackerMangedObjectProtocol {
         }
     }
     
-    private func convertResponseToType(_ response: [TrackerCoreData]) -> [Tracker] {
+    func updateCategoriesArray() -> [TrackerCategory]? {
         
-        var trackerArray: [Tracker] = []
+        guard let trackersCoreData = fetchAllTrackers() else {
+            return nil
+        }
         
-        for trackerCoreData in response {
+        var categories: [TrackerCategory] = []
+        
+        for tracker in trackersCoreData {
             
-            let schedule = trackerCoreData.schedule != nil ? trackerCoreData.schedule : nil
-            
-            if let id = trackerCoreData.id,
-               let name = trackerCoreData.name,
-               let colorHexString = trackerCoreData.color,
-               let emoji = trackerCoreData.emoji
-            {
-                let tracker = Tracker(
-                    id: id,
-                    name: name,
-                    color: uiColorMarshalling.color(from: colorHexString),
-                    emoji: emoji,
-                    schedule: schedule?.components(separatedBy: " ") ?? [])
+            if let convertedTracker = convertCoreDataToTracker(tracker) {
                 
-                trackerArray.append(tracker)
+                if !categories.isEmpty, categories.contains(where: { element in
+                    element.titleOfCategory == tracker.trackerCategory?.titleOfCategory
+                }) {
+                    
+                    for index in 0..<categories.count {
+                        
+                        if categories[index].titleOfCategory == tracker.trackerCategory?.titleOfCategory {
+                            
+                            var trackers: [Tracker] = categories[index].trackersArray
+                            trackers.append(convertedTracker)
+                            
+                            categories[index] = TrackerCategory(titleOfCategory: categories[index].titleOfCategory, trackersArray: trackers)
+                        }
+                    }
+                } else {
+                    
+                    categories.append(TrackerCategory(titleOfCategory: tracker.trackerCategory?.titleOfCategory ?? "", trackersArray: [convertedTracker]))
+                }
             }
         }
         
-        return trackerArray
+        return categories
     }
 }
 
+extension TrackerStore: NSFetchedResultsControllerDelegate {
+    
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        guard
+            let trackerCoreData = anObject as? TrackerCoreData,
+            let tracker = convertCoreDataToTracker(trackerCoreData)
+        else { return }
+        
+        switch type {
+            
+        case .insert:
+            if let title = trackerCoreData.trackerCategory?.titleOfCategory {
+                delegate?.didAdd(tracker: tracker, with: title)
+            }
+            
+        case .delete:
+            delegate?.didDelete(tracker: tracker)
+            
+        case .update:
+            break
+        default:
+            break
+        }
+    }
+}

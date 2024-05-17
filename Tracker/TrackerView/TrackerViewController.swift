@@ -17,8 +17,8 @@ final class TrackerViewController: UIViewController {
     private lazy var searchController = UISearchController(searchResultsController: nil)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    let trackerRecordStore = TrackerRecordStore()
-    let trackerStore = TrackerStore()
+    var trackerStore: TrackerStoreProtocol?
+    var trackerRecordStore: RecordStoreProtocol?
     let trackerCategoryStore = TrackerCategoryStore()
     private var categories: [TrackerCategory] = []
     private var visibleTrackers: [TrackerCategory] = []
@@ -32,9 +32,6 @@ final class TrackerViewController: UIViewController {
     
     private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
     
-    private lazy var trackerStoreProvider = TrackerStoreProvider(delegate: self)
-    private lazy var recordStoreProvider = TrackerRecordStoreProvider(delegate: self)
-    
     private var dateFormatter: DateFormatter {
         
         let formatter = DateFormatter()
@@ -43,6 +40,26 @@ final class TrackerViewController: UIViewController {
         formatter.timeStyle = .none
         
         return formatter
+    }
+    
+//    private lazy var recordStoreProvider = TrackerRecordStoreProvider(delegate: self)
+    
+    convenience init() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            self.init()
+            return
+        }
+        self.init(appDelegate: appDelegate)
+    }
+    
+    private init(appDelegate: AppDelegate) {
+        super.init(nibName: nil, bundle: nil)
+        trackerStore = TrackerStore(self, appDelegate: appDelegate)
+        trackerRecordStore = TrackerRecordStore(self, appDelegate: appDelegate)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
     }
     
     
@@ -286,12 +303,12 @@ final class TrackerViewController: UIViewController {
         currentDate = datePicker.date
         configureTrackerViews()
         
-        if completedTrackers.isEmpty {
-            completedTrackers = recordStoreProvider.fetchAllRecords()
+        if completedTrackers.isEmpty, let trackerRecordStore {
+            completedTrackers = trackerRecordStore.fetchAllConvertedRecords()
         }
         
-        if categories.isEmpty {
-            categories = trackerStoreProvider.updateCategoriesArray() ?? []
+        if categories.isEmpty, let trackerStore {
+            categories = trackerStore.updateCategoriesArray() ?? []
             showVisibleTrackers(dateDescription: datePicker.date.description(with: .current))
         }
     }
@@ -317,7 +334,7 @@ extension TrackerViewController: TrackerViewControllerDelegate {
         self.dismiss(animated: true)
         
         trackerCategoryStore.storeCategory(trackerCategory)
-        trackerStore.storeNewTracker(trackerCategory.trackersArray[0], for: trackerCategory.titleOfCategory)
+        trackerStore?.storeNewTracker(trackerCategory.trackersArray[0], for: trackerCategory.titleOfCategory)
     }
     
     func dismisTrackerTypeController() {
@@ -327,14 +344,18 @@ extension TrackerViewController: TrackerViewControllerDelegate {
 
 
 extension TrackerViewController: UICollectionViewDataSource {
-    
-    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
+    func numberOfSections(in collectionView: UICollectionView) -> Int {
         
         if visibleTrackers.isEmpty {
             collectionView.backgroundColor? = .clear
         } else {
             collectionView.backgroundColor = .ypWhite
         }
+        
+        return visibleTrackers.count
+    }
+    
+    func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         
         return visibleTrackers.isEmpty ? 0 :
         visibleTrackers[section].trackersArray.count
@@ -429,7 +450,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             guard cell.shouldTapButton(cell, date: actualDate) != nil else { return }
             
-            trackerStoreProvider.deleteTrackerWithId(id: idOfCell)
+            trackerStore?.deleteTrackerWith(id: idOfCell)
         } else {
             
             guard let bool = cell.shouldTapButton(cell, date: actualDate) else { return }
@@ -470,7 +491,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
         checkForVisibleTrackersAt(dateDescription: datePicker.date.description(with: .current))
         
         collectionView.performBatchUpdates {
-            
             collectionView.deleteItems(at: [indexPath])
         }
         
@@ -501,11 +521,11 @@ extension TrackerViewController: CollectionViewCellDelegate {
         if var dates = completedTrackers.first(where: { $0.id == id })?.date {
             
             dates.append(actualDate)
-            recordStoreProvider.updateRecord(TrackerRecord(id: id, date: dates))
+            trackerRecordStore?.updateRecord(TrackerRecord(id: id, date: dates))
             
         } else {
             
-            recordStoreProvider.storeRecord(TrackerRecord(id: id, date: [actualDate]))
+            trackerRecordStore?.storeRecord(TrackerRecord(id: id, date: [actualDate]))
         }
     }
     
@@ -523,12 +543,12 @@ extension TrackerViewController: CollectionViewCellDelegate {
                 }
             }
             
-            recordStoreProvider.deleteRecord(of: TrackerRecord(id: id, date: records))
+            trackerRecordStore?.deleteRecord(TrackerRecord(id: id, date: records))
         }
     }
 }
 
-extension TrackerViewController: TrackerStoreProviderDelegate {
+extension TrackerViewController: TrackerStoreDelegate {
     
     func didAdd(tracker: Tracker, with categoryTitle: String) {
         
@@ -567,7 +587,7 @@ extension TrackerViewController: TrackerStoreProviderDelegate {
     func didUpdate(tracker: Tracker) {}
 }
 
-extension TrackerViewController: RecordStoreProviderDelegate {
+extension TrackerViewController: RecordStoreDelegate {
     func didAdd(record: TrackerRecord) {
         
         completedTrackers.append(record)

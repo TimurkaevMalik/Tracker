@@ -76,7 +76,7 @@ final class TrackerCategoryStore {
         }
     }
     
-    func convertResponseToType( _ response: [TrackerCategoryCoreData]) -> [TrackerCategory] {
+    func convertToCategotyArray( _ response: [TrackerCategoryCoreData]) -> [TrackerCategory] {
         
         var categoryArray: [TrackerCategory] = []
         for categoryCoreData in response {
@@ -88,5 +88,19 @@ final class TrackerCategoryStore {
         }
         
         return categoryArray
+    }
+    
+    private func convertCoreDataToCategory( _ categoryCoreData: TrackerCategoryCoreData) -> TrackerCategory? {
+        
+        var category: TrackerCategory
+        
+        if let title = categoryCoreData.titleOfCategory {
+            
+            category = TrackerCategory(titleOfCategory: title, trackersArray: [])
+            
+            return category
+        }
+        
+        return nil
     }
 }

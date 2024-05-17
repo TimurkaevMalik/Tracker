@@ -190,9 +190,9 @@
 			children = (
 				F548C21B2BF4E12100DAA0AE /* CoreDataModel.xcdatamodeld */,
 				BC2D1FB32BE970AC00609ECF /* TrackerStore.swift */,
+				BCA8F8CE2BF13E4600E93BE7 /* TrackerStoreProvider.swift */,
 				BC2D1FB52BE970BC00609ECF /* TrackerCategoryStore.swift */,
 				BC2D1FB72BE970C500609ECF /* TrackerRecordStore.swift */,
-				BCA8F8CE2BF13E4600E93BE7 /* TrackerStoreProvider.swift */,
 				BCE64D2D2BF3A8F9005754CC /* TrackerRecordStoreProvider.swift */,
 			);
 			path = CoreData;

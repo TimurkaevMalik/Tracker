@@ -8,40 +8,103 @@
 import UIKit
 import CoreData
 
-protocol RecordManagedObjectProtocol {
+protocol RecordStoreProtocol {
     var context: NSManagedObjectContext { get }
     
     func storeRecord(_ record: TrackerRecord)
     func updateRecord(_ record: TrackerRecord)
     func deleteRecord(_ record: TrackerRecord)
-    func fetchAllRecords() -> [TrackerRecordCoreData]
-    func fetchRecordWith(id: UUID) -> TrackerRecordCoreData?
+    func fetchAllConvertedRecords() -> [TrackerRecord]
+    func fetchConvertedRecordWith(id: UUID) -> TrackerRecord?
 }
 
-final class TrackerRecordStore {
+final class TrackerRecordStore: NSObject {
     
-    internal let context: NSManagedObjectContext
+    private weak var delegate: RecordStoreDelegate?
     private let appDelegate: AppDelegate
+    internal let context: NSManagedObjectContext
+    private var fetchedResultController: NSFetchedResultsController<TrackerRecordCoreData>?
     private let recordName = "TrackerRecordCoreData"
     private let dateName = "DateCoreData"
+    private let dateFormatter = DateFormatManager.shared
+//    convenience init(){
+//        
+//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+//            self.init()
+//            return
+//        }
+//        
+//        self.init(appDelegate: appDelegate)
+//    }
     
-    convenience init(){
+    init(_ delegate: RecordStoreDelegate, appDelegate: AppDelegate){
+        self.appDelegate = appDelegate
+        self.delegate = delegate
+        self.context = appDelegate.persistentContainer.viewContext
+        super.init()
         
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            self.init()
-            return
-        }
+        let sortDescription = NSSortDescriptor(keyPath: \TrackerRecordCoreData.id, ascending: false)
+        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        fetchRequest.sortDescriptors = [sortDescription]
         
-        self.init(appDelegate: appDelegate)
+        let controller = NSFetchedResultsController(
+            fetchRequest: fetchRequest,
+            managedObjectContext: context,
+            sectionNameKeyPath: nil,
+            cacheName: nil)
+        
+        controller.delegate = self
+        fetchedResultController = controller
+        try? controller.performFetch()
     }
     
-    private init(appDelegate: AppDelegate){
-        self.appDelegate = appDelegate
-        self.context = appDelegate.persistentContainer.viewContext
+    
+    private func fetchAllRecords() -> [TrackerRecordCoreData] {
+        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: recordName)
+        
+        do {
+            let records = try context.fetch(fetchRequest)
+            return records
+            
+        } catch let error as NSError {
+            
+            assertionFailure("\(error)")
+            return []
+        }
+    }
+    
+    private func fetchRecordWith(id: UUID) -> TrackerRecordCoreData? {
+        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: recordName)
+        
+        do {
+            let recordCoreData = try context.fetch(fetchRequest).first(where: { $0.id == id })
+            return recordCoreData
+            
+        } catch let error as NSError {
+            
+            assertionFailure("\(error)")
+            return nil
+        }
+    }
+    
+    private func getDateArrayFromStrings(of record: TrackerRecordCoreData) -> [Date] {
+        
+        var dates: [Date] = []
+        if  let datesString = record.datesString?.components(separatedBy: ",") {
+            
+            for dateString in datesString {
+                
+                if let date = dateFormatter.getDateFrom(string: dateString) {
+                    dates.append(date)
+                }
+            }
+            
+        }
+        return dates
     }
 }
 
-extension TrackerRecordStore: RecordManagedObjectProtocol {
+extension TrackerRecordStore: RecordStoreProtocol {
     
     func storeRecord(_ record: TrackerRecord){
         
@@ -55,6 +118,48 @@ extension TrackerRecordStore: RecordManagedObjectProtocol {
         recordCoreData.datesString = dates.joined(separator: ",")
         
         appDelegate.saveContext()
+    }
+    
+    func fetchAllConvertedRecords() -> [TrackerRecord] {
+        
+        let records = fetchAllRecords()
+        
+        var convertedRecords: [TrackerRecord] = []
+        
+        for record in records {
+            
+            if let id = record.id {
+                
+                let dates: [Date] = getDateArrayFromStrings(of: record)
+                convertedRecords.append(TrackerRecord(id: id, date: dates))
+            }
+        }
+        
+        return convertedRecords
+    }
+    
+    func fetchConvertedRecordWith(id: UUID) -> TrackerRecord? {
+        
+        guard
+            let recordCoreData = fetchRecordWith(id: id),
+            let  datesStringArray = recordCoreData.datesString?.components(separatedBy: ",")
+        else { return nil }
+        
+        let datesFormated = datesStringArray.map({ dateFormatter.getDateFrom(string: $0) })
+        
+        var dates = [Date]()
+        
+        for date in datesFormated {
+            if let date {
+                dates.append(date)
+            } else {
+                return nil
+            }
+        }
+        
+        let record = TrackerRecord(id: id, date: dates)
+        
+        return record
     }
     
     func updateRecord(_ record: TrackerRecord) {
@@ -83,33 +188,30 @@ extension TrackerRecordStore: RecordManagedObjectProtocol {
         
         appDelegate.saveContext()
     }
+}
+
+extension TrackerRecordStore: NSFetchedResultsControllerDelegate {
     
-    
-    func fetchAllRecords() -> [TrackerRecordCoreData] {
-        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: recordName)
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
         
-        do {
-            let records = try context.fetch(fetchRequest)
-            return records
-            
-        } catch let error as NSError {
-            
-            assertionFailure("\(error)")
-            return []
-        }
-    }
-    
-    func fetchRecordWith(id: UUID) -> TrackerRecordCoreData? {
-        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: recordName)
+        guard
+            let recordCoreData = anObject as? TrackerRecordCoreData,
+            let id = recordCoreData.id
+        else { return }
         
-        do {
-            let recordCoreData = try context.fetch(fetchRequest).first(where: { $0.id == id })
-            return recordCoreData
+        let dates = getDateArrayFromStrings(of: recordCoreData)
+        let record = TrackerRecord(id: id, date: dates)
+        
+        switch type {
             
-        } catch let error as NSError {
-            
-            assertionFailure("\(error)")
-            return nil
+        case .insert:
+            delegate?.didAdd(record: record)
+        case .delete:
+            delegate?.didDelete(record: record)
+        case .update:
+            delegate?.didUpdate(record: record)
+        default:
+            break
         }
     }
 }

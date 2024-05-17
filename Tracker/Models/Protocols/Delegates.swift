@@ -7,10 +7,16 @@
 
 import Foundation
 
-protocol TrackerStoreProviderDelegate: AnyObject {
+protocol TrackerStoreDelegate: AnyObject {
     func didUpdate(tracker: Tracker)
     func didDelete(tracker: Tracker)
     func didAdd(tracker: Tracker, with categoryTitle: String)
+}
+
+protocol RecordStoreDelegate: AnyObject {
+    func didUpdate(record: TrackerRecord)
+    func didDelete(record: TrackerRecord)
+    func didAdd(record: TrackerRecord)
 }
 
 protocol TrackerViewControllerDelegate: AnyObject {
@@ -37,10 +43,4 @@ protocol CategoryOfTrackerDelegate: AnyObject {
 protocol CollectionViewCellDelegate: AnyObject {
     
     func didTapCollectionCellButton(_ cell: CollectionViewCell)
-}
-
-protocol RecordStoreProviderDelegate: AnyObject {
-    func didUpdate(record: TrackerRecord)
-    func didDelete(record: TrackerRecord)
-    func didAdd(record: TrackerRecord)
 }
