@@ -36,13 +36,15 @@ final class TrackerViewController: UIViewController {
         
         let formatter = DateFormatter()
         
+        formatter.locale = .current
+        formatter.timeZone = .current
+        formatter.calendar = .current
         formatter.dateStyle = .short
         formatter.timeStyle = .none
         
         return formatter
     }
     
-//    private lazy var recordStoreProvider = TrackerRecordStoreProvider(delegate: self)
     
     convenience init() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -275,7 +277,10 @@ final class TrackerViewController: UIViewController {
     
     private func wasCellButtonTapped(at indexPath: IndexPath) -> Bool {
         
-        guard let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) else {
+        guard
+            let currentDate,
+            let actualDate = currentDate.getDefaultDateWith(formatter: dateFormatter)
+        else {
             return false
         }
         
@@ -438,13 +443,13 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
         guard
             let indexPath = collectionView.indexPath(for: cell),
-            let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) 
+            let currentDate,
+            let actualDate = currentDate.getDefaultDateWith(formatter: dateFormatter)
         else {
             return
         }
         
         let idOfCell = visibleTrackers[indexPath.section].trackersArray[indexPath.row].id
-        
         
         if visibleTrackers[indexPath.section].trackersArray[indexPath.row].schedule.isEmpty {
             
@@ -501,7 +506,10 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     private func shouldRecordDate(_ bool: Bool, idOfCell: UUID){
         
-        guard let actualDate = currentDate?.getDefaultDateWith(formatter: dateFormatter) else {
+        guard 
+            let currentDate,
+                let actualDate = currentDate.getDefaultDateWith(formatter: dateFormatter)
+        else {
             return
         }
         
@@ -594,7 +602,7 @@ extension TrackerViewController: RecordStoreDelegate {
     }
     
     func didDelete(record: TrackerRecord) {
-        print(completedTrackers)
+        
         for index in 0..<completedTrackers.count {
             
             if completedTrackers[index].id == record.id {

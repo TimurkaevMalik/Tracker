@@ -12,7 +12,7 @@ final class TrackerCategoryStore {
     
     private let context: NSManagedObjectContext
     private let appDelegate: AppDelegate
-    
+    private let categoryName = "TrackerCategoryCoreData"
     convenience init(){
         
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -35,7 +35,7 @@ final class TrackerCategoryStore {
             return
         }
         
-        guard let categoryEntityDescription = NSEntityDescription.entity(forEntityName: "TrackerCategoryCoreData", in: context ) else {
+        guard let categoryEntityDescription = NSEntityDescription.entity(forEntityName: categoryName, in: context ) else {
             return
         }
         
@@ -49,7 +49,7 @@ final class TrackerCategoryStore {
     
     func fetchAllCategories() -> [TrackerCategoryCoreData]? {
         
-        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "TrackerCategoryCoreData")
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: categoryName)
         
         do {
             let response = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData]
@@ -62,7 +62,7 @@ final class TrackerCategoryStore {
     }
     
     func fetchCategory(with title: String) -> TrackerCategoryCoreData? {
-        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: "TrackerCategoryCoreData")
+        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: categoryName)
         
         do {
             let categories = try context.fetch(fetchRequest)

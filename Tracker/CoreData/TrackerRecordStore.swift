@@ -24,18 +24,24 @@ final class TrackerRecordStore: NSObject {
     private let appDelegate: AppDelegate
     internal let context: NSManagedObjectContext
     private var fetchedResultController: NSFetchedResultsController<TrackerRecordCoreData>?
+    
+    private var dateFormatter: DateFormatter {
+        
+        let formatter = DateFormatter()
+        
+        formatter.locale = .current
+        formatter.timeZone = .current
+        formatter.calendar = .current
+        formatter.dateStyle = .short
+        formatter.timeStyle = .none
+        formatter.dateFormat = "yyyy-MM-dd hh:mm:ss Z"
+        
+        return formatter
+    }
+    
     private let recordName = "TrackerRecordCoreData"
     private let dateName = "DateCoreData"
-    private let dateFormatter = DateFormatManager.shared
-//    convenience init(){
-//        
-//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-//            self.init()
-//            return
-//        }
-//        
-//        self.init(appDelegate: appDelegate)
-//    }
+    
     
     init(_ delegate: RecordStoreDelegate, appDelegate: AppDelegate){
         self.appDelegate = appDelegate
@@ -44,7 +50,7 @@ final class TrackerRecordStore: NSObject {
         super.init()
         
         let sortDescription = NSSortDescriptor(keyPath: \TrackerRecordCoreData.id, ascending: false)
-        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: "TrackerRecordCoreData")
+        let fetchRequest = NSFetchRequest<TrackerRecordCoreData>(entityName: recordName)
         fetchRequest.sortDescriptors = [sortDescription]
         
         let controller = NSFetchedResultsController(
@@ -94,7 +100,7 @@ final class TrackerRecordStore: NSObject {
             
             for dateString in datesString {
                 
-                if let date = dateFormatter.getDateFrom(string: dateString) {
+                if let date = dateFormatter.date(from: dateString) {
                     dates.append(date)
                 }
             }
@@ -145,7 +151,7 @@ extension TrackerRecordStore: RecordStoreProtocol {
             let  datesStringArray = recordCoreData.datesString?.components(separatedBy: ",")
         else { return nil }
         
-        let datesFormated = datesStringArray.map({ dateFormatter.getDateFrom(string: $0) })
+        let datesFormated = datesStringArray.map({ dateFormatter.date(from: $0) })
         
         var dates = [Date]()
         
