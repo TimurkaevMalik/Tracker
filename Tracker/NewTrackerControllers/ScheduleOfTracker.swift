@@ -15,9 +15,11 @@ final class ScheduleOfTracker: UIViewController {
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
-    private let weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    
     private var datesWasChosenBefore: [String] = []
     private var dates: [String] = []
+    private let weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    
     
     init(delegate: ScheduleOfTrackerDelegate){
         self.delegate = delegate
