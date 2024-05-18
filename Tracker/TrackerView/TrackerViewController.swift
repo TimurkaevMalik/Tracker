@@ -17,9 +17,9 @@ final class TrackerViewController: UIViewController {
     private lazy var searchController = UISearchController(searchResultsController: nil)
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    var trackerStore: TrackerStoreProtocol?
-    var trackerRecordStore: RecordStoreProtocol?
-    let trackerCategoryStore = TrackerCategoryStore()
+    private var trackerStore: TrackerStoreProtocol?
+    private var trackerRecordStore: RecordStoreProtocol?
+    private let trackerCategoryStore = TrackerCategoryStore()
     private var categories: [TrackerCategory] = []
     private var visibleTrackers: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
