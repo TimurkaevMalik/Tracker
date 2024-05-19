@@ -62,15 +62,15 @@ final class CategoryOfTracker: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
         
-        let bottomConstant = viewModel.categories.count * 75 > 599 ? 599 : viewModel.categories.count * 75 - 1
-        
-        if viewModel.categories.count * 75 <= 599 {
-            tableView.isScrollEnabled = false
-        }
+//        let bottomConstant = viewModel.categories.count * 75 > 599 ? 599 : viewModel.categories.count * 75 - 1
+//        
+//        if viewModel.categories.count * 75 <= 599 {
+//            tableView.isScrollEnabled = false
+//        }
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
-            tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: CGFloat(Float(bottomConstant))),
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor/*, constant: CGFloat(Float(bottomConstant))*/),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
@@ -138,14 +138,20 @@ final class CategoryOfTracker: UIViewController {
     }
     
     private func updateTableViewCells(categories: [String]) {
-        let oldCount = categories.count - 1
+        
         let newCount = categories.count
         print(categories)
-//        tableView.performBatchUpdates {
+        
+        tableView.performBatchUpdates {
             
-            let indexPaths: [IndexPath] = [IndexPath(row: newCount - 1, section: 0)]
-            tableView.insertRows(at: indexPaths, with: .automatic)
-//        }
+            let lastIndex = IndexPath(row: newCount - 1, section: 0)
+            tableView.insertRows(at: [lastIndex], with: .top)
+            
+            if newCount > 1 {
+                let secondLastIndex = IndexPath(row: newCount - 2, section: 0)
+                tableView.reloadRows(at: [secondLastIndex], with: .fade)
+            }
+        }
     }
     
     override func viewDidLoad() {
@@ -157,9 +163,14 @@ final class CategoryOfTracker: UIViewController {
         configureTableView()
         configureDoneButton()
         
-        viewModel.categoriesBinding = { [weak self] categories in
-            guard let self = self else { return }
-            self.tableView.reloadData()
+        viewModel.categoriesBinding = {  categories in
+//            guard let self = self else { return }
+//            self.tableView.reloadData()
+//            if self.tableView.visibleCells.count == 0 {
+//                self.tableView.reloadData()
+//            } else {
+                self.updateTableViewCells(categories: categories)
+//            }
         }
     }
     
@@ -172,7 +183,7 @@ final class CategoryOfTracker: UIViewController {
     
     @objc func doneButtonTapped(){
         
-        viewModel.storeNewCategory(TrackerCategory(titleOfCategory: "New", trackersArray: []))
+        viewModel.storeNewCategory(TrackerCategory(titleOfCategory: "New" + "\(viewModel.categories.count)", trackersArray: []))
         
 //        guard let chosenCategory else {
 //            
@@ -192,7 +203,7 @@ extension CategoryOfTracker: UITableViewDataSource {
         
         let count = viewModel.categories.count
         print(count)
-        return !viewModel.categories.isEmpty ? count : 0
+        return count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -207,7 +218,7 @@ extension CategoryOfTracker: UITableViewDataSource {
         
         cell.backgroundColor = .ypLightGray
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
-        
+//        cell.viewModel = viewModel.categories[indexPath.row]
         if !viewModel.categories.isEmpty {
             cell.nameOfCategory = viewModel.categories[indexPath.row]
         }
