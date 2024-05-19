@@ -102,9 +102,7 @@ final class CategoryCellView: UITableViewCell {
             let text = sender.text,
             !text.isEmpty,
             !text.filter({ $0 != Character(" ") }).isEmpty
-        else {
-            return
-        }
+        else { return }
         
         textField.text = text.trimmingCharacters(in: .whitespaces)
     }
@@ -124,10 +122,7 @@ extension CategoryCellView: UITextFieldDelegate {
         
         let newString = currentString.replacingCharacters(in: range, with: string)
         
-        guard newString.count <= maxLength else {
-            
-            return false
-        }
+        guard newString.count <= maxLength else { return false }
         
         return true
     }

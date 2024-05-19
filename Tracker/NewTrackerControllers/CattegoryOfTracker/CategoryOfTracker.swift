@@ -10,14 +10,25 @@ import UIKit
 
 final class CategoryOfTracker: UIViewController {
     
-    var delegate: CategoryOfTrackerDelegate?
+    private weak var delegate: CategoryOfTrackerDelegate?
     
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
     
     private var categories: [String] = ["Важное"]
+    private var categoryWasChosenBefore: String?
     private var chosenCategory: String?
+    
+    init(delegate: CategoryOfTrackerDelegate){
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
     
     private func configureTitleLabelView(){
         titleLabel.text = "Категория"
@@ -105,6 +116,25 @@ final class CategoryOfTracker: UIViewController {
         }
     }
     
+    private func shouldSetCheckmarkForCell(_ indexPath: IndexPath) -> UITableViewCell.AccessoryType {
+        
+        if let categoryWasChosenBefore {
+            if categoryWasChosenBefore == categories[indexPath.row] {
+                return .checkmark
+            }
+        }
+        
+        return .none
+    }
+    
+    func ifWasCategoryChosenBefore(category: String?){
+        
+        if let category {
+            categoryWasChosenBefore = category
+            self.chosenCategory = category
+        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -114,6 +144,13 @@ final class CategoryOfTracker: UIViewController {
         configureTableView()
         configureDoneButton()
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        delegate?.didDismissScreenWithChangesIn(chosenCategory)
+    }
+    
     
     @objc func doneButtonTapped(){
         guard let chosenCategory else {
@@ -141,6 +178,7 @@ extension CategoryOfTracker: UITableViewDataSource {
             return UITableViewCell()
         }
         
+        cell.accessoryType = shouldSetCheckmarkForCell(indexPath)
         cell.layer.masksToBounds = true
         cell.setCornerRadiusForCell(at: indexPath, of: tableView)
         

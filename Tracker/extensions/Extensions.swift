@@ -17,6 +17,15 @@ extension UIView {
     }
 }
 
+extension UIScrollView {
+    func addSubviewsToScrollView(_ subviews: [UIView]){
+        
+        for subview in subviews {
+            addSubview(subview)
+        }
+    }
+}
+
 extension Date {
     func startOfWeek(using calendar: Calendar) -> Date {
         
@@ -40,7 +49,15 @@ extension Date {
         guard let date = formatter.date(from: stringDate) else {
             return nil
         }
-        
         return date
+    }
+}
+
+extension NSMutableAttributedString {
+    
+    func setColor(_ color: UIColor, forText: String) {
+        
+        let range: NSRange = self.mutableString.range(of: forText, options: .caseInsensitive)
+        self.addAttribute(NSAttributedString.Key.foregroundColor, value: color, range: range)
     }
 }

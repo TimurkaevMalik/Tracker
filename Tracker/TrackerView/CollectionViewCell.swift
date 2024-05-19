@@ -10,8 +10,9 @@ import UIKit
 
 final class CollectionViewCell: UICollectionViewCell {
     
-    var delegate: CollectionViewCellDelegate?
+    weak var delegate: CollectionViewCellDelegate?
     
+    var idOfCell: UUID?
     let view = UIView()
     let nameLable = UILabel()
     let emoji = UILabel()
@@ -19,9 +20,10 @@ final class CollectionViewCell: UICollectionViewCell {
     let doneButton = UIButton()
     var count: Int?
     
+    
     override init(frame: CGRect) {
         super.init(frame: frame)
-        
+    
         configureView()
         configureLabels()
         configureButton()
@@ -106,9 +108,9 @@ final class CollectionViewCell: UICollectionViewCell {
     
     private func highLightButton(){
         
-        UIView.animate(withDuration: 0.4) {
+        UIView.animate(withDuration: 0.2) {
             
-            self.doneButton.backgroundColor = .ypRed
+            self.doneButton.backgroundColor = .red
             
         } completion: { isCompleted in
             if isCompleted {
@@ -117,13 +119,13 @@ final class CollectionViewCell: UICollectionViewCell {
         }
         
         func resetButtonColor(){
-            UIView.animate(withDuration: 0.1) {
+            UIView.animate(withDuration: 0.2) {
                 self.doneButton.backgroundColor = self.view.backgroundColor
             }
         }
     }
     
-    func shouldAddDay(_ cell: CollectionViewCell, date selectedDate: Date) -> Bool? {
+    func shouldTapButton(_ cell: CollectionViewCell, date selectedDate: Date) -> Bool? {
         
         guard
             var count = cell.count,

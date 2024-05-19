@@ -10,12 +10,20 @@ import UIKit
 
 final class TrackerTypeController: UIViewController {
     
-    var delegate: ChosenTrackerControllerDelegate?
+    private weak var delegate: TrackerViewControllerDelegate?
     
     let habbit = UIButton()
     let irregularEvent = UIButton()
     let titleLabel = UILabel()
     
+    init(delegate: TrackerViewControllerDelegate) {
+        self.delegate = delegate
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     private func configureCreatingTrackerView(){
         view.backgroundColor = UIColor(named: "YPWhite")
@@ -85,20 +93,18 @@ final class TrackerTypeController: UIViewController {
     
     @objc func habbitButtonTapped(){
         
-        let viewController = ChosenTrackerController()
+        guard let delegate else { return }
         
-        viewController.delegate = delegate
-        viewController.configureTwoTableVeiwCells()
+        let viewController = ChosenTrackerController(trackerType: TrackerType.habbit, delegate: delegate)
         
         present(viewController, animated: true)
     }
     
     @objc func irregularEventButtonTapped(){
         
-        let viewController = ChosenTrackerController()
+        guard let delegate else { return }
         
-        viewController.delegate = delegate
-        viewController.configureOneTableVeiwCell()
+        let viewController = ChosenTrackerController(trackerType: TrackerType.irregularEvent, delegate: delegate)
         
         present(viewController, animated: true)
     }

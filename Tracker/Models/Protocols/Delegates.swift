@@ -7,29 +7,40 @@
 
 import Foundation
 
-protocol CreatingTrackerDelegate {
-    
-    func CreatingTrackerViewDidDismiss()
+protocol TrackerStoreDelegate: AnyObject {
+    func didUpdate(tracker: Tracker)
+    func didDelete(tracker: Tracker)
+    func didAdd(tracker: Tracker, with categoryTitle: String)
 }
 
-protocol ChosenTrackerControllerDelegate {
+protocol RecordStoreDelegate: AnyObject {
+    func didUpdate(record: TrackerRecord)
+    func didDelete(record: TrackerRecord)
+    func didAdd(record: TrackerRecord)
+}
+
+protocol TrackerViewControllerDelegate: AnyObject {
     
     func dismisTrackerTypeController()
     
     func addNewTracker(trackerCategory: TrackerCategory)
 }
 
-protocol ScheduleOfTrackerDelegate {
+protocol ScheduleOfTrackerDelegate: AnyObject {
     
     func didRecieveDatesArray(dates: [String])
+    
+    func didDismissScreenWithChanges(dates: [String])
 }
 
-protocol CategoryOfTrackerDelegate {
+protocol CategoryOfTrackerDelegate: AnyObject {
     
     func didChooseCategory(_ category: String)
+    
+    func didDismissScreenWithChangesIn(_ category: String?)
 }
 
-protocol CollectionViewCellDelegate {
+protocol CollectionViewCellDelegate: AnyObject {
     
     func didTapCollectionCellButton(_ cell: CollectionViewCell)
 }
