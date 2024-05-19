@@ -12,10 +12,15 @@ class OnboardingViewController: UIPageViewController {
     private let pageControl = UIPageControl()
     private let button = UIButton()
     
-    lazy var pages: [UIViewController] = {
+    private lazy var pages: [UIViewController] = {
         
-        let blueBoard = BlueBoardController()
-        let redBoard = RedBoardController()
+        let blueBoardScreen = UIImage.blueBoardScreen
+        let redBoardScreen = UIImage.redBoardScreen
+        
+        let blueBoard = BoardController(boardImage: blueBoardScreen,
+                                        with: "Отслеживайте только то, что хотите")
+        let redBoard = BoardController(boardImage: redBoardScreen,
+                                       with: "Даже если это\nне литры воды и йога")
         
         return [blueBoard, redBoard]
     }()
@@ -47,7 +52,7 @@ class OnboardingViewController: UIPageViewController {
         ])
     }
     
-    func configureButton() {
+    private func configureButton() {
         button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         button.setTitle("Вот это технологии!", for: .normal)
         button.layer.masksToBounds = true
@@ -80,9 +85,15 @@ class OnboardingViewController: UIPageViewController {
     }
     
     @objc func didTapButton() {
+        
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        
         let viewController = TabBarControler()
         viewController.modalPresentationStyle = .fullScreen
         
+        appDelegate.wasOnboardinShown = true
         present(viewController, animated: true)
     }
 }

@@ -1,5 +1,5 @@
 //
-//  RedBoardController.swift
+//  BlueWallController.swift
 //  Tracker
 //
 //  Created by Malik Timurkaev on 19.05.2024.
@@ -7,28 +7,35 @@
 
 import UIKit
 
-class RedBoardController: UIViewController {
+class BoardController: UIViewController {
     
-    private let redBoardImage = UIImageView()
+    private let boardImageView = UIImageView()
     private let onboardingText = UILabel()
     
-    func configureBoardImage() {
+    init(boardImage: UIImage, with text: String) {
+        self.boardImageView.image = boardImage
+        self.onboardingText.text = text
+        super.init(nibName: nil, bundle: nil)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
+    
+    private func configureBoardImage() {
         
-        redBoardImage.image = .redBoardScreen
-        
-        redBoardImage.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(redBoardImage)
+        boardImageView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(boardImageView)
         
         NSLayoutConstraint.activate([
-            redBoardImage.topAnchor.constraint(equalTo: view.topAnchor),
-            redBoardImage.bottomAnchor.constraint(equalTo: view.bottomAnchor),
-            redBoardImage.trailingAnchor.constraint(equalTo: view.trailingAnchor),
-            redBoardImage.leadingAnchor.constraint(equalTo: view.leadingAnchor)
+            boardImageView.topAnchor.constraint(equalTo: view.topAnchor),
+            boardImageView.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            boardImageView.trailingAnchor.constraint(equalTo: view.trailingAnchor),
+            boardImageView.leadingAnchor.constraint(equalTo: view.leadingAnchor)
         ])
     }
     
-    func configureOnboardingText() {
-        onboardingText.text = "Даже если это\nне литры воды и йога"
+    private func configureOnboardingText() {
         onboardingText.font = UIFont.boldSystemFont(ofSize: 32)
         onboardingText.tintColor = .ypBlack
         onboardingText.numberOfLines = 2
