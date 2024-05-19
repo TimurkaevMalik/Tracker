@@ -19,7 +19,7 @@ final class TrackerViewController: UIViewController {
     
     private var trackerStore: TrackerStoreProtocol?
     private var trackerRecordStore: RecordStoreProtocol?
-    private let trackerCategoryStore = TrackerCategoryStore()
+//    private let trackerCategoryStore = TrackerCategoryStore()
     private var categories: [TrackerCategory] = []
     private var visibleTrackers: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
@@ -338,7 +338,7 @@ extension TrackerViewController: TrackerViewControllerDelegate {
         
         self.dismiss(animated: true)
         
-        trackerCategoryStore.storeCategory(trackerCategory)
+//        trackerCategoryStore.storeCategory(trackerCategory)
         trackerStore?.storeNewTracker(trackerCategory.trackersArray[0], for: trackerCategory.titleOfCategory)
     }
     

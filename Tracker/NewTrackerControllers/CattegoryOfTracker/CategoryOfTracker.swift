@@ -10,18 +10,20 @@ import UIKit
 
 final class CategoryOfTracker: UIViewController {
     
+    private var viewModel: CategoryViewModel
     private weak var delegate: CategoryOfTrackerDelegate?
     
     private let doneButton = UIButton()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
     
-    private var categories: [String] = ["Важное"]
+//    private var categories: [String] = ["Важное"]
     private var categoryWasChosenBefore: String?
     private var chosenCategory: String?
     
     init(delegate: CategoryOfTrackerDelegate){
         self.delegate = delegate
+        self.viewModel = CategoryViewModel()
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -60,9 +62,9 @@ final class CategoryOfTracker: UIViewController {
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
         
-        let bottomConstant = categories.count * 75 > 599 ? 599 : categories.count * 75 - 1
+        let bottomConstant = viewModel.categories.count * 75 > 599 ? 599 : viewModel.categories.count * 75 - 1
         
-        if categories.count * 75 <= 599 {
+        if viewModel.categories.count * 75 <= 599 {
             tableView.isScrollEnabled = false
         }
         
@@ -119,7 +121,7 @@ final class CategoryOfTracker: UIViewController {
     private func shouldSetCheckmarkForCell(_ indexPath: IndexPath) -> UITableViewCell.AccessoryType {
         
         if let categoryWasChosenBefore {
-            if categoryWasChosenBefore == categories[indexPath.row] {
+            if categoryWasChosenBefore == viewModel.categories[indexPath.row] {
                 return .checkmark
             }
         }
@@ -135,6 +137,17 @@ final class CategoryOfTracker: UIViewController {
         }
     }
     
+    private func updateTableViewCells(categories: [String]) {
+        let oldCount = categories.count - 1
+        let newCount = categories.count
+        print(categories)
+//        tableView.performBatchUpdates {
+            
+            let indexPaths: [IndexPath] = [IndexPath(row: newCount - 1, section: 0)]
+            tableView.insertRows(at: indexPaths, with: .automatic)
+//        }
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -143,6 +156,11 @@ final class CategoryOfTracker: UIViewController {
         configureTitleLabelView()
         configureTableView()
         configureDoneButton()
+        
+        viewModel.categoriesBinding = { [weak self] categories in
+            guard let self = self else { return }
+            self.tableView.reloadData()
+        }
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -153,15 +171,18 @@ final class CategoryOfTracker: UIViewController {
     
     
     @objc func doneButtonTapped(){
-        guard let chosenCategory else {
-            
-            highLightButton()
-            return
-        }
         
-        delegate?.didChooseCategory(chosenCategory)
+        viewModel.storeNewCategory(TrackerCategory(titleOfCategory: "New", trackersArray: []))
         
-        dismiss(animated: true)
+//        guard let chosenCategory else {
+//            
+//            highLightButton()
+//            return
+//        }
+//        
+//        delegate?.didChooseCategory(chosenCategory)
+//        
+//        dismiss(animated: true)
     }
 }
 
@@ -169,7 +190,9 @@ final class CategoryOfTracker: UIViewController {
 extension CategoryOfTracker: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return !categories.isEmpty ? categories.count : 1
+        let count = viewModel.categories.count
+        print(count)
+        return !viewModel.categories.isEmpty ? count : 0
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -177,7 +200,7 @@ extension CategoryOfTracker: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath) as? CategoryCellView else {
             return UITableViewCell()
         }
-        
+        print(indexPath)
         cell.accessoryType = shouldSetCheckmarkForCell(indexPath)
         cell.layer.masksToBounds = true
         cell.setCornerRadiusForCell(at: indexPath, of: tableView)
@@ -185,8 +208,8 @@ extension CategoryOfTracker: UITableViewDataSource {
         cell.backgroundColor = .ypLightGray
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
-        if !categories.isEmpty {
-            cell.nameOfCategory = categories[indexPath.row]
+        if !viewModel.categories.isEmpty {
+            cell.nameOfCategory = viewModel.categories[indexPath.row]
         }
         cell.awakeFromNib()
         
@@ -218,7 +241,7 @@ extension CategoryOfTracker: UITableViewDelegate {
             
             tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.checkmark
             
-            chosenCategory = categories[indexPath.row]
+            chosenCategory = viewModel.categories[indexPath.row]
         }
         
         tableView.deselectRow(at: indexPath, animated: true)

@@ -21,7 +21,7 @@ final class TrackerStore: NSObject {
     internal let context: NSManagedObjectContext
     private var fectchedResultController: NSFetchedResultsController<TrackerCoreData>?
     internal let uiColorMarshalling = UIColorMarshalling()
-    private let trackerCategoryStore = TrackerCategoryStore()
+    private let trackerCategoryStore: TrackerCategoryStore
     
     private let trackerName = "TrackerCoreData"
 
@@ -30,6 +30,7 @@ final class TrackerStore: NSObject {
         self.appDelegate = appDelegate
         self.delegate = delegate
         self.context = appDelegate.persistentContainer.viewContext
+        self.trackerCategoryStore = TrackerCategoryStore(appDelegate: appDelegate)
         super.init()
         
         let sortDescription = NSSortDescriptor(keyPath: \TrackerCoreData.name, ascending: true)

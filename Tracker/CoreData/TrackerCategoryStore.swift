@@ -8,32 +8,46 @@
 import UIKit
 import CoreData
 
-final class TrackerCategoryStore {
+protocol CategoryStoreDelegate: AnyObject {
+    func storeDidUpdate(_ update: TrackerCategory)
+}
+
+final class TrackerCategoryStore: NSObject {
     
     private let context: NSManagedObjectContext
+    private var fectchedResultController: NSFetchedResultsController<TrackerCategoryCoreData>?
     private let appDelegate: AppDelegate
+    weak var delegate: CategoryStoreDelegate?
     private let categoryName = "TrackerCategoryCoreData"
-    convenience init(){
-        
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            self.init()
-            return
-        }
-        
-        self.init(appDelegate: appDelegate)
-    }
     
-    private init(appDelegate: AppDelegate){
+    init(/*_ delegate: CategoryStoreDelegate?*/appDelegate: AppDelegate){
         self.appDelegate = appDelegate
         self.context = appDelegate.persistentContainer.viewContext
+        
+//        if let delegate {
+//            self.delegate = delegate
+//        }
+        super.init()
+        
+        let sortDescriptions = NSSortDescriptor(keyPath: \TrackerCategoryCoreData.titleOfCategory, ascending: false)
+        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: categoryName)
+        fetchRequest.sortDescriptors = [sortDescriptions]
+        
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                    managedObjectContext: context,
+                                                    sectionNameKeyPath: nil,
+                                                    cacheName: nil)
+        controller.delegate = self
+        fectchedResultController = controller
+        try? fectchedResultController?.performFetch()
     }
     
     
     func storeCategory(_ category: TrackerCategory) {
         
-        guard fetchCategory(with: category.titleOfCategory) == nil else {
-            return
-        }
+//        guard fetchCategory(with: category.titleOfCategory) == nil else {
+//            return
+//        }
         
         guard let categoryEntityDescription = NSEntityDescription.entity(forEntityName: categoryName, in: context ) else {
             return
@@ -102,5 +116,30 @@ final class TrackerCategoryStore {
         }
         
         return nil
+    }
+}
+
+extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        guard
+            let categoryCoreData = anObject as? TrackerCategoryCoreData,
+            let category = convertCoreDataToCategory(categoryCoreData)
+        else { return }
+        
+        switch type {
+            
+        case .insert:
+            delegate?.storeDidUpdate(category)
+            break
+        case .delete:
+            break
+        case .update:
+            delegate?.storeDidUpdate(category)
+            break
+        default:
+            break
+        }
     }
 }
