@@ -13,15 +13,10 @@ class OnboardingViewController: UIPageViewController {
     private let button = UIButton()
     
     private lazy var pages: [UIViewController] = {
-        
-        let blueBoardScreen = UIImage.blueBoardScreen
-        let redBoardScreen = UIImage.redBoardScreen
-        
-        let blueBoard = BoardController(boardImage: blueBoardScreen,
+        let blueBoard = BoardController(boardImage: .blueBoardScreen,
                                         with: "Отслеживайте только то, что хотите")
-        let redBoard = BoardController(boardImage: redBoardScreen,
+        let redBoard = BoardController(boardImage: .redBoardScreen,
                                        with: "Даже если это\nне литры воды и йога")
-        
         return [blueBoard, redBoard]
     }()
     
