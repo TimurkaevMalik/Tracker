@@ -67,6 +67,7 @@ class ChosenTrackerController: UIViewController {
     
     private func configureScrollView(){
         
+        scrollView.showsVerticalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         
@@ -470,17 +471,13 @@ extension ChosenTrackerController: UITableViewDelegate {
         
         if indexPath.row == 0 {
             
-            let viewControler = CategoryOfTracker(delegate: self)
-            viewControler.ifWasCategoryChosenBefore(category: nameOfCategory)
-            
+            let viewControler = CategoryOfTracker(delegate: self, wasChosenCategory: nameOfCategory)
             present(viewControler, animated: true)
         }
         
         if indexPath.row == 1 {
             
-            let viewControler = ScheduleOfTracker(delegate: self)
-            viewControler.IfDatesWasChosenBefore(dates: scheduleOfTracker)
-            
+            let viewControler = ScheduleOfTracker(delegate: self, wasDatesChosen: scheduleOfTracker)
             present(viewControler, animated: true)
         }
     }

@@ -16,12 +16,12 @@ final class ScheduleOfTracker: UIViewController {
     private let titleLabel = UILabel()
     private let tableView = UITableView()
     
-    private var datesWasChosenBefore: [String] = []
-    private var dates: [String] = []
+    private var chosenDates: [String] = []
     private let weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     
     
-    init(delegate: ScheduleOfTrackerDelegate){
+    init(delegate: ScheduleOfTrackerDelegate, wasDatesChosen dates: [String]){
+        chosenDates = dates
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
     }
@@ -112,7 +112,7 @@ final class ScheduleOfTracker: UIViewController {
     
     private func shouldSetSwitchOnForCell(_ indexPath: IndexPath) -> Bool {
         
-        for date in datesWasChosenBefore {
+        for date in chosenDates {
             if date == weekdays[indexPath.row] {
                 return true
             }
@@ -121,13 +121,6 @@ final class ScheduleOfTracker: UIViewController {
         return false
     }
     
-    func IfDatesWasChosenBefore(dates: [String]){
-        
-        if !dates.isEmpty {
-            datesWasChosenBefore = dates
-            self.dates = dates
-        }
-    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -142,17 +135,17 @@ final class ScheduleOfTracker: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        delegate?.didDismissScreenWithChanges(dates: dates)
+        delegate?.didDismissScreenWithChanges(dates: chosenDates)
     }
     
     @objc func doneButtonTapped(){
         
-        guard !dates.isEmpty else {
+        guard !chosenDates.isEmpty else {
             highLightButton()
             return
         }
         
-        delegate?.didRecieveDatesArray(dates: dates)
+        delegate?.didRecieveDatesArray(dates: chosenDates)
         
         dismiss(animated: true)
     }
@@ -182,13 +175,13 @@ final class ScheduleOfTracker: UIViewController {
         
         switch sender.isOn {
         case true:
-            dates.append(stringWeekDay)
+            chosenDates.append(stringWeekDay)
             
         case false:
-            for index in 0..<dates.count {
+            for index in 0..<chosenDates.count {
                 
-                if dates[index] == stringWeekDay {
-                    dates.remove(at: index)
+                if chosenDates[index] == stringWeekDay {
+                    chosenDates.remove(at: index)
                     break
                 }
             }

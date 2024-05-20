@@ -69,7 +69,7 @@ final class CategoryViewModel {
 }
 
 extension CategoryViewModel: CategoryStoreDelegate {
-    func storeDidUpdate(_ update: TrackerCategory) {
-        categories = fetchCategories()
+    func storeDidUpdate(category: TrackerCategory) {
+        categories.append(category.titleOfCategory)
     }
 }

@@ -14,14 +14,14 @@ final class CategoryOfTracker: UIViewController {
     private weak var delegate: CategoryOfTrackerDelegate?
     
     private let doneButton = UIButton()
+    private let buttonContainer = UIView()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
-    
-//    private var categories: [String] = ["Важное"]
-    private var categoryWasChosenBefore: String?
+
     private var chosenCategory: String?
     
-    init(delegate: CategoryOfTrackerDelegate){
+    init(delegate: CategoryOfTrackerDelegate, wasChosenCategory category: String?){
+        chosenCategory = category
         self.delegate = delegate
         self.viewModel = CategoryViewModel()
         super.init(nibName: nil, bundle: nil)
@@ -57,26 +57,22 @@ final class CategoryOfTracker: UIViewController {
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.allowsMultipleSelection = false
-        
+        tableView.showsVerticalScrollIndicator = false
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
-        
-//        let bottomConstant = viewModel.categories.count * 75 > 599 ? 599 : viewModel.categories.count * 75 - 1
-//        
-//        if viewModel.categories.count * 75 <= 599 {
-//            tableView.isScrollEnabled = false
-//        }
+        view.insertSubview(tableView, belowSubview: buttonContainer)
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
-            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor/*, constant: CGFloat(Float(bottomConstant))*/),
+            tableView.bottomAnchor.constraint(equalTo: buttonContainer.topAnchor/*, constant: CGFloat(Float(bottomConstant))*/),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
     }
     
     private func configureDoneButton(){
+        buttonContainer.backgroundColor = .ypWhite
         
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
@@ -86,16 +82,22 @@ final class CategoryOfTracker: UIViewController {
         doneButton.layer.cornerRadius = 16
         doneButton.layer.masksToBounds = true
         
-        
+        buttonContainer.translatesAutoresizingMaskIntoConstraints = false
         doneButton.translatesAutoresizingMaskIntoConstraints = false
         
-        view.addSubviews([doneButton])
+        view.addSubviews([buttonContainer, doneButton])
         
         NSLayoutConstraint.activate([
+            
             doneButton.heightAnchor.constraint(equalToConstant: 60),
             doneButton.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -20),
             doneButton.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 20),
-            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+            doneButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
+            
+            buttonContainer.bottomAnchor.constraint(equalTo: view.bottomAnchor),
+            buttonContainer.topAnchor.constraint(equalTo: doneButton.topAnchor, constant: -3),
+            buttonContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
+            buttonContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
     }
     
@@ -120,8 +122,8 @@ final class CategoryOfTracker: UIViewController {
     
     private func shouldSetCheckmarkForCell(_ indexPath: IndexPath) -> UITableViewCell.AccessoryType {
         
-        if let categoryWasChosenBefore {
-            if categoryWasChosenBefore == viewModel.categories[indexPath.row] {
+        if let chosenCategory {
+            if chosenCategory == viewModel.categories[indexPath.row] {
                 return .checkmark
             }
         }
@@ -129,18 +131,9 @@ final class CategoryOfTracker: UIViewController {
         return .none
     }
     
-    func ifWasCategoryChosenBefore(category: String?){
-        
-        if let category {
-            categoryWasChosenBefore = category
-            self.chosenCategory = category
-        }
-    }
-    
     private func updateTableViewCells(categories: [String]) {
         
         let newCount = categories.count
-        print(categories)
         
         tableView.performBatchUpdates {
             
@@ -160,17 +153,13 @@ final class CategoryOfTracker: UIViewController {
         view.backgroundColor = .ypWhite
         
         configureTitleLabelView()
-        configureTableView()
         configureDoneButton()
+        configureTableView()
         
-        viewModel.categoriesBinding = {  categories in
-//            guard let self = self else { return }
-//            self.tableView.reloadData()
-//            if self.tableView.visibleCells.count == 0 {
-//                self.tableView.reloadData()
-//            } else {
-                self.updateTableViewCells(categories: categories)
-//            }
+        viewModel.categoriesBinding = { [weak self] categories in
+            guard let self = self else { return }
+            
+            self.updateTableViewCells(categories: categories)
         }
     }
     
@@ -185,15 +174,15 @@ final class CategoryOfTracker: UIViewController {
         
         viewModel.storeNewCategory(TrackerCategory(titleOfCategory: "New" + "\(viewModel.categories.count)", trackersArray: []))
         
-//        guard let chosenCategory else {
-//            
-//            highLightButton()
-//            return
-//        }
-//        
-//        delegate?.didChooseCategory(chosenCategory)
-//        
-//        dismiss(animated: true)
+        //        guard let chosenCategory else {
+        //
+        //            highLightButton()
+        //            return
+        //        }
+        //
+        //        delegate?.didChooseCategory(chosenCategory)
+        //
+        //        dismiss(animated: true)
     }
 }
 
@@ -201,9 +190,7 @@ final class CategoryOfTracker: UIViewController {
 extension CategoryOfTracker: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        let count = viewModel.categories.count
-        print(count)
-        return count
+        return viewModel.categories.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -211,14 +198,14 @@ extension CategoryOfTracker: UITableViewDataSource {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath) as? CategoryCellView else {
             return UITableViewCell()
         }
-        print(indexPath)
+        
         cell.accessoryType = shouldSetCheckmarkForCell(indexPath)
         cell.layer.masksToBounds = true
         cell.setCornerRadiusForCell(at: indexPath, of: tableView)
         
         cell.backgroundColor = .ypLightGray
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
-//        cell.viewModel = viewModel.categories[indexPath.row]
+        //        cell.viewModel = viewModel.categories[indexPath.row]
         if !viewModel.categories.isEmpty {
             cell.nameOfCategory = viewModel.categories[indexPath.row]
         }

@@ -106,7 +106,6 @@ extension OnboardingViewController: UIPageViewControllerDataSource {
         }
         
         let previousIndex = viewControllerIndex - 1
-        print(previousIndex)
         
         if previousIndex < 0 {
             return pages.last

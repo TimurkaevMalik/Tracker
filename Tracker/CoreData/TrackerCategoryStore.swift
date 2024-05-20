@@ -9,24 +9,21 @@ import UIKit
 import CoreData
 
 protocol CategoryStoreDelegate: AnyObject {
-    func storeDidUpdate(_ update: TrackerCategory)
+    func storeDidUpdate(category: TrackerCategory)
 }
 
 final class TrackerCategoryStore: NSObject {
     
+    weak var delegate: CategoryStoreDelegate?
+    private let appDelegate: AppDelegate
     private let context: NSManagedObjectContext
     private var fectchedResultController: NSFetchedResultsController<TrackerCategoryCoreData>?
-    private let appDelegate: AppDelegate
-    weak var delegate: CategoryStoreDelegate?
+    
     private let categoryName = "TrackerCategoryCoreData"
     
-    init(/*_ delegate: CategoryStoreDelegate?*/appDelegate: AppDelegate){
+    init(appDelegate: AppDelegate){
         self.appDelegate = appDelegate
         self.context = appDelegate.persistentContainer.viewContext
-        
-//        if let delegate {
-//            self.delegate = delegate
-//        }
         super.init()
         
         let sortDescriptions = NSSortDescriptor(keyPath: \TrackerCategoryCoreData.titleOfCategory, ascending: false)
@@ -45,9 +42,9 @@ final class TrackerCategoryStore: NSObject {
     
     func storeCategory(_ category: TrackerCategory) {
         
-//        guard fetchCategory(with: category.titleOfCategory) == nil else {
-//            return
-//        }
+        guard fetchCategory(with: category.titleOfCategory) == nil else {
+            return
+        }
         
         guard let categoryEntityDescription = NSEntityDescription.entity(forEntityName: categoryName, in: context ) else {
             return
@@ -131,12 +128,12 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
         switch type {
             
         case .insert:
-            delegate?.storeDidUpdate(category)
+            delegate?.storeDidUpdate(category: category)
             break
         case .delete:
             break
         case .update:
-            delegate?.storeDidUpdate(category)
+            delegate?.storeDidUpdate(category: category)
             break
         default:
             break
