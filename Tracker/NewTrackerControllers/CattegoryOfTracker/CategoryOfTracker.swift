@@ -76,7 +76,6 @@ final class CategoryOfTracker: UIViewController {
         
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
-        doneButton.setTitle("Добавить категорию", for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         doneButton.backgroundColor = .ypBlack
         doneButton.layer.cornerRadius = 16
@@ -99,25 +98,6 @@ final class CategoryOfTracker: UIViewController {
             buttonContainer.leadingAnchor.constraint(equalTo: view.leadingAnchor),
             buttonContainer.trailingAnchor.constraint(equalTo: view.trailingAnchor)
         ])
-    }
-    
-    private func highLightButton(){
-        
-        UIView.animate(withDuration: 0.3) {
-            
-            self.doneButton.backgroundColor = .ypRed
-            
-        } completion: { isCompleted in
-            if isCompleted {
-                resetButtonColor()
-            }
-        }
-        
-        func resetButtonColor(){
-            UIView.animate(withDuration: 0.3) {
-                self.doneButton.backgroundColor = .ypBlack
-            }
-        }
     }
     
     private func shouldSetCheckmarkForCell(_ indexPath: IndexPath) -> UITableViewCell.AccessoryType {
@@ -147,8 +127,15 @@ final class CategoryOfTracker: UIViewController {
         }
     }
     
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        if chosenCategory == nil {
+            doneButton.setTitle("Создать категорию", for: .normal)
+        } else {
+            doneButton.setTitle("Добавить категорию", for: .normal)
+        }
         
         view.backgroundColor = .ypWhite
         
@@ -172,17 +159,13 @@ final class CategoryOfTracker: UIViewController {
     
     @objc func doneButtonTapped(){
         
-        viewModel.storeNewCategory(TrackerCategory(titleOfCategory: "New" + "\(viewModel.categories.count)", trackersArray: []))
-        
-//                guard let chosenCategory else {
-//        
-//                    highLightButton()
-//                    return
-//                }
-//        
-//                delegate?.didChooseCategory(chosenCategory)
-//        
-//                dismiss(animated: true)
+        if  let chosenCategory {
+            delegate?.didChooseCategory(chosenCategory)
+            dismiss(animated: true)
+        } else {
+            let viewController = MakeNewCategory(viewModel: viewModel)
+            present(viewController, animated: true)
+        }
     }
 }
 
@@ -212,7 +195,7 @@ extension CategoryOfTracker: UITableViewDataSource {
         
         cell.backgroundColor = .ypLightGray
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
-        //        cell.viewModel = viewModel.categories[indexPath.row]
+    
         if !viewModel.categories.isEmpty {
             cell.nameOfCategory = viewModel.categories[indexPath.row]
         }
@@ -237,7 +220,7 @@ extension CategoryOfTracker: UITableViewDelegate {
             tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.none
             
             chosenCategory = nil
-            
+            doneButton.setTitle("Создать категорию", for: .normal)
         } else {
             
             for cells in tableView.visibleCells {
@@ -247,6 +230,7 @@ extension CategoryOfTracker: UITableViewDelegate {
             tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.checkmark
             
             chosenCategory = viewModel.categories[indexPath.row]
+            doneButton.setTitle("Добавить категорию", for: .normal)
         }
         
         tableView.deselectRow(at: indexPath, animated: true)

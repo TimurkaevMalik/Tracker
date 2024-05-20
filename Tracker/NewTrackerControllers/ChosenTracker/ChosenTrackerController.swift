@@ -329,6 +329,15 @@ class ChosenTrackerController: UIViewController {
         saveButton.backgroundColor = .ypBlack
     }
     
+    private func validateNameOfTracker(_ text: String) {
+        
+        if !text.isEmpty, !text.filter({ $0 != Character(" ") }).isEmpty {
+            nameOfTracker = text.trimmingCharacters(in: .whitespaces)
+        } else {
+            nameOfTracker = nil
+        }
+    }
+    
     private func deselectPreviousColor(of collectionView: UICollectionView){
         
         guard 
@@ -361,6 +370,14 @@ class ChosenTrackerController: UIViewController {
         }
     }
     
+    func checkIsTextFieldEmpty() {
+        
+        if let text = textField.text,
+           text.filter({ $0 != Character(" ") }).isEmpty {
+            clearTextFieldButtonTapped()
+        }
+    }
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -390,8 +407,6 @@ class ChosenTrackerController: UIViewController {
         }
         
         textField.text = text.trimmingCharacters(in: .whitespaces)
-        nameOfTracker = text.trimmingCharacters(in: .whitespaces)
-        
         shouldActivateSaveButton()
     }
     
@@ -400,6 +415,8 @@ class ChosenTrackerController: UIViewController {
     }
     
     @objc func saveButtonTapped(){
+        
+        checkIsTextFieldEmpty()
         
         if trackerType == TrackerType.habbit {
             guard !scheduleOfTracker.isEmpty else {
@@ -737,6 +754,9 @@ extension ChosenTrackerController: UITextFieldDelegate {
             showLimitWarningLabel(with: "Ограничение 38 символов")
             return false
         }
+        
+        validateNameOfTracker(newString)
+        shouldActivateSaveButton()
         
         return true
     }

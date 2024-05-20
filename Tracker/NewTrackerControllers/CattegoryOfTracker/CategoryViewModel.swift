@@ -35,7 +35,6 @@ final class CategoryViewModel {
         self.trackerCategoryStore = TrackerCategoryStore(appDelegate: appDelegate)
         trackerCategoryStore?.delegate = self
         self.categories = fetchCategories()
-//        ["Важное"]
     }
     
     
