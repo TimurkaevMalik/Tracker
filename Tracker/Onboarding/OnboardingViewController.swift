@@ -40,14 +40,14 @@ class OnboardingViewController: UIPageViewController {
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
         
-        pageControl.currentPageIndicatorTintColor = .brown
-        pageControl.pageIndicatorTintColor = .orange
+        pageControl.currentPageIndicatorTintColor = .ypBlack
+        pageControl.pageIndicatorTintColor = .ypBlack.withAlphaComponent(0.3)
         
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(pageControl)
         
         NSLayoutConstraint.activate([
-            pageControl.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor),
+            pageControl.bottomAnchor.constraint(equalTo: button.topAnchor, constant: -24),
             pageControl.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
@@ -79,8 +79,8 @@ class OnboardingViewController: UIPageViewController {
         if let first = pages.first {
             setViewControllers([first], direction: .forward, animated: true)
             
-            configurePageControl()
             configureButton()
+            configurePageControl()
         }
     }
     

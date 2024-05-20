@@ -174,21 +174,28 @@ final class CategoryOfTracker: UIViewController {
         
         viewModel.storeNewCategory(TrackerCategory(titleOfCategory: "New" + "\(viewModel.categories.count)", trackersArray: []))
         
-        //        guard let chosenCategory else {
-        //
-        //            highLightButton()
-        //            return
-        //        }
-        //
-        //        delegate?.didChooseCategory(chosenCategory)
-        //
-        //        dismiss(animated: true)
+//                guard let chosenCategory else {
+//        
+//                    highLightButton()
+//                    return
+//                }
+//        
+//                delegate?.didChooseCategory(chosenCategory)
+//        
+//                dismiss(animated: true)
     }
 }
 
 
 extension CategoryOfTracker: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        
+        if viewModel.categories.count < 8 {
+            tableView.isScrollEnabled = false
+        } else {
+            tableView.isScrollEnabled = true
+        }
         
         return viewModel.categories.count
     }

@@ -12,7 +12,7 @@ final class CategoryViewModel {
     
     let trackerCategoryStore: TrackerCategoryStore?
     
-    private(set) var categories: [String] = []{
+    private(set) var categories: [String] = [] {
         didSet {
             categoriesBinding?(categories)
         }
@@ -35,6 +35,7 @@ final class CategoryViewModel {
         self.trackerCategoryStore = TrackerCategoryStore(appDelegate: appDelegate)
         trackerCategoryStore?.delegate = self
         self.categories = fetchCategories()
+//        ["Важное"]
     }
     
     
