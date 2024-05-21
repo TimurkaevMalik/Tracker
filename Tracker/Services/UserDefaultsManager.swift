@@ -9,13 +9,14 @@ import Foundation
 
 class UserDefaultsManager {
     
+    private static let wasOnboardinShownKey = "wasOnboardinShown"
     
     static var wasOnboardinShown: Bool {
         get {
-            UserDefaults.standard.bool(forKey: "wasOnboardinShown")
+            UserDefaults.standard.bool(forKey: UserDefaultsManager.wasOnboardinShownKey)
         }
         set {
-            UserDefaults.standard.set(newValue, forKey: "wasOnboardinShown")
+            UserDefaults.standard.set(newValue, forKey: UserDefaultsManager.wasOnboardinShownKey)
         }
     }
 }

@@ -488,7 +488,8 @@ extension ChosenTrackerController: UITableViewDelegate {
         
         if indexPath.row == 0 {
             
-            let viewControler = CategoryOfTracker(delegate: self, wasChosenCategory: nameOfCategory)
+            guard let viewControler = CategoryView(delegate: self, wasChosenCategory: nameOfCategory) else { return }
+            
             present(viewControler, animated: true)
         }
         

@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		BC2B8CD22BD2F0C60098D664 /* CategoryOfTracker.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B8CD12BD2F0C60098D664 /* CategoryOfTracker.swift */; };
+		BC2B8CD22BD2F0C60098D664 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B8CD12BD2F0C60098D664 /* CategoryView.swift */; };
 		BC2B8CD42BD2F5FE0098D664 /* CategoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B8CD32BD2F5FE0098D664 /* CategoryCellView.swift */; };
 		BC2D1FB42BE970AC00609ECF /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2D1FB32BE970AC00609ECF /* TrackerStore.swift */; };
 		BC2D1FB62BE970BC00609ECF /* TrackerCategoryStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2D1FB52BE970BC00609ECF /* TrackerCategoryStore.swift */; };
@@ -46,7 +46,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		BC2B8CD12BD2F0C60098D664 /* CategoryOfTracker.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryOfTracker.swift; sourceTree = "<group>"; };
+		BC2B8CD12BD2F0C60098D664 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		BC2B8CD32BD2F5FE0098D664 /* CategoryCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCellView.swift; sourceTree = "<group>"; };
 		BC2D1FB32BE970AC00609ECF /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
 		BC2D1FB52BE970BC00609ECF /* TrackerCategoryStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerCategoryStore.swift; sourceTree = "<group>"; };
@@ -108,7 +108,7 @@
 		BC2B8CD52BD2F6030098D664 /* CattegoryOfTracker */ = {
 			isa = PBXGroup;
 			children = (
-				BC2B8CD12BD2F0C60098D664 /* CategoryOfTracker.swift */,
+				BC2B8CD12BD2F0C60098D664 /* CategoryView.swift */,
 				BCD0D6D82BFA60D500B3E3C6 /* CategoryViewModel.swift */,
 				BC2B8CD32BD2F5FE0098D664 /* CategoryCellView.swift */,
 				BCD0D6DE2BFB77B400B3E3C6 /* MakeNewCategory.swift */,
@@ -342,7 +342,7 @@
 				F548C21D2BF4E12100DAA0AE /* CoreDataModel.xcdatamodeld in Sources */,
 				BC5E5DC62BC9AE7000BD7655 /* Extensions.swift in Sources */,
 				BC2D1FB82BE970C500609ECF /* TrackerRecordStore.swift in Sources */,
-				BC2B8CD22BD2F0C60098D664 /* CategoryOfTracker.swift in Sources */,
+				BC2B8CD22BD2F0C60098D664 /* CategoryView.swift in Sources */,
 				BC2D1FBA2BE9768700609ECF /* UIColorMarshalling.swift in Sources */,
 				BC70457E2BCC3B9F002F8F12 /* ChosenTrackerController.swift in Sources */,
 				BC2D1FB42BE970AC00609ECF /* TrackerStore.swift in Sources */,

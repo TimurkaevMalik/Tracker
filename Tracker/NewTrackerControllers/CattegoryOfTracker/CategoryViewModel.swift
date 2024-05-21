@@ -21,18 +21,19 @@ final class CategoryViewModel {
     var categoriesBinding: Binding<[String]>?
     
     
-    convenience init() {
-        
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else  {
-            self.init()
-            return
-        }
-        self.init(appDelegate: appDelegate)
-    }
+//    convenience init() {
+//
+//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else  {
+//            self.init()
+//            return
+//        }
+//        self.init(appDelegate: appDelegate)
+//    }
     
-    private init(appDelegate: AppDelegate) {
+    init(categoryStore: TrackerCategoryStore) {
         
-        self.trackerCategoryStore = TrackerCategoryStore(appDelegate: appDelegate)
+        self.trackerCategoryStore = categoryStore
+//        TrackerCategoryStore(appDelegate: appDelegate)
         trackerCategoryStore?.delegate = self
         self.categories = fetchCategories()
     }

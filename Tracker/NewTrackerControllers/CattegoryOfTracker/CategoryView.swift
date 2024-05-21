@@ -8,9 +8,9 @@
 import UIKit
 
 
-final class CategoryOfTracker: UIViewController {
+final class CategoryView: UIViewController {
     
-    private var viewModel: CategoryViewModel
+    private let viewModel: CategoryViewModel
     private weak var delegate: CategoryOfTrackerDelegate?
     
     private let doneButton = UIButton()
@@ -20,10 +20,15 @@ final class CategoryOfTracker: UIViewController {
 
     private var chosenCategory: String?
     
-    init(delegate: CategoryOfTrackerDelegate, wasChosenCategory category: String?){
+    init?(delegate: CategoryOfTrackerDelegate, wasChosenCategory category: String?){
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return nil
+        }
+        let categoryStore = TrackerCategoryStore(appDelegate: appDelegate)
+        
         chosenCategory = category
         self.delegate = delegate
-        self.viewModel = CategoryViewModel()
+        self.viewModel = CategoryViewModel(categoryStore: categoryStore)
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -170,7 +175,7 @@ final class CategoryOfTracker: UIViewController {
 }
 
 
-extension CategoryOfTracker: UITableViewDataSource {
+extension CategoryView: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
         
@@ -206,7 +211,7 @@ extension CategoryOfTracker: UITableViewDataSource {
 }
 
 
-extension CategoryOfTracker: UITableViewDelegate {
+extension CategoryView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
