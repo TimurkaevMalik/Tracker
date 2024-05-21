@@ -11,15 +11,6 @@ import CoreData
 @main
 class AppDelegate: UIResponder, UIApplicationDelegate {
     
-    var wasOnboardinShown: Bool {
-        get {
-            UserDefaults.standard.bool(forKey: "wasOnboardinShown")
-        }
-        set {
-            UserDefaults.standard.set(newValue, forKey: "wasOnboardinShown")
-        }
-    }
-    
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         return true

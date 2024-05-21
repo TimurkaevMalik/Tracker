@@ -11,17 +11,13 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
     
     var window: UIWindow?
     
-    
     func scene(_ scene: UIScene, willConnectTo session: UISceneSession, options connectionOptions: UIScene.ConnectionOptions) {
         
-        guard 
-            let scene = (scene as? UIWindowScene),
-            let appDelegate = UIApplication.shared.delegate as? AppDelegate
-        else { return }
+        guard let scene = (scene as? UIWindowScene) else { return }
         
         window = UIWindow(windowScene: scene)
         
-        if appDelegate.wasOnboardinShown == false {
+        if UserDefaultsManager.wasOnboardinShown == false {
             window?.rootViewController = OnboardingViewController()
         } else {
             window?.rootViewController = TabBarControler()

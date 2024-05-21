@@ -81,14 +81,10 @@ class OnboardingViewController: UIPageViewController {
     
     @objc func didTapButton() {
         
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
-        
         let viewController = TabBarControler()
         viewController.modalPresentationStyle = .fullScreen
         
-        appDelegate.wasOnboardinShown = true
+        UserDefaultsManager.wasOnboardinShown = true
         present(viewController, animated: true)
     }
 }
