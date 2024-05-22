@@ -24,7 +24,7 @@ final class TrackerStore: NSObject {
     private let trackerCategoryStore: TrackerCategoryStore
     
     private let trackerName = "TrackerCoreData"
-
+    
     
     init(_ delegate: TrackerStoreDelegate, appDelegate: AppDelegate){
         self.appDelegate = appDelegate
@@ -211,7 +211,7 @@ extension TrackerStore: TrackerStoreProtocol {
             }
         }
         
-        return categories
+        return categories.sorted(by: { $0.titleOfCategory < $1.titleOfCategory })
     }
 }
 

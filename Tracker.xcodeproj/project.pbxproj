@@ -64,7 +64,7 @@
 		BC70457D2BCC3B9F002F8F12 /* ChosenTrackerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChosenTrackerController.swift; sourceTree = "<group>"; };
 		BC91949A2BF955A900CAFF70 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
-		BC9A9F862BCB429900558F38 /* GeomitricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomitricParams.swift; path = ../TrackerView/GeomitricParams.swift; sourceTree = "<group>"; };
+		BC9A9F862BCB429900558F38 /* GeomitricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeomitricParams.swift; sourceTree = "<group>"; };
 		BCA853602BCE402500173B4A /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
 		BCA899FA2BE29298005C3934 /* TableViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TableViewCell.swift; sourceTree = "<group>"; };
 		BCB8EADB2BFD33F40053BA61 /* UserDefaultsManager.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = UserDefaultsManager.swift; sourceTree = "<group>"; };
@@ -115,12 +115,12 @@
 			path = CattegoryOfTracker;
 			sourceTree = "<group>";
 		};
-		BC3D9B142BCB66C600C60848 /* StatisticVeiw */ = {
+		BC3D9B142BCB66C600C60848 /* StatisticVeiwController */ = {
 			isa = PBXGroup;
 			children = (
 				BCF6219F2BBF45A8001DE986 /* StatisticViewController.swift */,
 			);
-			path = StatisticVeiw;
+			path = StatisticVeiwController;
 			sourceTree = "<group>";
 		};
 		BC40A3AA2BDF794F00A86345 /* ChosenTracker */ = {
@@ -137,7 +137,6 @@
 		BC5E5DBA2BC9A16300BD7655 /* Models */ = {
 			isa = PBXGroup;
 			children = (
-				BC9A9F862BCB429900558F38 /* GeomitricParams.swift */,
 				BC5E5DCA2BC9BF7F00BD7655 /* Tracker */,
 				BC5E5DC72BC9BF5A00BD7655 /* Protocols */,
 			);
@@ -174,9 +173,10 @@
 		BC5E5DCA2BC9BF7F00BD7655 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				BC5E5DBD2BC9A18800BD7655 /* TrackerRecord.swift */,
-				BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */,
+				BC9A9F862BCB429900558F38 /* GeomitricParams.swift */,
 				BC5E5DBF2BC9A5E700BD7655 /* Tracker.swift */,
+				BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */,
+				BC5E5DBD2BC9A18800BD7655 /* TrackerRecord.swift */,
 				BC5EA0652BF631F800DB3C45 /* TrackerType.swift */,
 			);
 			path = Tracker;
@@ -233,8 +233,8 @@
 				BCBF2C202BE7ACAF001B6622 /* CoreData */,
 				BC9194992BF9554800CAFF70 /* Onboarding */,
 				BC0319F42BC00D2D00BF10D1 /* TabBarController */,
-				BCF6219A2BBF4545001DE986 /* TrackerView */,
-				BC3D9B142BCB66C600C60848 /* StatisticVeiw */,
+				BCF6219A2BBF4545001DE986 /* TrackerViewController */,
+				BC3D9B142BCB66C600C60848 /* StatisticVeiwController */,
 				BC5E5DC12BC9AD2D00BD7655 /* NewTrackerControllers */,
 				BC8C8A0C2BD9A68700AB04EC /* Services */,
 				BC5E5DBA2BC9A16300BD7655 /* Models */,
@@ -248,14 +248,14 @@
 			path = Tracker;
 			sourceTree = "<group>";
 		};
-		BCF6219A2BBF4545001DE986 /* TrackerView */ = {
+		BCF6219A2BBF4545001DE986 /* TrackerViewController */ = {
 			isa = PBXGroup;
 			children = (
 				BCF6219D2BBF4595001DE986 /* TrackerViewController.swift */,
 				BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */,
 				BCA853602BCE402500173B4A /* SupplementaryView.swift */,
 			);
-			path = TrackerView;
+			path = TrackerViewController;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */

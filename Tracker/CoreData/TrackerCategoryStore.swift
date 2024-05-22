@@ -27,7 +27,7 @@ final class TrackerCategoryStore: NSObject {
         self.context = appDelegate.persistentContainer.viewContext
         super.init()
         
-        let sortDescriptions = NSSortDescriptor(keyPath: \TrackerCategoryCoreData.titleOfCategory, ascending: false)
+        let sortDescriptions = NSSortDescriptor(keyPath: \TrackerCategoryCoreData.titleOfCategory, ascending: true)
         let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: categoryName)
         fetchRequest.sortDescriptors = [sortDescriptions]
         
@@ -72,6 +72,8 @@ final class TrackerCategoryStore: NSObject {
     func fetchAllCategories() -> [TrackerCategoryCoreData]? {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: categoryName)
+        let sortDescriptors = NSSortDescriptor(keyPath: \TrackerCategoryCoreData.titleOfCategory, ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptors]
         
         do {
             let response = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData]
