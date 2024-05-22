@@ -95,12 +95,12 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		BC0319F42BC00D2D00BF10D1 /* TabBarController */ = {
+		BC0319F42BC00D2D00BF10D1 /* TabBarViewController */ = {
 			isa = PBXGroup;
 			children = (
 				BCF6219B2BBF4561001DE986 /* TabBarControler.swift */,
 			);
-			path = TabBarController;
+			path = TabBarViewController;
 			sourceTree = "<group>";
 		};
 		BC2B8CD52BD2F6030098D664 /* CattegoryOfTracker */ = {
@@ -191,13 +191,13 @@
 			path = Services;
 			sourceTree = "<group>";
 		};
-		BC9194992BF9554800CAFF70 /* Onboarding */ = {
+		BC9194992BF9554800CAFF70 /* OnboardingController */ = {
 			isa = PBXGroup;
 			children = (
 				BC91949A2BF955A900CAFF70 /* OnboardingViewController.swift */,
 				BCD0D6D42BF9F85A00B3E3C6 /* BoardController.swift */,
 			);
-			path = Onboarding;
+			path = OnboardingController;
 			sourceTree = "<group>";
 		};
 		BCBF2C202BE7ACAF001B6622 /* CoreData */ = {
@@ -231,8 +231,8 @@
 			isa = PBXGroup;
 			children = (
 				BCBF2C202BE7ACAF001B6622 /* CoreData */,
-				BC9194992BF9554800CAFF70 /* Onboarding */,
-				BC0319F42BC00D2D00BF10D1 /* TabBarController */,
+				BC9194992BF9554800CAFF70 /* OnboardingController */,
+				BC0319F42BC00D2D00BF10D1 /* TabBarViewController */,
 				BCF6219A2BBF4545001DE986 /* TrackerViewController */,
 				BC3D9B142BCB66C600C60848 /* StatisticVeiwController */,
 				BC5E5DC12BC9AD2D00BD7655 /* NewTrackerControllers */,
