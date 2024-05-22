@@ -19,7 +19,6 @@ final class TrackerViewController: UIViewController {
     
     private var trackerStore: TrackerStoreProtocol?
     private var trackerRecordStore: RecordStoreProtocol?
-    private let trackerCategoryStore = TrackerCategoryStore()
     private var categories: [TrackerCategory] = []
     private var visibleTrackers: [TrackerCategory] = []
     private var completedTrackers: [TrackerRecord] = []
@@ -338,7 +337,6 @@ extension TrackerViewController: TrackerViewControllerDelegate {
         
         self.dismiss(animated: true)
         
-        trackerCategoryStore.storeCategory(trackerCategory)
         trackerStore?.storeNewTracker(trackerCategory.trackersArray[0], for: trackerCategory.titleOfCategory)
     }
     
@@ -476,27 +474,28 @@ extension TrackerViewController: CollectionViewCellDelegate {
             return
         }
         
-        let cattegorie = categories[indexPath.section]
+        let category = visibleTrackers[indexPath.section]
+        guard let indexOfCategory = categories.firstIndex(where: { $0.titleOfCategory == category.titleOfCategory}) else { return }
+        print(indexPath)
         
         trackers.removeAll()
         
-        if cattegorie.trackersArray.count != 1 {
-            for tracker in cattegorie.trackersArray {
+        if category.trackersArray.count != 1 {
+            for tracker in category.trackersArray {
                 if tracker.id != idOfCell {
                     
                     trackers.append(tracker)
                 }
             }
             
-            categories[indexPath.section] = TrackerCategory(titleOfCategory: cattegorie.titleOfCategory, trackersArray: trackers)
-        } else {
-            categories.remove(at: indexPath.section)
-        }
-        
-        checkForVisibleTrackersAt(dateDescription: datePicker.date.description(with: .current))
-        
-        collectionView.performBatchUpdates {
+            self.categories[indexOfCategory] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+            checkForVisibleTrackersAt(dateDescription: datePicker.date.description(with: .current))
             collectionView.deleteItems(at: [indexPath])
+        } else {
+            
+            self.categories.remove(at: indexOfCategory)
+            checkForVisibleTrackersAt(dateDescription: datePicker.date.description(with: .current))
+            collectionView.deleteSections([indexPath.section])
         }
         
         if visibleTrackers.isEmpty {
@@ -508,7 +507,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
         guard 
             let currentDate,
-                let actualDate = currentDate.getDefaultDateWith(formatter: dateFormatter)
+            let actualDate = currentDate.getDefaultDateWith(formatter: dateFormatter)
         else {
             return
         }
@@ -582,6 +581,7 @@ extension TrackerViewController: TrackerStoreDelegate {
         } else {
             
             categories.append(TrackerCategory(titleOfCategory: categoryTitle, trackersArray: [tracker]))
+            categories.sort(by: { $0.titleOfCategory < $1.titleOfCategory })
         }
         
         showVisibleTrackers(dateDescription: actualDate)

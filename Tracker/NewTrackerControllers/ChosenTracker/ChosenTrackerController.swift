@@ -52,7 +52,9 @@ class ChosenTrackerController: UIViewController {
     private let colorsArray: [UIColor] = [.ypRed, .ypOrange, .ypMediumBlue, .ypElectricViolet, .ypGreen, .ypViolet, .ypLightPink, .ypCyan, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypMediumLightBlue, .ypFrenchViolet, .ypGrape, .ypSlateBlue, .ypMediumLightGreen]
     
     
-    init(trackerType: TrackerType, delegate: TrackerViewControllerDelegate){
+    init(trackerType: TrackerType,
+         delegate: TrackerViewControllerDelegate){
+        
         self.trackerType = trackerType
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
@@ -60,13 +62,83 @@ class ChosenTrackerController: UIViewController {
         updateTableVeiwCells()
     }
     
-    
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypWhite
+        
+        configureScrollView()
+        configureTextFieldAndClearButton()
+        configureLimitWarningLabel()
+        configureTableView()
+        configureCollection()
+        configureSaveAndCancelButtons()
+        configureTitleLabelView()
+    }
+    
+    @objc func didEnterTextInTextField(_ sender: UITextField){
+        
+        guard
+            let text = sender.text,
+            !text.isEmpty,
+            !text.filter({ $0 != Character(" ") }).isEmpty
+        else {
+            nameOfTracker = nil
+            clearTextFieldButtonTapped()
+            shouldActivateSaveButton()
+            return
+        }
+        
+        textField.text = text.trimmingCharacters(in: .whitespaces)
+        shouldActivateSaveButton()
+    }
+    
+    @objc func clearTextFieldButtonTapped(){
+        textField.text?.removeAll()
+    }
+    
+    @objc func saveButtonTapped(){
+        
+        checkIsTextFieldEmpty()
+        
+        if trackerType == TrackerType.habbit {
+            guard !scheduleOfTracker.isEmpty else {
+                showLimitWarningLabel(with: "Заполните все поля")
+                highLightButton()
+                return
+            }
+        }
+        
+        guard
+            let nameOfCategory = nameOfCategory,
+            let name = nameOfTracker,
+            let color = colorOfTracker,
+            let emoji = emojiOfTracker
+        else {
+            showLimitWarningLabel(with: "Заполните все поля")
+            highLightButton()
+            return
+        }
+        
+        let newTracker = Tracker(id: UUID(), name: name, color: color, emoji: emoji, schedule: scheduleOfTracker)
+        
+        let newCategory = TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: [newTracker])
+        
+        delegate?.addNewTracker(trackerCategory: newCategory)
+    }
+    
+    @objc func cancelButtonTapped(){
+        delegate?.dismisTrackerTypeController()
+    }
+    
+
     private func configureScrollView(){
         
+        scrollView.showsVerticalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(scrollView)
         
@@ -328,9 +400,18 @@ class ChosenTrackerController: UIViewController {
         saveButton.backgroundColor = .ypBlack
     }
     
+    private func validateNameOfTracker(_ text: String) {
+        
+        if !text.isEmpty, !text.filter({ $0 != Character(" ") }).isEmpty {
+            nameOfTracker = text.trimmingCharacters(in: .whitespaces)
+        } else {
+            nameOfTracker = nil
+        }
+    }
+    
     private func deselectPreviousColor(of collectionView: UICollectionView){
         
-        guard 
+        guard
             let previousColorCell = chosenColorCell,
             let previousColorIndex = collectionView.indexPath(for: previousColorCell)
         else { return }
@@ -342,7 +423,7 @@ class ChosenTrackerController: UIViewController {
     
     private func deselectPreviousEmoji(of collectionView: UICollectionView){
         
-        guard 
+        guard
             let previousColorCell = chosenEmojiCell,
             let previousEmojiIndex = collectionView.indexPath(for: previousColorCell)
         else { return }
@@ -351,7 +432,7 @@ class ChosenTrackerController: UIViewController {
         chosenEmojiCell?.backgroundColor = .clear
     }
     
-    func updateTableVeiwCells(){
+    private func updateTableVeiwCells(){
         if trackerType == TrackerType.irregularEvent {
             tableViewCells.append("Категория")
         } else {
@@ -360,76 +441,13 @@ class ChosenTrackerController: UIViewController {
         }
     }
     
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    private func checkIsTextFieldEmpty() {
         
-        view.backgroundColor = .ypWhite
-        
-        configureScrollView()
-        configureTextFieldAndClearButton()
-        configureLimitWarningLabel()
-        configureTableView()
-        configureCollection()
-        configureSaveAndCancelButtons()
-        configureTitleLabelView()
-    }
-    
-    @objc func didEnterTextInTextField(_ sender: UITextField){
-        
-        guard
-            let text = sender.text,
-            !text.isEmpty,
-            !text.filter({ $0 != Character(" ") }).isEmpty
-        else {
-            nameOfTracker = nil
+        if let text = textField.text,
+           text.filter({ $0 != Character(" ") }).isEmpty {
             clearTextFieldButtonTapped()
-            shouldActivateSaveButton()
-            return
         }
-        
-        textField.text = text.trimmingCharacters(in: .whitespaces)
-        nameOfTracker = text.trimmingCharacters(in: .whitespaces)
-        
-        shouldActivateSaveButton()
     }
-    
-    @objc func clearTextFieldButtonTapped(){
-        textField.text?.removeAll()
-    }
-    
-    @objc func saveButtonTapped(){
-        
-        if trackerType == TrackerType.habbit {
-            guard !scheduleOfTracker.isEmpty else {
-                showLimitWarningLabel(with: "Заполните все поля")
-                highLightButton()
-                return
-            }
-        }
-        
-        guard
-            let nameOfCategory = nameOfCategory,
-            let name = nameOfTracker,
-            let color = colorOfTracker,
-            let emoji = emojiOfTracker
-        else {
-            showLimitWarningLabel(with: "Заполните все поля")
-            highLightButton()
-            return
-        }
-        
-        let newTracker = Tracker(id: UUID(), name: name, color: color, emoji: emoji, schedule: scheduleOfTracker)
-        
-        let newCategory = TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: [newTracker])
-        
-        delegate?.addNewTracker(trackerCategory: newCategory)
-    }
-    
-    @objc func cancelButtonTapped(){
-        delegate?.dismisTrackerTypeController()
-    }
-    
 }
 
 
@@ -470,17 +488,22 @@ extension ChosenTrackerController: UITableViewDelegate {
         
         if indexPath.row == 0 {
             
-            let viewControler = CategoryOfTracker(delegate: self)
-            viewControler.ifWasCategoryChosenBefore(category: nameOfCategory)
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                return
+            }
+            
+            let categoryStore = TrackerCategoryStore(appDelegate: appDelegate)
+            let viewModel = CategoryViewModel(categoryStore: categoryStore,
+                                              chosenCategory: nameOfCategory, categoryModelDelegate: self)
+            
+            let viewControler = CategoryView(viewModel: viewModel)
             
             present(viewControler, animated: true)
         }
         
         if indexPath.row == 1 {
             
-            let viewControler = ScheduleOfTracker(delegate: self)
-            viewControler.IfDatesWasChosenBefore(dates: scheduleOfTracker)
-            
+            let viewControler = ScheduleOfTracker(delegate: self, wasDatesChosen: scheduleOfTracker)
             present(viewControler, animated: true)
         }
     }
@@ -701,7 +724,7 @@ extension ChosenTrackerController: ScheduleOfTrackerDelegate {
 }
 
 
-extension ChosenTrackerController: CategoryOfTrackerDelegate{
+extension ChosenTrackerController: CategoryModelDelegate{
     func didDismissScreenWithChangesIn(_ category: String?) {
         
         nameOfCategory = category
@@ -713,7 +736,6 @@ extension ChosenTrackerController: CategoryOfTrackerDelegate{
     func didChooseCategory(_ category: String) {
         
         nameOfCategory = category
-        
         shouldAddCategoryOnCellTitle(category: category)
         shouldActivateSaveButton()
     }
@@ -740,6 +762,9 @@ extension ChosenTrackerController: UITextFieldDelegate {
             showLimitWarningLabel(with: "Ограничение 38 символов")
             return false
         }
+        
+        validateNameOfTracker(newString)
+        shouldActivateSaveButton()
         
         return true
     }

@@ -20,27 +20,25 @@ protocol RecordStoreDelegate: AnyObject {
 }
 
 protocol TrackerViewControllerDelegate: AnyObject {
-    
     func dismisTrackerTypeController()
-    
     func addNewTracker(trackerCategory: TrackerCategory)
 }
 
 protocol ScheduleOfTrackerDelegate: AnyObject {
-    
     func didRecieveDatesArray(dates: [String])
-    
     func didDismissScreenWithChanges(dates: [String])
 }
 
-protocol CategoryOfTrackerDelegate: AnyObject {
-    
+protocol CategoryModelDelegate: AnyObject {
     func didChooseCategory(_ category: String)
-    
     func didDismissScreenWithChangesIn(_ category: String?)
 }
 
+protocol NewCategoryViewProtocol: AnyObject {
+    func categoryAlreadyExists()
+    func didStoreNewCategory()
+}
+
 protocol CollectionViewCellDelegate: AnyObject {
-    
     func didTapCollectionCellButton(_ cell: CollectionViewCell)
 }

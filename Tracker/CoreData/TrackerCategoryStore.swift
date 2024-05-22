@@ -8,30 +8,43 @@
 import UIKit
 import CoreData
 
-final class TrackerCategoryStore {
+protocol CategoryStoreDelegate: AnyObject {
+    func didStoreCategory(_ category: TrackerCategory)
+    func storeDidUpdate(category: TrackerCategory)
+}
+
+final class TrackerCategoryStore: NSObject {
     
-    private let context: NSManagedObjectContext
+    weak var delegate: CategoryStoreDelegate?
     private let appDelegate: AppDelegate
-    private let categoryName = "TrackerCategoryCoreData"
-    convenience init(){
-        
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            self.init()
-            return
-        }
-        
-        self.init(appDelegate: appDelegate)
-    }
+    private let context: NSManagedObjectContext
+    private var fectchedResultController: NSFetchedResultsController<TrackerCategoryCoreData>?
     
-    private init(appDelegate: AppDelegate){
+    private let categoryName = "TrackerCategoryCoreData"
+    
+    init(appDelegate: AppDelegate){
         self.appDelegate = appDelegate
         self.context = appDelegate.persistentContainer.viewContext
+        super.init()
+        
+        let sortDescriptions = NSSortDescriptor(keyPath: \TrackerCategoryCoreData.titleOfCategory, ascending: true)
+        let fetchRequest = NSFetchRequest<TrackerCategoryCoreData>(entityName: categoryName)
+        fetchRequest.sortDescriptors = [sortDescriptions]
+        
+        let controller = NSFetchedResultsController(fetchRequest: fetchRequest,
+                                                    managedObjectContext: context,
+                                                    sectionNameKeyPath: nil,
+                                                    cacheName: nil)
+        controller.delegate = self
+        fectchedResultController = controller
+        try? fectchedResultController?.performFetch()
     }
     
     
     func storeCategory(_ category: TrackerCategory) {
         
         guard fetchCategory(with: category.titleOfCategory) == nil else {
+            updateCategory(category)
             return
         }
         
@@ -39,17 +52,28 @@ final class TrackerCategoryStore {
             return
         }
         
-        let trackerCategoryCoreData = TrackerCategoryCoreData(entity: categoryEntityDescription, insertInto: context)
+        let categoryCoreData = TrackerCategoryCoreData(entity: categoryEntityDescription, insertInto: context)
         
-        trackerCategoryCoreData.titleOfCategory = category.titleOfCategory
+        categoryCoreData.titleOfCategory = category.titleOfCategory
         
         appDelegate.saveContext()
     }
     
+    func updateCategory(_ category: TrackerCategory) {
+        
+        guard let categoryCoreData = fetchCategory(with: category.titleOfCategory) else {
+            return
+        }
+        categoryCoreData.titleOfCategory = category.titleOfCategory
+        
+        appDelegate.saveContext()
+    }
     
     func fetchAllCategories() -> [TrackerCategoryCoreData]? {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: categoryName)
+        let sortDescriptors = NSSortDescriptor(keyPath: \TrackerCategoryCoreData.titleOfCategory, ascending: true)
+        fetchRequest.sortDescriptors = [sortDescriptors]
         
         do {
             let response = try context.fetch(fetchRequest) as? [TrackerCategoryCoreData]
@@ -102,5 +126,29 @@ final class TrackerCategoryStore {
         }
         
         return nil
+    }
+}
+
+extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
+    
+    func controller(_ controller: NSFetchedResultsController<any NSFetchRequestResult>, didChange anObject: Any, at indexPath: IndexPath?, for type: NSFetchedResultsChangeType, newIndexPath: IndexPath?) {
+        
+        guard
+            let categoryCoreData = anObject as? TrackerCategoryCoreData,
+            let category = convertCoreDataToCategory(categoryCoreData)
+        else { return }
+        
+        switch type {
+            
+        case .insert:
+            delegate?.didStoreCategory(category)
+        case .update:
+            delegate?.storeDidUpdate(category: category)
+            
+        case .delete:
+            break
+        default:
+            break
+        }
     }
 }

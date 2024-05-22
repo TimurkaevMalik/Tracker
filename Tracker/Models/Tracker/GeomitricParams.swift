@@ -14,7 +14,9 @@ struct GeomitricParams {
     let cellSpacing: CGFloat
     let paddingWidth: CGFloat
     
-    init(cellCount: CGFloat, leftInset: CGFloat, rightInset: CGFloat, cellSpacing: CGFloat) {
+    init(cellCount: CGFloat, leftInset: CGFloat,
+         rightInset: CGFloat, cellSpacing: CGFloat) {
+        
         self.cellCount = cellCount
         self.leftInset = leftInset
         self.rightInset = rightInset
