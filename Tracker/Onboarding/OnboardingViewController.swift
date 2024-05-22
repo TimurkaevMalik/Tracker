@@ -21,15 +21,42 @@ class OnboardingViewController: UIPageViewController {
     }()
     
     
-    override init(transitionStyle style: UIPageViewController.TransitionStyle, navigationOrientation: UIPageViewController.NavigationOrientation, options: [UIPageViewController.OptionsKey : Any]? = nil) {
-        
-        super.init(transitionStyle: .scroll, navigationOrientation: .horizontal, options: options)
-    }
+    override init(
+        transitionStyle style: UIPageViewController.TransitionStyle,
+        navigationOrientation: UIPageViewController.NavigationOrientation,
+        options: [UIPageViewController.OptionsKey : Any]? = nil) {
+            
+            super.init(transitionStyle: .scroll,
+                       navigationOrientation: .horizontal,
+                       options: options)
+        }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        dataSource = self
+        delegate = self
+        
+        if let first = pages.first {
+            setViewControllers([first], direction: .forward, animated: true)
+            
+            configureButton()
+            configurePageControl()
+        }
+    }
+    
+    @objc func didTapButton() {
+        
+        let viewController = TabBarControler()
+        viewController.modalPresentationStyle = .fullScreen
+        
+        UserDefaultsManager.wasOnboardinShown = true
+        present(viewController, animated: true)
+    }
     
     private func configurePageControl() {
         pageControl.numberOfPages = pages.count
@@ -63,29 +90,6 @@ class OnboardingViewController: UIPageViewController {
             button.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -20),
             button.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 20)
         ])
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        dataSource = self
-        delegate = self
-        
-        if let first = pages.first {
-            setViewControllers([first], direction: .forward, animated: true)
-            
-            configureButton()
-            configurePageControl()
-        }
-    }
-    
-    @objc func didTapButton() {
-        
-        let viewController = TabBarControler()
-        viewController.modalPresentationStyle = .fullScreen
-        
-        UserDefaultsManager.wasOnboardinShown = true
-        present(viewController, animated: true)
     }
 }
 

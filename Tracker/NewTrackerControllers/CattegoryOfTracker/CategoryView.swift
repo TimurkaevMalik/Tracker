@@ -10,25 +10,21 @@ import UIKit
 
 final class CategoryView: UIViewController {
     
-    private let viewModel: CategoryViewModel
-    private weak var delegate: CategoryOfTrackerDelegate?
-    
     private let doneButton = UIButton()
     private let buttonContainer = UIView()
     private let titleLabel = UILabel()
     private let tableView = UITableView()
-
-    private var chosenCategory: String?
     
-    init?(delegate: CategoryOfTrackerDelegate, wasChosenCategory category: String?){
-        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
-            return nil
-        }
-        let categoryStore = TrackerCategoryStore(appDelegate: appDelegate)
+    private let viewModel: CategoryViewModel
+    private let newCategoryView: NewCategoryView
+    
+    
+    init(viewModel: CategoryViewModel){
         
-        chosenCategory = category
-        self.delegate = delegate
-        self.viewModel = CategoryViewModel(categoryStore: categoryStore)
+        self.viewModel = viewModel
+        newCategoryView = NewCategoryView(viewModel: viewModel)
+        viewModel.newCategoryDelegate = newCategoryView
+        
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -36,6 +32,47 @@ final class CategoryView: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypWhite
+        
+        configureTitleLabelView()
+        configureDoneButton()
+        configureTableView()
+        
+        viewModel.categoriesBinding = { [weak self] _ in
+            guard let self = self else { return }
+            
+            self.updateTableViewCells()
+        }
+        
+        viewModel.chosenCategoryBinding = { [weak self] _ in
+            guard let self else { return }
+            
+            self.updateCheckMark()
+            self.setButtonTitle()
+        }
+        
+        setButtonTitle()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        viewModel.categoryViewWillDissapear()
+    }
+    
+    @objc func doneButtonTapped(){
+        
+        if  let category = viewModel.chosenCategory {
+            viewModel.didChoseCategory(category)
+            dismiss(animated: true)
+        } else {
+            
+            present(newCategoryView, animated: true)
+        }
+    }
     
     private func configureTitleLabelView(){
         titleLabel.text = "Категория"
@@ -70,7 +107,7 @@ final class CategoryView: UIViewController {
         
         NSLayoutConstraint.activate([
             tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 30),
-            tableView.bottomAnchor.constraint(equalTo: buttonContainer.topAnchor/*, constant: CGFloat(Float(bottomConstant))*/),
+            tableView.bottomAnchor.constraint(equalTo: buttonContainer.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
@@ -105,20 +142,9 @@ final class CategoryView: UIViewController {
         ])
     }
     
-    private func shouldSetCheckmarkForCell(_ indexPath: IndexPath) -> UITableViewCell.AccessoryType {
+    private func updateTableViewCells() {
         
-        if let chosenCategory {
-            if chosenCategory == viewModel.categories[indexPath.row] {
-                return .checkmark
-            }
-        }
-        
-        return .none
-    }
-    
-    private func updateTableViewCells(categories: [String]) {
-        
-        let newCount = categories.count
+        let newCount = viewModel.categories.count
         
         tableView.performBatchUpdates {
             
@@ -132,44 +158,27 @@ final class CategoryView: UIViewController {
         }
     }
     
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    private func updateCheckMark() {
         
-        if chosenCategory == nil {
+        let visbleCategories: [CategoryCellView?]  = tableView.visibleCells.map({ $0 as? CategoryCellView})
+        
+        for visbleCategory in visbleCategories {
+            
+            if visbleCategory?.nameOfCategory == viewModel.chosenCategory {
+                
+                visbleCategory?.accessoryType = .checkmark
+            } else {
+                visbleCategory?.accessoryType = .none
+            }
+        }
+    }
+    
+    private func setButtonTitle() {
+        
+        if viewModel.chosenCategory == nil {
             doneButton.setTitle("Создать категорию", for: .normal)
         } else {
             doneButton.setTitle("Добавить категорию", for: .normal)
-        }
-        
-        view.backgroundColor = .ypWhite
-        
-        configureTitleLabelView()
-        configureDoneButton()
-        configureTableView()
-        
-        viewModel.categoriesBinding = { [weak self] categories in
-            guard let self = self else { return }
-            
-            self.updateTableViewCells(categories: categories)
-        }
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        delegate?.didDismissScreenWithChangesIn(chosenCategory)
-    }
-    
-    
-    @objc func doneButtonTapped(){
-        
-        if  let chosenCategory {
-            delegate?.didChooseCategory(chosenCategory)
-            dismiss(animated: true)
-        } else {
-            let viewController = MakeNewCategory(viewModel: viewModel)
-            present(viewController, animated: true)
         }
     }
 }
@@ -194,17 +203,17 @@ extension CategoryView: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.accessoryType = shouldSetCheckmarkForCell(indexPath)
         cell.layer.masksToBounds = true
         cell.setCornerRadiusForCell(at: indexPath, of: tableView)
         
         cell.backgroundColor = .ypLightGray
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
-    
+        
         if !viewModel.categories.isEmpty {
             cell.nameOfCategory = viewModel.categories[indexPath.row]
         }
         cell.awakeFromNib()
+        cell.accessoryType = cell.nameOfCategory == viewModel.chosenCategory ? .checkmark : .none
         
         return cell
     }
@@ -220,22 +229,10 @@ extension CategoryView: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-        if tableView.cellForRow(at: indexPath)?.accessoryType == .checkmark {
+        if let cell = tableView.cellForRow(at: indexPath) as? CategoryCellView,
+           let nameOfCategory = cell.nameOfCategory {
             
-            tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.none
-            
-            chosenCategory = nil
-            doneButton.setTitle("Создать категорию", for: .normal)
-        } else {
-            
-            for cells in tableView.visibleCells {
-                cells.accessoryType = .none
-            }
-            
-            tableView.cellForRow(at: indexPath)?.accessoryType = UITableViewCell.AccessoryType.checkmark
-            
-            chosenCategory = viewModel.categories[indexPath.row]
-            doneButton.setTitle("Добавить категорию", for: .normal)
+            viewModel.updateChosenCategory(nameOfCategory)
         }
         
         tableView.deselectRow(at: indexPath, animated: true)

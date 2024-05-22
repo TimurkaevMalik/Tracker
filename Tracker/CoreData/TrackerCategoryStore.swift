@@ -9,6 +9,7 @@ import UIKit
 import CoreData
 
 protocol CategoryStoreDelegate: AnyObject {
+    func didStoreCategory(_ category: TrackerCategory)
     func storeDidUpdate(category: TrackerCategory)
 }
 
@@ -43,6 +44,7 @@ final class TrackerCategoryStore: NSObject {
     func storeCategory(_ category: TrackerCategory) {
         
         guard fetchCategory(with: category.titleOfCategory) == nil else {
+            updateCategory(category)
             return
         }
         
@@ -50,13 +52,22 @@ final class TrackerCategoryStore: NSObject {
             return
         }
         
-        let trackerCategoryCoreData = TrackerCategoryCoreData(entity: categoryEntityDescription, insertInto: context)
+        let categoryCoreData = TrackerCategoryCoreData(entity: categoryEntityDescription, insertInto: context)
         
-        trackerCategoryCoreData.titleOfCategory = category.titleOfCategory
+        categoryCoreData.titleOfCategory = category.titleOfCategory
         
         appDelegate.saveContext()
     }
     
+    func updateCategory(_ category: TrackerCategory) {
+        
+        guard let categoryCoreData = fetchCategory(with: category.titleOfCategory) else {
+            return
+        }
+        categoryCoreData.titleOfCategory = category.titleOfCategory
+        
+        appDelegate.saveContext()
+    }
     
     func fetchAllCategories() -> [TrackerCategoryCoreData]? {
         
@@ -128,12 +139,11 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
         switch type {
             
         case .insert:
-            delegate?.storeDidUpdate(category: category)
-            break
-        case .delete:
-            break
+            delegate?.didStoreCategory(category)
         case .update:
             delegate?.storeDidUpdate(category: category)
+            
+        case .delete:
             break
         default:
             break

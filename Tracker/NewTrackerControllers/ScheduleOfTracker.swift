@@ -20,7 +20,9 @@ final class ScheduleOfTracker: UIViewController {
     private let weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
     
     
-    init(delegate: ScheduleOfTrackerDelegate, wasDatesChosen dates: [String]){
+    init(delegate: ScheduleOfTrackerDelegate,
+         wasDatesChosen dates: [String]){
+        
         chosenDates = dates
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)

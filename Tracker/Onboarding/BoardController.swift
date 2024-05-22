@@ -22,6 +22,13 @@ class BoardController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        configureBoardImage()
+        configureOnboardingText()
+    }
+    
     private func configureBoardImage() {
         
         boardImageView.translatesAutoresizingMaskIntoConstraints = false
@@ -40,7 +47,7 @@ class BoardController: UIViewController {
         onboardingText.tintColor = .ypBlack
         onboardingText.numberOfLines = 2
         onboardingText.textAlignment = .center
-
+        
         onboardingText.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(onboardingText)
         
@@ -50,12 +57,5 @@ class BoardController: UIViewController {
             onboardingText.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
             onboardingText.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16)
         ])
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        configureBoardImage()
-        configureOnboardingText()
     }
 }

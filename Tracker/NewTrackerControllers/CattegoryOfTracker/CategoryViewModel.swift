@@ -10,7 +10,16 @@ import UIKit
 
 final class CategoryViewModel {
     
-    let trackerCategoryStore: TrackerCategoryStore?
+    weak var newCategoryDelegate: NewCategoryViewProtocol?
+    private weak var categoryModelDelegate: CategoryModelDelegate?
+    private let trackerCategoryStore: TrackerCategoryStore
+    
+    private(set) var newCategory: String?
+    private(set) var chosenCategory: String? {
+        didSet {
+            chosenCategoryBinding?(chosenCategory)
+        }
+    }
     
     private(set) var categories: [String] = [] {
         didSet {
@@ -18,34 +27,49 @@ final class CategoryViewModel {
         }
     }
     
+    var chosenCategoryBinding:  Binding<String?>?
     var categoriesBinding: Binding<[String]>?
     
     
-//    convenience init() {
-//
-//        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else  {
-//            self.init()
-//            return
-//        }
-//        self.init(appDelegate: appDelegate)
-//    }
-    
-    init(categoryStore: TrackerCategoryStore) {
+    init(categoryStore: TrackerCategoryStore,
+         chosenCategory: String?,
+         categoryModelDelegate: CategoryModelDelegate) {
         
         self.trackerCategoryStore = categoryStore
-//        TrackerCategoryStore(appDelegate: appDelegate)
-        trackerCategoryStore?.delegate = self
-        self.categories = fetchCategories()
+        self.chosenCategory = chosenCategory
+        self.categoryModelDelegate = categoryModelDelegate
+        trackerCategoryStore.delegate = self
+        categories = fetchCategories()
     }
     
+    func updateNameOfNewCategory(_ name: String) {
+        newCategory = name
+    }
+    
+    func updateChosenCategory(_ name: String) {
+        
+        if chosenCategory == name {
+            chosenCategory = nil
+        } else {
+            chosenCategory = name
+        }
+    }
+    
+    func categoryViewWillDissapear() {
+        categoryModelDelegate?.didDismissScreenWithChangesIn(chosenCategory)
+    }
+    
+    func didChoseCategory(_ category: String) {
+        categoryModelDelegate?.didChooseCategory(category)
+    }
     
     func storeNewCategory(_ category: TrackerCategory) {
-        trackerCategoryStore?.storeCategory(category)
+        trackerCategoryStore.storeCategory(category)
     }
     
-    func fetchCategories() -> [String] {
+    private func fetchCategories() -> [String] {
         
-        guard let categoryCoreData = trackerCategoryStore?.fetchAllCategories() else {
+        guard let categoryCoreData = trackerCategoryStore.fetchAllCategories() else {
             return []
         }
         let convertedCategories = convertToCategotyArray(categoryCoreData)
@@ -53,7 +77,7 @@ final class CategoryViewModel {
         return convertedCategories.map({ $0.titleOfCategory })
     }
     
-    func convertToCategotyArray( _ response: [TrackerCategoryCoreData]) -> [TrackerCategory] {
+    private func convertToCategotyArray( _ response: [TrackerCategoryCoreData]) -> [TrackerCategory] {
         
         var categoryArray: [TrackerCategory] = []
         for categoryCoreData in response {
@@ -70,7 +94,12 @@ final class CategoryViewModel {
 }
 
 extension CategoryViewModel: CategoryStoreDelegate {
-    func storeDidUpdate(category: TrackerCategory) {
+    func didStoreCategory(_ category: TrackerCategory) {
         categories.append(category.titleOfCategory)
+        newCategoryDelegate?.didStoreNewCategory()
+    }
+    
+    func storeDidUpdate(category: TrackerCategory) {
+        newCategoryDelegate?.categoryAlreadyExists()
     }
 }

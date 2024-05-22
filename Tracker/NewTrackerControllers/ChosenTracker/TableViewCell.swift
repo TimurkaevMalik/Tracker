@@ -11,12 +11,12 @@ class TableViewCell: UITableViewCell {
     
     let cellText = UILabel()
     
-    override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
-        super.init(style: style, reuseIdentifier: reuseIdentifier)
+    override init(style: UITableViewCell.CellStyle,
+                  reuseIdentifier: String?) {
         
+        super.init(style: style, reuseIdentifier: reuseIdentifier)
         configureCell()
     }
-
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
@@ -36,12 +36,11 @@ class TableViewCell: UITableViewCell {
         ])
     }
     
-   
     
     func updateTextOfCellWith(name: String, text: String){
         let attributedString = NSMutableAttributedString(string:"\(name)\n\(text)")
         attributedString.setColor(UIColor.lightGray, forText: text)
-
+        
         if !text.isEmpty {
             cellText.attributedText = attributedString
             

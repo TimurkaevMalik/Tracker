@@ -7,22 +7,17 @@
 
 import UIKit
 
-protocol NewCategoryProtocol: AnyObject {
-    func didMakeNewCategory(_ category: TrackerCategory)
-}
 
-class MakeNewCategory: UIViewController {
+final class NewCategoryView: UIViewController {
     
-    private let viewModel: CategoryViewModel
     private let textField = UITextField()
     private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     private let saveButton = UIButton()
-    
     private let titleLabel = UILabel()
-    private let limitWarningLabel = UILabel()
+    private let WarningLabel = UILabel()
     
     private var warningLabelBottomConstraint: [NSLayoutConstraint] = []
-    private var nameOfCategory: String?
+    private let viewModel: CategoryViewModel
     
     
     init(viewModel: CategoryViewModel) {
@@ -32,6 +27,50 @@ class MakeNewCategory: UIViewController {
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypWhite
+        
+        configureTitleLabelView()
+        configureTextFieldAndClearButton()
+        configureWarningLabel()
+        configureSaveButton()
+    }
+    
+    @objc func didEnterTextInTextField(_ sender: UITextField){
+        
+        guard
+            let text = sender.text,
+            !text.isEmpty,
+            !text.filter({ $0 != Character(" ") }).isEmpty
+        else {
+            clearTextFieldButtonTapped()
+            shouldActivateSaveButton(nil)
+            return
+        }
+        
+        shouldActivateSaveButton(text)
+        textField.text = text.trimmingCharacters(in: .whitespaces)
+    }
+    
+    @objc func saveButtonTapped(){
+        
+        if let nameOfCategory = viewModel.newCategory {
+            
+            textField.text = nameOfCategory.trimmingCharacters(in: .whitespaces)
+            viewModel.storeNewCategory(TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: []))
+        } else {
+            showWarningLabel(with: "укажите название")
+            highLightButton()
+        }
+    }
+    
+    
+    @objc func clearTextFieldButtonTapped(){
+        textField.text?.removeAll()
     }
     
     private func configureTitleLabelView(){
@@ -82,19 +121,19 @@ class MakeNewCategory: UIViewController {
         ])
     }
     
-    private func configureLimitWarningLabel(){
+    private func configureWarningLabel(){
         
-        limitWarningLabel.textColor = .ypRed
-        limitWarningLabel.font = UIFont.systemFont(ofSize: 17)
+        WarningLabel.textColor = .ypRed
+        WarningLabel.font = UIFont.systemFont(ofSize: 17)
         
-        limitWarningLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(limitWarningLabel)
-        view.insertSubview(limitWarningLabel, belowSubview: textField)
+        WarningLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(WarningLabel)
+        view.insertSubview(WarningLabel, belowSubview: textField)
         
-        warningLabelBottomConstraint.append(limitWarningLabel.bottomAnchor.constraint(equalTo: textField.bottomAnchor))
+        warningLabelBottomConstraint.append(WarningLabel.bottomAnchor.constraint(equalTo: textField.bottomAnchor))
         
         warningLabelBottomConstraint.first?.isActive = true
-        limitWarningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
+        WarningLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor).isActive = true
     }
     
     private func configureSaveButton(){
@@ -128,7 +167,8 @@ class MakeNewCategory: UIViewController {
             return
         }
         
-        nameOfCategory = text.trimmingCharacters(in: .whitespaces)
+        let newCategory = text.trimmingCharacters(in: .whitespaces)
+        viewModel.updateNameOfNewCategory(newCategory)
         saveButton.backgroundColor = .ypBlack
         return
     }
@@ -152,9 +192,9 @@ class MakeNewCategory: UIViewController {
         }
     }
     
-    private func showLimitWarningLabel(with text: String) {
+    private func showWarningLabel(with text: String) {
         
-        limitWarningLabel.text = text
+        WarningLabel.text = text
         isTextFieldAndSaveButtonEnabled(bool: false)
         
         DispatchQueue.main.async {
@@ -182,58 +222,9 @@ class MakeNewCategory: UIViewController {
         saveButton.isEnabled = bool
         textField.isEnabled = bool
     }
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .ypWhite
-        
-        configureTitleLabelView()
-        configureTextFieldAndClearButton()
-        configureLimitWarningLabel()
-        configureSaveButton()
-    }
-    
-    @objc func didEnterTextInTextField(_ sender: UITextField){
-        
-        guard 
-            let text = sender.text,
-            !text.isEmpty,
-            !text.filter({ $0 != Character(" ") }).isEmpty
-        else {
-            clearTextFieldButtonTapped()
-            shouldActivateSaveButton(nil)
-            return
-        }
-        
-        shouldActivateSaveButton(text)
-        textField.text = text.trimmingCharacters(in: .whitespaces)
-    }
-    
-    @objc func clearTextFieldButtonTapped(){
-        textField.text?.removeAll()
-    }
-    
-    @objc func saveButtonTapped(){
-        
-        if let nameOfCategory {
-
-            if !viewModel.categories.contains(where: { $0 == nameOfCategory }) {
-                viewModel.storeNewCategory(TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: []))
-                dismiss(animated: true)
-            } else {
-                showLimitWarningLabel(with: "Такая категория существует")
-                highLightButton()
-            }
-        } else {
-            showLimitWarningLabel(with: "укажите название")
-            highLightButton()
-        }
-    }
 }
 
-extension MakeNewCategory: UITextFieldDelegate {
+extension NewCategoryView: UITextFieldDelegate {
     
     func textField(_ textField: UITextField, shouldChangeCharactersIn range: NSRange, replacementString string: String) -> Bool {
         
@@ -246,12 +237,23 @@ extension MakeNewCategory: UITextFieldDelegate {
         
         guard newString.count <= maxLength else {
             
-            showLimitWarningLabel(with: "Ограничение 20 символов")
+            showWarningLabel(with: "Ограничение 20 символов")
             return false
         }
         
         shouldActivateSaveButton(newString)
         
         return true
+    }
+}
+
+extension NewCategoryView: NewCategoryViewProtocol {
+    func didStoreNewCategory() {
+        dismiss(animated: true)
+    }
+    
+    func categoryAlreadyExists() {
+        showWarningLabel(with: "Такая категория существует")
+        highLightButton()
     }
 }
