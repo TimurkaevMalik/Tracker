@@ -24,7 +24,6 @@
 		BC5E5DC92BC9BF7200BD7655 /* Delegates.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5E5DC82BC9BF7200BD7655 /* Delegates.swift */; };
 		BC5EA0662BF631F800DB3C45 /* TrackerType.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC5EA0652BF631F800DB3C45 /* TrackerType.swift */; };
 		BC70457E2BCC3B9F002F8F12 /* ChosenTrackerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC70457D2BCC3B9F002F8F12 /* ChosenTrackerController.swift */; };
-		BC8C8A0B2BD9618500AB04EC /* Schedule.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC8C8A0A2BD9618500AB04EC /* Schedule.swift */; };
 		BC91949B2BF955A900CAFF70 /* OnboardingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC91949A2BF955A900CAFF70 /* OnboardingViewController.swift */; };
 		BC9A9F852BCB2F8800558F38 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */; };
 		BC9A9F872BCB429900558F38 /* GeomitricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F862BCB429900558F38 /* GeomitricParams.swift */; };
@@ -63,7 +62,6 @@
 		BC5E5DC82BC9BF7200BD7655 /* Delegates.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Delegates.swift; sourceTree = "<group>"; };
 		BC5EA0652BF631F800DB3C45 /* TrackerType.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerType.swift; sourceTree = "<group>"; };
 		BC70457D2BCC3B9F002F8F12 /* ChosenTrackerController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ChosenTrackerController.swift; sourceTree = "<group>"; };
-		BC8C8A0A2BD9618500AB04EC /* Schedule.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Schedule.swift; sourceTree = "<group>"; };
 		BC91949A2BF955A900CAFF70 /* OnboardingViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = OnboardingViewController.swift; sourceTree = "<group>"; };
 		BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		BC9A9F862BCB429900558F38 /* GeomitricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = GeomitricParams.swift; path = ../TrackerView/GeomitricParams.swift; sourceTree = "<group>"; };
@@ -179,7 +177,6 @@
 				BC5E5DBD2BC9A18800BD7655 /* TrackerRecord.swift */,
 				BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */,
 				BC5E5DBF2BC9A5E700BD7655 /* Tracker.swift */,
-				BC8C8A0A2BD9618500AB04EC /* Schedule.swift */,
 				BC5EA0652BF631F800DB3C45 /* TrackerType.swift */,
 			);
 			path = Tracker;
@@ -360,7 +357,6 @@
 				BCA899FB2BE29298005C3934 /* TableViewCell.swift in Sources */,
 				BC5EA0662BF631F800DB3C45 /* TrackerType.swift in Sources */,
 				BCA853612BCE402500173B4A /* SupplementaryView.swift in Sources */,
-				BC8C8A0B2BD9618500AB04EC /* Schedule.swift in Sources */,
 				BCD0D6D52BF9F85A00B3E3C6 /* BoardController.swift in Sources */,
 				BCC82EE62BBEE8710042D467 /* SceneDelegate.swift in Sources */,
 				BC5E5DC32BC9AD4B00BD7655 /* TrackerTypeController.swift in Sources */,
