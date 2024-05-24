@@ -1,0 +1,36 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Malik Timurkaev on 24.05.2024.
+  
+*/
+
+
+"statistic.emptyState.title" = "No data to analyze";
+"emptyState.title" = "What should we track?";
+"delete.confirmation" = "Are you sure you want to delete the tracker?";
+
+"delete" = Delete;
+"cancel" = Cancel;
+"create" = Create;
+"doneButton.title" = Done;
+"habbitButton.title" = Habbit;
+"eventButton.title" = "Irregular event";
+"emoji" = Emoji;
+"color" = Color;
+
+"trackers" = Trackers;
+"statistic" = Statistic;
+"category" = Category;
+"schedule" = Schedule;
+
+"searchBar.placeholder" = Search;
+"newCategory.textField.placeholder" = "Enter the name of the category";
+"chosenTrackerController.textField.placeholder" = "Enter the name of the tracker";
+
+"trackerTypeController.title" = "Creating a Tracker";
+"chosenTrackerController.habbit.title" = "New habbit";
+"chosenTrackerController.event.title" = "New event";
+
+"newCategoryView.title" = "New category";

@@ -25,27 +25,25 @@ final class TrackerTypeController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func configureCreatingTrackerView(){
-        view.backgroundColor = UIColor(named: "YPWhite")
-        
+    private func configureButtons(){
         habbit.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
         irregularEvent.addTarget(self, action: #selector(irregularEventButtonTapped), for: .touchUpInside)
         
-        
-        habbit.setTitle("Привычка", for: .normal)
-        habbit.setTitleColor(UIColor(named: "YPWhite"), for: .normal)
+        let habbitTitle = NSLocalizedString("habbitButton.title", comment: "Text displayed on habbit button")
+        habbit.setTitle(habbitTitle, for: .normal)
+        habbit.setTitleColor(.ypWhite, for: .normal)
         habbit.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         habbit.layer.cornerRadius = 16
         habbit.layer.masksToBounds = true
-        habbit.backgroundColor = UIColor(named: "YPBlack")
+        habbit.backgroundColor = .ypBlack
         
-        
-        irregularEvent.setTitle("Нерегулярные событие", for: .normal)
-        irregularEvent.setTitleColor(UIColor(named: "YPWhite"), for: .normal)
+        let eventTitle = NSLocalizedString("eventButton.title", comment: "Text displayed on irregular event button")
+        irregularEvent.setTitle(eventTitle, for: .normal)
+        irregularEvent.setTitleColor(.ypWhite, for: .normal)
         irregularEvent.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         irregularEvent.layer.cornerRadius = 16
         irregularEvent.layer.masksToBounds = true
-        irregularEvent.backgroundColor = UIColor(named: "YPBlack")
+        irregularEvent.backgroundColor = .ypBlack
         
         
         view.addSubviews([habbit, irregularEvent])
@@ -67,8 +65,9 @@ final class TrackerTypeController: UIViewController {
     }
     
     private func configureTitleLable(){
+        let titleLabelText = NSLocalizedString("trackerTypeController.title", comment: "Text displayed on the top of screen")
         
-        titleLabel.text = "Создание трекера"
+        titleLabel.text = titleLabelText
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         titleLabel.textAlignment = .center
         view.addSubview(titleLabel)
@@ -85,9 +84,10 @@ final class TrackerTypeController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .ypWhite
         
         configureTitleLable()
-        configureCreatingTrackerView()
+        configureButtons()
     }
     
     

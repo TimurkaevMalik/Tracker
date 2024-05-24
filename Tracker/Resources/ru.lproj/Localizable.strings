@@ -1,0 +1,35 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Malik Timurkaev on 24.05.2024.
+  
+*/
+
+
+"statistic.emptyState.title" = "Анализировать пока нечего";
+"emptyState.title" = "Что будем отслеживать?";
+"delete.confirmation" = "Уверены что хотите удалить трекер?";
+
+
+"delete" = "Удалить";
+"cancel" = "Отменить";
+"create" = "Создать";
+"doneButton.title" = "Готово";
+"habbitButton.title" = "Привычка";
+"eventButton.title" = "Нерегулярное событие";
+"emoji" = "Эмодзи";
+"color" = "Цвет";
+"trackers" = "Трекеры";
+"statistic" = "Статистика";
+"category" = "Категория";
+"schedule" = "Расписание";
+
+"searchBar.placeholder" = "Поиск";
+"newCategory.textField.placeholder" = "Введети название категории";
+"chosenTrackerController.textField.placeholder" = "Введите название трекера";
+
+"trackerTypeController.title" = "Создание трекера";
+"chosenTrackerController.habbit.title" = "Новая привычка";
+"chosenTrackerController.event.title" = "Новое событие";
+"newCategoryView.title" = "New category";

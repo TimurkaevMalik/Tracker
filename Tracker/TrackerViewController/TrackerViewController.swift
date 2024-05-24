@@ -84,7 +84,8 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configureTrackerLabelsViews(){
-        centralPlugLabel.text = "Что будем отслеживать?"
+        let emptyStateText = NSLocalizedString("emptyState.title", comment: "Text displayed on empty state")
+        centralPlugLabel.text = emptyStateText
         centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
         centralPlugLabel.textAlignment = .center
         
@@ -117,7 +118,8 @@ final class TrackerViewController: UIViewController {
         searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         
-        searchController.searchBar.placeholder = "Поиск"
+        let placeHolder = NSLocalizedString("searchBar.placeholder", comment: "Text displayed inside of searchBar as placeholder")
+        searchController.searchBar.placeholder = placeHolder
         
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.searchBarStyle = .prominent
@@ -129,10 +131,10 @@ final class TrackerViewController: UIViewController {
     }
     
     private func addTitleAndSearchControllerToNavBar(){
-        
+        let trackersTopTitle = NSLocalizedString("trackers", comment: "Text displayed on the top of search bar")
+        navigationItem.title = trackersTopTitle
         navigationItem.searchController = searchController
         navigationController?.navigationBar.prefersLargeTitles = true
-        navigationItem.title = "Трекеры"
     }
     
     private func configureCollectionView(){

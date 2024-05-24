@@ -15,12 +15,13 @@ final class StatisticViewController: UIViewController {
     private lazy var centralPlugImage = UIImageView()
     
     private func configureLabelsViews(){
-        view.backgroundColor = UIColor(named: "YPWhite")
+        let statisticTopTitle = NSLocalizedString("statistic", comment: "Text displayed on the top of statistic")
+        let emptyStateText = NSLocalizedString("statistic.emptyState.title", comment: "Text displayed on empty state")
         
-        titleLabel.text = "Статистика"
+        titleLabel.text = statisticTopTitle
         titleLabel.font = UIFont.boldSystemFont(ofSize: 34)
         
-        centralPlugLabel.text = "Анализировать пока нечего"
+        centralPlugLabel.text = emptyStateText
         centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
         centralPlugLabel.textAlignment = .center
         
@@ -57,6 +58,7 @@ final class StatisticViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        view.backgroundColor = .ypWhite
         
         configureLabelsViews()
         configureCentralPlug()
