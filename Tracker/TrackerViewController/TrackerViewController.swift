@@ -328,6 +328,7 @@ final class TrackerViewController: UIViewController {
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
         
         currentDate = sender.date
+        print(sender.date.description(with: .current))
         showVisibleTrackers(dateDescription: sender.date.description(with: .current))
     }
 }

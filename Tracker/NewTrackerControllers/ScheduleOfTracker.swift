@@ -32,6 +32,72 @@ final class ScheduleOfTracker: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypWhite
+        
+        configureDoneButton()
+        configureTitleLabelView()
+        configureTableView()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        delegate?.didDismissScreenWithChanges(dates: chosenDates)
+    }
+    
+    @objc func doneButtonTapped(){
+        
+        guard !chosenDates.isEmpty else {
+            highLightButton()
+            return
+        }
+        
+        delegate?.didRecieveDatesArray(dates: chosenDates)
+        
+        dismiss(animated: true)
+    }
+    
+    @objc func switchChanged(_ sender: UISwitch){
+        
+        var stringWeekDay = ""
+        
+        switch sender.tag {
+        case 0:
+            stringWeekDay = "Monday"
+        case 1:
+            stringWeekDay = "Tuesday"
+        case 2:
+            stringWeekDay = "Wednesday"
+        case 3:
+            stringWeekDay = "Thursday"
+        case 4:
+            stringWeekDay = "Friday"
+        case 5:
+            stringWeekDay = "Saturday"
+        case 6:
+            stringWeekDay = "Sunday"
+        default:
+            return
+        }
+        
+        switch sender.isOn {
+        case true:
+            chosenDates.append(stringWeekDay)
+            
+        case false:
+            for index in 0..<chosenDates.count {
+                
+                if chosenDates[index] == stringWeekDay {
+                    chosenDates.remove(at: index)
+                    break
+                }
+            }
+        }
+    }
+    
     private func configureTitleLabelView(){
         let titleLabelText = NSLocalizedString("schedule", comment: "Text displayed on the top of screen")
         
@@ -126,71 +192,33 @@ final class ScheduleOfTracker: UIViewController {
         return false
     }
     
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    func locolizedWeekdayOf(_ weekDay: String) -> String? {
         
-        view.backgroundColor = .ypWhite
+        var text: String = ""
         
-        configureDoneButton()
-        configureTitleLabelView()
-        configureTableView()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        delegate?.didDismissScreenWithChanges(dates: chosenDates)
-    }
-    
-    @objc func doneButtonTapped(){
-        
-        guard !chosenDates.isEmpty else {
-            highLightButton()
-            return
-        }
-        
-        delegate?.didRecieveDatesArray(dates: chosenDates)
-        
-        dismiss(animated: true)
-    }
-    
-    @objc func switchChanged(_ sender: UISwitch){
-        
-        var stringWeekDay = ""
-        
-        switch sender.tag {
-        case 0:
-            stringWeekDay = "Monday"
-        case 1:
-            stringWeekDay = "Tuesday"
-        case 2:
-            stringWeekDay = "Wednesday"
-        case 3:
-            stringWeekDay = "Thursday"
-        case 4:
-            stringWeekDay = "Friday"
-        case 5:
-            stringWeekDay = "Saturday"
-        case 6:
-            stringWeekDay = "Sunday"
-        default:
-            return
-        }
-        
-        switch sender.isOn {
-        case true:
-            chosenDates.append(stringWeekDay)
+        if weekDay == weekdays[0] {
+            text = weekdays[0].lowercased()
             
-        case false:
-            for index in 0..<chosenDates.count {
-                
-                if chosenDates[index] == stringWeekDay {
-                    chosenDates.remove(at: index)
-                    break
-                }
-            }
+        } else if weekDay == weekdays[1] {
+            text = weekdays[1].lowercased()
+            
+        } else if weekDay == weekdays[2] {
+            text = weekdays[2].lowercased()
+            
+        } else if weekDay == weekdays[3] {
+            text = weekdays[3].lowercased()
+            
+        } else if weekDay == weekdays[4] {
+            text = weekdays[4].lowercased()
+            
+        } else if weekDay == weekdays[5] {
+            text = weekdays[5].lowercased()
+            
+        } else if weekDay == weekdays[6] {
+            text = weekdays[6].lowercased()
         }
+        
+        return NSLocalizedString(text, comment: "")
     }
 }
 
@@ -212,7 +240,8 @@ extension ScheduleOfTracker: UITableViewDataSource {
         
         cell.accessoryView = switchView
         cell.backgroundColor = .ypLightGray
-        cell.textLabel?.text = weekdays[indexPath.row]
+        
+        cell.textLabel?.text = locolizedWeekdayOf(weekdays[indexPath.row])
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         

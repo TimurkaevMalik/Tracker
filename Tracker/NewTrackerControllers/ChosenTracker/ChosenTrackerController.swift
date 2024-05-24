@@ -724,19 +724,25 @@ extension ChosenTrackerController: ScheduleOfTrackerDelegate {
         let datesString: String = sortedDates.map({ date in
             
             if date == "Monday" {
-                return "Пн"
+                return NSLocalizedString("mon", comment: "")
+                
             } else if date == "Tuesday" {
-                return "Вт"
+                return NSLocalizedString("tue", comment: "")
+                
             } else if date == "Wednesday" {
-                return "Ср"
+                return NSLocalizedString("wed", comment: "")
+                
             } else if date == "Thursday" {
-                return "Чт"
+                return NSLocalizedString("thu", comment: "")
+                
             } else if date == "Friday" {
-                return "Пт"
+                return NSLocalizedString("fri", comment: "")
+                
             } else if date == "Saturday" {
-                return "Сб"
+                return NSLocalizedString("sat", comment: "")
+                
             } else if date == "Sunday" {
-                return "Вс"
+                return NSLocalizedString("sun", comment: "")
             }
             
             return ""
