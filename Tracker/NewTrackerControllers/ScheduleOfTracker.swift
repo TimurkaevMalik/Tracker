@@ -33,7 +33,9 @@ final class ScheduleOfTracker: UIViewController {
     }
     
     private func configureTitleLabelView(){
-        titleLabel.text = "Новая привычка"
+        let titleLabelText = NSLocalizedString("schedule", comment: "Text displayed on the top of screen")
+        
+        titleLabel.text = titleLabelText
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -71,10 +73,11 @@ final class ScheduleOfTracker: UIViewController {
     }
     
     private func configureDoneButton(){
+        let doneButtonTitle = NSLocalizedString("doneButton.title", comment: "Text displayed on done button")
         
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
-        doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitle(doneButtonTitle, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         doneButton.backgroundColor = .ypBlack
         doneButton.layer.cornerRadius = 16

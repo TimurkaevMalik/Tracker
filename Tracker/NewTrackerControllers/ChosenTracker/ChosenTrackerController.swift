@@ -43,6 +43,8 @@ class ChosenTrackerController: UIViewController {
     private var colorOfTracker: UIColor?
     private var emojiOfTracker: String?
     
+    private let warningLabelTitle = NSLocalizedString("cancel", comment: "Text displayed on cancel button")
+    
     private let tableCellIdentifier = "tableCellIdentifier"
     private let emojiCellIdentifier = "emojiCollectionCell"
     private let colorCellIdentifier = "colorCollectionCell"
@@ -102,12 +104,13 @@ class ChosenTrackerController: UIViewController {
     }
     
     @objc func saveButtonTapped(){
+        let fieldsfullnessText = NSLocalizedString("warning.fieldsfullness", comment: "Text shows up as warning")
         
         checkIsTextFieldEmpty()
         
         if trackerType == TrackerType.habbit {
             guard !scheduleOfTracker.isEmpty else {
-                showLimitWarningLabel(with: "Заполните все поля")
+                showWarningLabel(with: fieldsfullnessText)
                 highLightButton()
                 return
             }
@@ -119,7 +122,7 @@ class ChosenTrackerController: UIViewController {
             let color = colorOfTracker,
             let emoji = emojiOfTracker
         else {
-            showLimitWarningLabel(with: "Заполните все поля")
+            showWarningLabel(with: fieldsfullnessText)
             highLightButton()
             return
         }
@@ -200,19 +203,22 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureSaveAndCancelButtons(){
+        let cancelButtonTitle = NSLocalizedString("cancel", comment: "Text displayed on cancel button")
+        let createButtonTitle = NSLocalizedString("create", comment: "Text displayed on create button")
+        
         buttonsContainer.backgroundColor = .ypWhite
         
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         
         
-        saveButton.setTitle("Создать", for: .normal)
+        saveButton.setTitle(createButtonTitle, for: .normal)
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         saveButton.backgroundColor = .ypDarkGray
         saveButton.layer.cornerRadius = 16
         saveButton.layer.masksToBounds = true
         
-        cancelButton.setTitle("Отменить", for: .normal)
+        cancelButton.setTitle(cancelButtonTitle, for: .normal)
         cancelButton.setTitleColor(.ypRed, for: .normal)
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         cancelButton.backgroundColor = .ypWhite
@@ -245,7 +251,15 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureTitleLabelView(){
-        titleLabel.text = "Новая привычка"
+        var titleLabelText: String?
+        
+        if trackerType == TrackerType.habbit {
+            titleLabelText = NSLocalizedString("habbitController.title", comment: "Text displayed on the top of screen")
+        } else if trackerType == TrackerType.irregularEvent {
+            titleLabelText = NSLocalizedString("eventController.title", comment: "Text displayed on the top of screen")
+        }
+        
+        titleLabel.text = titleLabelText
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         titleLabelContainer.backgroundColor = .ypWhite
         
@@ -265,12 +279,13 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureTextFieldAndClearButton(){
+        let enterNameText = NSLocalizedString("placeholder.enterTrackerName", comment: "")
         
         textField.delegate = self
-        textField.backgroundColor = UIColor(named: "YPLightGray")
+        textField.backgroundColor = .ypLightGray
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = enterNameText
         textField.leftViewMode = .always
         
         
@@ -346,7 +361,7 @@ class ChosenTrackerController: UIViewController {
         }
     }
     
-    private func showLimitWarningLabel(with text: String){
+    private func showWarningLabel(with text: String){
         
         limitWarningLabel.text = text
         isTextFieldAndSaveButtonEnabled(bool: false)
@@ -433,11 +448,14 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func updateTableVeiwCells(){
+        let categoryCellTitle = NSLocalizedString("category", comment: "Text displayed on tableView cell")
+        let scheduleCellTitle = NSLocalizedString("schedule", comment: "Text displayed on tableView cell")
+        
         if trackerType == TrackerType.irregularEvent {
-            tableViewCells.append("Категория")
+            tableViewCells.append(categoryCellTitle)
         } else {
-            tableViewCells.append("Категория")
-            tableViewCells.append("Расписание")
+            tableViewCells.append(categoryCellTitle)
+            tableViewCells.append(scheduleCellTitle)
         }
     }
     
@@ -581,10 +599,16 @@ extension ChosenTrackerController: UICollectionViewDataSource {
         }
         
         if id == collectionHeaderIdentifier {
+            
             if indexPath.section == 0 {
-                headerView.titleLabel.text = "Эмодзи"
+                
+                let emojiText = NSLocalizedString("emoji", comment: "")
+                
+                headerView.titleLabel.text = emojiText
             } else {
-                headerView.titleLabel.text = "Цвет"
+                let colorText = NSLocalizedString("color", comment: "")
+                
+                headerView.titleLabel.text = colorText
             }
         }
         
@@ -759,7 +783,10 @@ extension ChosenTrackerController: UITextFieldDelegate {
         
         guard newString.count <= maxLength else {
             
-            showLimitWarningLabel(with: "Ограничение 38 символов")
+            let limititationText = NSLocalizedString("warning.limititation", comment: "Text before the number of the limit")
+            let charatersText = NSLocalizedString("warning.caracters", comment: "Text after the number of the limit")
+            
+            showWarningLabel(with: limititationText + " \(38) " + charatersText)
             return false
         }
         

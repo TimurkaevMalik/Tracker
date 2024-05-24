@@ -41,7 +41,7 @@ final class CategoryViewModel {
         categories = fetchCategories()
     }
     
-    func updateNameOfNewCategory(_ name: String) {
+    func updateNameOfNewCategory(_ name: String?) {
         newCategory = name
     }
     

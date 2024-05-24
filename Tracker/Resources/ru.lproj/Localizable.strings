@@ -11,13 +11,15 @@
 "emptyState.title" = "Что будем отслеживать?";
 "delete.confirmation" = "Уверены что хотите удалить трекер?";
 
-
 "delete" = "Удалить";
 "cancel" = "Отменить";
 "create" = "Создать";
 "doneButton.title" = "Готово";
-"habbitButton.title" = "Привычка";
-"eventButton.title" = "Нерегулярное событие";
+"button.habbit" = "Привычка";
+"button.irregularEvent" = "Нерегулярное событие";
+"button.createCategory" = "Создать категорию";
+"button.addCategory" = "Добавить категорию";
+
 "emoji" = "Эмодзи";
 "color" = "Цвет";
 "trackers" = "Трекеры";
@@ -26,10 +28,16 @@
 "schedule" = "Расписание";
 
 "searchBar.placeholder" = "Поиск";
-"newCategory.textField.placeholder" = "Введети название категории";
-"chosenTrackerController.textField.placeholder" = "Введите название трекера";
+"placeholder.enterCategoryName" = "Введети название категории";
+"placeholder.enterTrackerName" = "Введети название трекера";
 
 "trackerTypeController.title" = "Создание трекера";
-"chosenTrackerController.habbit.title" = "Новая привычка";
-"chosenTrackerController.event.title" = "Новое событие";
-"newCategoryView.title" = "New category";
+"habbitController.title" = "Новая привычка";
+"eventController.title" = "Новое событие";
+"newCategoryView.title" = "Новая категория";
+
+"warning.categoryAlreadyExists" = "Такая категория уже существует";
+"warning.enterCategoryName" = "укажите название категории";
+"warning.fieldsfullness" = "Заполните все поля";
+"warning.limititation" = "Ограничение";
+"warning.caracters" = "символов";

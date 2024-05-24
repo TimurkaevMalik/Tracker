@@ -75,7 +75,9 @@ final class CategoryView: UIViewController {
     }
     
     private func configureTitleLabelView(){
-        titleLabel.text = "Категория"
+        let titleLabelText = NSLocalizedString("category", comment: "Text displayed on the top of screen")
+        
+        titleLabel.text = titleLabelText
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -174,11 +176,13 @@ final class CategoryView: UIViewController {
     }
     
     private func setButtonTitle() {
+        let createCategoryText = NSLocalizedString("button.createCategory", comment: "Text displayed on create button")
+        let addCategoryText = NSLocalizedString("button.addCategory", comment: "Text displayed on create button")
         
         if viewModel.chosenCategory == nil {
-            doneButton.setTitle("Создать категорию", for: .normal)
+            doneButton.setTitle(createCategoryText, for: .normal)
         } else {
-            doneButton.setTitle("Добавить категорию", for: .normal)
+            doneButton.setTitle(addCategoryText, for: .normal)
         }
     }
 }

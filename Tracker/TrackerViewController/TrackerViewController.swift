@@ -84,7 +84,7 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configureTrackerLabelsViews(){
-        let emptyStateText = NSLocalizedString("emptyState.title", comment: "Text displayed on empty state")
+        let emptyStateText = NSLocalizedString("trackersControler.emptyState.title", comment: "Text displayed on empty state")
         centralPlugLabel.text = emptyStateText
         centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
         centralPlugLabel.textAlignment = .center

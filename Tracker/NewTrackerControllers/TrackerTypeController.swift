@@ -26,10 +26,12 @@ final class TrackerTypeController: UIViewController {
     }
     
     private func configureButtons(){
+        let habbitTitle = NSLocalizedString("button.habbit", comment: "Text displayed on habbit button")
+        let eventTitle = NSLocalizedString("button.irregularEvent", comment: "Text displayed on irregular event button")
+        
         habbit.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
         irregularEvent.addTarget(self, action: #selector(irregularEventButtonTapped), for: .touchUpInside)
         
-        let habbitTitle = NSLocalizedString("habbitButton.title", comment: "Text displayed on habbit button")
         habbit.setTitle(habbitTitle, for: .normal)
         habbit.setTitleColor(.ypWhite, for: .normal)
         habbit.titleLabel?.font = UIFont.systemFont(ofSize: 16)
@@ -37,7 +39,6 @@ final class TrackerTypeController: UIViewController {
         habbit.layer.masksToBounds = true
         habbit.backgroundColor = .ypBlack
         
-        let eventTitle = NSLocalizedString("eventButton.title", comment: "Text displayed on irregular event button")
         irregularEvent.setTitle(eventTitle, for: .normal)
         irregularEvent.setTitleColor(.ypWhite, for: .normal)
         irregularEvent.titleLabel?.font = UIFont.systemFont(ofSize: 16)
