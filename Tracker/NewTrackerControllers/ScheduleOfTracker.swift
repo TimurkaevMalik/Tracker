@@ -17,7 +17,7 @@ final class ScheduleOfTracker: UIViewController {
     private let tableView = UITableView()
     
     private var chosenDates: [String] = []
-    private let weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    private let daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     
     
     init(delegate: ScheduleOfTrackerDelegate,
@@ -66,19 +66,19 @@ final class ScheduleOfTracker: UIViewController {
         
         switch sender.tag {
         case 0:
-            stringWeekDay = "Monday"
+            stringWeekDay = daysOfWeek[0]
         case 1:
-            stringWeekDay = "Tuesday"
+            stringWeekDay = daysOfWeek[1]
         case 2:
-            stringWeekDay = "Wednesday"
+            stringWeekDay = daysOfWeek[2]
         case 3:
-            stringWeekDay = "Thursday"
+            stringWeekDay = daysOfWeek[3]
         case 4:
-            stringWeekDay = "Friday"
+            stringWeekDay = daysOfWeek[4]
         case 5:
-            stringWeekDay = "Saturday"
+            stringWeekDay = daysOfWeek[5]
         case 6:
-            stringWeekDay = "Sunday"
+            stringWeekDay = daysOfWeek[6]
         default:
             return
         }
@@ -184,48 +184,19 @@ final class ScheduleOfTracker: UIViewController {
     private func shouldSetSwitchOnForCell(_ indexPath: IndexPath) -> Bool {
         
         for date in chosenDates {
-            if date == weekdays[indexPath.row] {
+            if date == daysOfWeek[indexPath.row] {
                 return true
             }
         }
         
         return false
     }
-    
-    func locolizedWeekdayOf(_ weekDay: String) -> String? {
-        
-        var text: String = ""
-        
-        if weekDay == weekdays[0] {
-            text = weekdays[0].lowercased()
-            
-        } else if weekDay == weekdays[1] {
-            text = weekdays[1].lowercased()
-            
-        } else if weekDay == weekdays[2] {
-            text = weekdays[2].lowercased()
-            
-        } else if weekDay == weekdays[3] {
-            text = weekdays[3].lowercased()
-            
-        } else if weekDay == weekdays[4] {
-            text = weekdays[4].lowercased()
-            
-        } else if weekDay == weekdays[5] {
-            text = weekdays[5].lowercased()
-            
-        } else if weekDay == weekdays[6] {
-            text = weekdays[6].lowercased()
-        }
-        
-        return NSLocalizedString(text, comment: "")
-    }
 }
 
 extension ScheduleOfTracker: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return weekdays.count
+        return daysOfWeek.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -241,7 +212,8 @@ extension ScheduleOfTracker: UITableViewDataSource {
         cell.accessoryView = switchView
         cell.backgroundColor = .ypLightGray
         
-        cell.textLabel?.text = locolizedWeekdayOf(weekdays[indexPath.row])
+        let weekday = daysOfWeek[indexPath.row]
+        cell.textLabel?.text = NSLocalizedString(weekday, comment: "")
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         

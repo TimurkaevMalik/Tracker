@@ -241,7 +241,7 @@ final class TrackerViewController: UIViewController {
         
         visibleTrackers.removeAll()
         
-        var selectedDate: String = ""
+        var selectedDate = ""
         
         for char in dateDescription {
             if char != "," {
@@ -258,11 +258,16 @@ final class TrackerViewController: UIViewController {
             for tracker in category.trackersArray {
                 
                 if !tracker.schedule.isEmpty {
-                    for date in tracker.schedule {
+                    for dayOfWeek in tracker.schedule {
                         
-                        if let date, date == selectedDate {
+                        if let dayOfWeek {
                             
-                            trackers.append(tracker)
+                            let locolizedDay = NSLocalizedString(dayOfWeek, comment: "")
+                            
+                            if locolizedDay.lowercased() == selectedDate {
+                                
+                                trackers.append(tracker)
+                            }
                         }
                     }
                 } else  {
@@ -328,8 +333,8 @@ final class TrackerViewController: UIViewController {
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
         
         currentDate = sender.date
-        print(sender.date.description(with: .current))
-        showVisibleTrackers(dateDescription: sender.date.description(with: .current))
+        
+        showVisibleTrackers(dateDescription: sender.date.description(with: .current).lowercased())
     }
 }
 
@@ -508,7 +513,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     private func shouldRecordDate(_ bool: Bool, idOfCell: UUID){
         
-        guard 
+        guard
             let currentDate,
             let actualDate = currentDate.getDefaultDateWith(formatter: dateFormatter)
         else {

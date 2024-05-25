@@ -717,31 +717,31 @@ extension ChosenTrackerController: ScheduleOfTrackerDelegate {
     
     private func shouldAddDatesOnCellTitle(dates: [String]){
         
-        let week: [String] = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+        let daysOfWeek: [String] = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
         
-        let sortedDates = dates.sorted { week.firstIndex(of: $0) ?? 0 < week.firstIndex(of: $1) ?? 1}
+        let sortedDates = dates.sorted { daysOfWeek.firstIndex(of: $0) ?? 0 < daysOfWeek.firstIndex(of: $1) ?? 1}
         
         let datesString: String = sortedDates.map({ date in
             
-            if date == "Monday" {
+            if date == daysOfWeek[0] {
                 return NSLocalizedString("mon", comment: "")
                 
-            } else if date == "Tuesday" {
+            } else if date == daysOfWeek[1] {
                 return NSLocalizedString("tue", comment: "")
                 
-            } else if date == "Wednesday" {
+            } else if date == daysOfWeek[2] {
                 return NSLocalizedString("wed", comment: "")
                 
-            } else if date == "Thursday" {
+            } else if date == daysOfWeek[3] {
                 return NSLocalizedString("thu", comment: "")
                 
-            } else if date == "Friday" {
+            } else if date == daysOfWeek[4] {
                 return NSLocalizedString("fri", comment: "")
                 
-            } else if date == "Saturday" {
+            } else if date == daysOfWeek[5] {
                 return NSLocalizedString("sat", comment: "")
                 
-            } else if date == "Sunday" {
+            } else if date == daysOfWeek[6] {
                 return NSLocalizedString("sun", comment: "")
             }
             
