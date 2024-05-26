@@ -205,10 +205,7 @@ final class TrackerViewController: UIViewController {
                     
                     cell.count = record.date.count
                     
-                    var textKey = record.date.count > 1 && record.date.count <= 4  ? "days.fromTwoToFour" : "days"
-                    textKey = record.date.count == 1 ? "day" : textKey
-                    
-                    let locolizedText = NSLocalizedString(textKey, comment: "")
+                    let locolizedText = NSLocalizedString("numberOfDays", comment: "")
                     cell.daysCount.text = String(format: locolizedText, record.date.count)
                 } else {
                     

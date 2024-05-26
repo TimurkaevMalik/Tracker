@@ -135,6 +135,8 @@ final class CollectionViewCell: UICollectionViewCell {
             return nil
         }
         
+        let locolizedText = NSLocalizedString("numberOfDays", comment: "")
+        
         if doneButton.imageView?.image?.pngData() == UIImage(named: "WhitePlus")?.pngData() {
             
             doneButton.setImage(UIImage(named: "CheckMark"), for: .normal)
@@ -142,11 +144,7 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count + 1
             count += 1
-            
-            var textKey = count > 1 && count <= 4 ? "days.fromTwoToFour" : "days"
-            textKey = count == 1 ? "day" : textKey
-            
-            let locolizedText = NSLocalizedString(textKey, comment: "")
+
             daysCount.text = String(format: locolizedText, count)
             
             return true
@@ -157,11 +155,7 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count - 1
             count -= 1
-            
-            var textKey = count > 1 && count <= 4 ? "days.fromTwoToFour" : "days"
-            textKey = count == 1 ? "day" : textKey
-            
-            let locolizedText = NSLocalizedString(textKey, comment: "")
+
             daysCount.text = String(format: locolizedText, count)
             
             return false
