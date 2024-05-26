@@ -272,7 +272,7 @@ final class TrackerViewController: UIViewController {
                             
                             let locolizedDay = NSLocalizedString(dayOfWeek, comment: "")
                             
-                            if locolizedDay.lowercased() == selectedDate {
+                            if locolizedDay.lowercased() == selectedDate.lowercased() {
                                 
                                 trackers.append(tracker)
                             }
@@ -342,7 +342,7 @@ final class TrackerViewController: UIViewController {
         
         currentDate = sender.date
         
-        showVisibleTrackers(dateDescription: sender.date.description(with: .current).lowercased())
+        showVisibleTrackers(dateDescription: sender.date.description(with: .current))
     }
 }
 
