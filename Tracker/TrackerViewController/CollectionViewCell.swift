@@ -142,7 +142,10 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count + 1
             count += 1
-            daysCount.text = "\(count) день"
+            print(count)
+            var text = count > 1 && count <= 4 ? "дня" : "дней"
+            text = count == 1 ? "день" : text
+            daysCount.text = "\(count) \(text)"
             
             return true
         } else {
@@ -152,7 +155,10 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count - 1
             count -= 1
-            daysCount.text = "\(count) день"
+            
+            var text = count > 1 && count <= 4 ? "дня" : "дней"
+            text = count == 1 ? "день" : text
+            daysCount.text = "\(count) \(text)"
             
             return false
         }

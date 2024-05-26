@@ -204,7 +204,11 @@ final class TrackerViewController: UIViewController {
                 if record.id == actualTracker.id {
                     
                     cell.count = record.date.count
-                    cell.daysCount.text = "\(record.date.count) день"
+                    
+                    var text = record.date.count > 1 && record.date.count <= 4  ? "дня" : "дней"
+                    text = record.date.count == 1 ? "день" : text
+                    
+                    cell.daysCount.text = "\(record.date.count) \(text)"
                 } else {
                     
                     if completedTrackers.contains(where: { element in
