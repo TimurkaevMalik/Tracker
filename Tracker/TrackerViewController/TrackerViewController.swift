@@ -205,10 +205,11 @@ final class TrackerViewController: UIViewController {
                     
                     cell.count = record.date.count
                     
-                    var text = record.date.count > 1 && record.date.count <= 4  ? "дня" : "дней"
-                    text = record.date.count == 1 ? "день" : text
+                    var textKey = record.date.count > 1 && record.date.count <= 4  ? "days.fromTwoToFour" : "days"
+                    textKey = record.date.count == 1 ? "day" : textKey
                     
-                    cell.daysCount.text = "\(record.date.count) \(text)"
+                    let locolizedText = NSLocalizedString(textKey, comment: "")
+                    cell.daysCount.text = String(format: locolizedText, record.date.count)
                 } else {
                     
                     if completedTrackers.contains(where: { element in
@@ -217,14 +218,17 @@ final class TrackerViewController: UIViewController {
                         
                         continue
                     } else {
+                        let locolizedText = NSLocalizedString("days", comment: "")
                         
-                        cell.daysCount.text = "0 дней"
+                        cell.daysCount.text = String(format: locolizedText, 0)
                         cell.count = 0
                     }
                 }
             }
         } else {
-            cell.daysCount.text = "0 дней"
+            let locolizedText = NSLocalizedString("days", comment: "")
+            
+            cell.daysCount.text = String(format: locolizedText, 0)
             cell.count = 0
         }
     }

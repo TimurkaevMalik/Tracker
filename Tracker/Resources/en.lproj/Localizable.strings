@@ -57,3 +57,7 @@
 "fri" = "Fri";
 "sat" = "Sat";
 "sun" = "Sun";
+
+"day" = "%d day";
+"days" = "%d days";
+"days.fromTwoToFour" = "%d days";

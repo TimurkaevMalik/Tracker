@@ -57,3 +57,7 @@
 "fri" = "Пт";
 "sat" = "Сб";
 "sun" = "Вс";
+
+"day" = "%d день";
+"days" = "%d дней";
+"days.fromTwoToFour" = "%d дня";

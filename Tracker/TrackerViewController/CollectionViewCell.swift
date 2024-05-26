@@ -142,10 +142,12 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count + 1
             count += 1
-            print(count)
-            var text = count > 1 && count <= 4 ? "дня" : "дней"
-            text = count == 1 ? "день" : text
-            daysCount.text = "\(count) \(text)"
+            
+            var textKey = count > 1 && count <= 4 ? "days.fromTwoToFour" : "days"
+            textKey = count == 1 ? "day" : textKey
+            
+            let locolizedText = NSLocalizedString(textKey, comment: "")
+            daysCount.text = String(format: locolizedText, count)
             
             return true
         } else {
@@ -156,9 +158,11 @@ final class CollectionViewCell: UICollectionViewCell {
             self.count = count - 1
             count -= 1
             
-            var text = count > 1 && count <= 4 ? "дня" : "дней"
-            text = count == 1 ? "день" : text
-            daysCount.text = "\(count) \(text)"
+            var textKey = count > 1 && count <= 4 ? "days.fromTwoToFour" : "days"
+            textKey = count == 1 ? "day" : textKey
+            
+            let locolizedText = NSLocalizedString(textKey, comment: "")
+            daysCount.text = String(format: locolizedText, count)
             
             return false
         }
