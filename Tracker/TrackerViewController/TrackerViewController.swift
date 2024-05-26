@@ -251,7 +251,7 @@ final class TrackerViewController: UIViewController {
         
         var selectedDate = ""
         
-        for char in dateDescription {
+        for char in dateDescription.lowercased() {
             if char != "," {
                 selectedDate.append(char)
             } else {
@@ -272,7 +272,7 @@ final class TrackerViewController: UIViewController {
                             
                             let locolizedDay = NSLocalizedString(dayOfWeek, comment: "")
                             
-                            if locolizedDay.lowercased() == selectedDate.lowercased() {
+                            if locolizedDay.lowercased() == selectedDate {
                                 
                                 trackers.append(tracker)
                             }
