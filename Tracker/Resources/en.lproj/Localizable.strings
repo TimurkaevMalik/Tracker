@@ -15,6 +15,7 @@
 
 "edit" = Edit;
 "attach" = Attach;
+"unpin" = Unpin;
 "delete" = Delete;
 "create" = Create;
 "cancel" = Cancel;

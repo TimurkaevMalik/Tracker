@@ -251,7 +251,7 @@ final class TrackerViewController: UIViewController {
         let attachedText = NSLocalizedString("attached", comment: "")
         
         if let attachedCategory = categories.first(where: { $0.titleOfCategory == attachedText }),
-            !attachedCategory.trackersArray.isEmpty {
+           !attachedCategory.trackersArray.isEmpty {
             
             visibleTrackers = [attachedCategory]
         } else {
@@ -467,6 +467,59 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 
 extension TrackerViewController: CollectionViewCellDelegate {
     
+    func contextMenuForCell(_ cell: CollectionViewCell) -> UIContextMenuConfiguration? {
+        
+        guard let indexPath = collectionView.indexPath(for: cell) else { return nil }
+        
+        let attachedText = NSLocalizedString("attached", comment: "")
+        let editText = NSLocalizedString("edit", comment: "")
+        let deleteText = NSLocalizedString("delete", comment: "")
+        
+        var pinAction: UIAction
+        
+        if visibleTrackers[indexPath.section].titleOfCategory == attachedText {
+            
+            let unpinText = NSLocalizedString("unpin", comment: "")
+            
+            pinAction = UIAction(title: unpinText,
+                              handler: { [weak self] _ in
+                
+                guard let self else { return }
+                self.attachMenuButtonTapped(cell)
+            })
+        } else {
+            
+            let attachText = NSLocalizedString("attach", comment: "")
+            
+            pinAction = UIAction(title: attachText,
+                              handler: { [weak self] _ in
+                
+                guard let self else { return }
+                self.attachMenuButtonTapped(cell)
+            })
+        }
+        
+        let editAction = UIAction(title: editText,
+                                  handler: { [weak self] _ in
+            
+            guard let self else { return }
+            self.editMenuButtonTapped(cell)
+        })
+        
+        let deleleteAction = UIAction(title: deleteText,
+                                      attributes: .destructive,
+                                      handler: { [weak self] _ in
+            
+            guard let self else { return }
+            self.deleteMenuButtonTapped(cell)
+        })
+        
+        return UIContextMenuConfiguration(actionProvider:  { _ in
+            return UIMenu(children: [pinAction, editAction, deleleteAction])
+        })
+    }
+    
+    
     func attachMenuButtonTapped(_ cell: CollectionViewCell) {
         
         guard let indexPath = collectionView.indexPath(for: cell) else {
@@ -478,45 +531,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
         let attachedText = NSLocalizedString("attached", comment: "")
         
         trackerStore?.storeNewTracker(tracker, for: attachedText)
-//        trackers.removeAll()
-//        
-//        if category.trackersArray.count != 1 {
-//            
-//            trackers = category.trackersArray.filter({ $0.id != tracker.id })
-//            visibleTrackers[indexPath.section] = TrackerCategory(
-//                titleOfCategory: category.titleOfCategory,
-//                trackersArray: trackers)
-//            
-//            collectionView.deleteItems(at: [indexPath])
-//        } else {
-//            
-//            visibleTrackers.remove(at: indexPath.section)
-//            collectionView.deleteSections([indexPath.section])
-//        }
-//        
-//        let attachedText = NSLocalizedString("attached", comment: "")
-//        
-//        if let categoryIndex = visibleTrackers.firstIndex(where: { $0.titleOfCategory == attachedText}) {
-//            
-//            trackers.removeAll()
-//            
-//            trackers = visibleTrackers[categoryIndex].trackersArray
-//            trackers.append(tracker)
-//            
-//            visibleTrackers[categoryIndex] = TrackerCategory(
-//                titleOfCategory: attachedText,
-//                trackersArray: trackers)
-//            
-//            let count = visibleTrackers[categoryIndex].trackersArray.count - 1
-//            collectionView.insertItems(at: [IndexPath(item: count, section: categoryIndex)])
-//        } else {
-//            
-//            visibleTrackers.insert(TrackerCategory(
-//                titleOfCategory: attachedText,
-//                trackersArray: [tracker]), at: 0)
-//            
-//            collectionView.insertSections([0])
-//        }
     }
     
     func editMenuButtonTapped(_ cell: CollectionViewCell) {

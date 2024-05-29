@@ -23,7 +23,7 @@ final class CollectionViewCell: UICollectionViewCell {
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-    
+        
         configureView()
         configureLabels()
         configureButton()
@@ -39,9 +39,9 @@ final class CollectionViewCell: UICollectionViewCell {
     }
     
     private func configureView(){
-        
         let interction = UIContextMenuInteraction(delegate: self)
         view.addInteraction(interction)
+        
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
         
@@ -151,7 +151,7 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count + 1
             count += 1
-
+            
             daysCount.text = String(format: locolizedText, count)
             
             return true
@@ -162,7 +162,7 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count - 1
             count -= 1
-
+            
             daysCount.text = String(format: locolizedText, count)
             
             return false
@@ -171,38 +171,9 @@ final class CollectionViewCell: UICollectionViewCell {
 }
 
 extension CollectionViewCell: UIContextMenuInteractionDelegate {
+    
     func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         
-        let attachText = NSLocalizedString("attach", comment: "")
-        let editText = NSLocalizedString("edit", comment: "")
-        let deleteText = NSLocalizedString("delete", comment: "")
-
-        return UIContextMenuConfiguration(actionProvider:  { _ in
-            
-            return UIMenu(children: [
-                
-                UIAction(title: attachText,
-                         handler: { [weak self] _ in
-                             
-                             guard let self else { return }
-                             self.delegate?.attachMenuButtonTapped(self)
-                }),
-                
-                UIAction(title: editText,
-                         handler: { [weak self] _ in
-                             
-                             guard let self else { return }
-                             self.delegate?.editMenuButtonTapped(self)
-                }),
-                
-                UIAction(title: deleteText,
-                         attributes: .destructive,
-                         handler: { [weak self] _ in
-                             
-                             guard let self else { return }
-                             self.delegate?.deleteMenuButtonTapped(self)
-                })
-            ])
-        })
+        return delegate?.contextMenuForCell(self)
     }
 }
