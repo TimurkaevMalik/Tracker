@@ -5,7 +5,7 @@
 //  Created by Malik Timurkaev on 12.04.2024.
 //
 
-import Foundation
+import UIKit
 
 protocol TrackerStoreDelegate: AnyObject {
     func didUpdate(tracker: Tracker)
@@ -40,5 +40,8 @@ protocol NewCategoryViewProtocol: AnyObject {
 }
 
 protocol CollectionViewCellDelegate: AnyObject {
-    func didTapCollectionCellButton(_ cell: CollectionViewCell)
+    func attachMenuButtonTapped(_ cell: CollectionViewCell)
+    func editMenuButtonTapped(_ cell: CollectionViewCell)
+    func deleteMenuButtonTapped(_ cell: CollectionViewCell)
+    func plusButtonTapped(_ cell: CollectionViewCell)
 }

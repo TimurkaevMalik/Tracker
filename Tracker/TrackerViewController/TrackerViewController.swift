@@ -115,7 +115,7 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configureSearchController(){
-        searchController.searchBar.delegate = self
+//        searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         
         let placeHolder = NSLocalizedString("searchBar.placeholder", comment: "Text displayed inside of searchBar as placeholder")
@@ -410,7 +410,6 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         return headerView
     }
-    
 }
 
 extension TrackerViewController: UICollectionViewDelegateFlowLayout {
@@ -448,8 +447,76 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension TrackerViewController: CollectionViewCellDelegate {
+    func attachMenuButtonTapped(_ cell: CollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        let category = visibleTrackers[indexPath.section]
+        let tracker = category.trackersArray[indexPath.row]
+        
+        trackers.removeAll()
+        
+        if category.trackersArray.count != 1 {
+            
+            trackers = category.trackersArray.filter({ $0.id != tracker.id })
+            visibleTrackers[indexPath.section] = TrackerCategory(
+                titleOfCategory: category.titleOfCategory,
+                trackersArray: trackers)
+            
+            collectionView.deleteItems(at: [indexPath])
+        } else {
+            
+            visibleTrackers.remove(at: indexPath.section)
+            collectionView.deleteSections([indexPath.section])
+        }
+        
+        let attachedText = NSLocalizedString("attached", comment: "")
+        
+        if let categoryIndex = visibleTrackers.firstIndex(where: { $0.titleOfCategory == attachedText}) {
+            
+            trackers.removeAll()
+            
+            trackers = visibleTrackers[categoryIndex].trackersArray
+            trackers.append(tracker)
+            
+            visibleTrackers[categoryIndex] = TrackerCategory(
+                titleOfCategory: attachedText,
+                trackersArray: trackers)
+            
+            let count = visibleTrackers[categoryIndex].trackersArray.count - 1
+            collectionView.insertItems(at: [IndexPath(item: count, section: categoryIndex)])
+        } else {
+            
+            visibleTrackers.insert(TrackerCategory(
+                titleOfCategory: attachedText,
+                trackersArray: [tracker]), at: 0)
+            
+            collectionView.insertSections([0])
+        }
+    }
     
-    func didTapCollectionCellButton(_ cell: CollectionViewCell) {
+    func editMenuButtonTapped(_ cell: CollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        let category = visibleTrackers[indexPath.section]
+        let tracker = category.trackersArray[indexPath.row]
+    }
+    
+    func deleteMenuButtonTapped(_ cell: CollectionViewCell) {
+        guard let indexPath = collectionView.indexPath(for: cell) else {
+            return
+        }
+        
+        let category = visibleTrackers[indexPath.section]
+        let tracker = category.trackersArray[indexPath.row]
+                
+        trackerStore?.deleteTrackerWith(id: tracker.id)
+    }
+    
+    func plusButtonTapped(_ cell: CollectionViewCell) {
         
         guard
             let indexPath = collectionView.indexPath(for: cell),
@@ -673,10 +740,8 @@ extension TrackerViewController: UISearchResultsUpdating {
     }
 }
 
-extension TrackerViewController: UICollectionViewDelegate {
-    
-}
+//extension TrackerViewController: UICollectionViewDelegate { }
 
-extension TrackerViewController: UISearchBarDelegate {
+//extension TrackerViewController: UISearchBarDelegate {
     
-}
+//}

@@ -33,8 +33,15 @@ final class CollectionViewCell: UICollectionViewCell {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc func didTapDoneButton(){
+        
+        delegate?.plusButtonTapped(self)
+    }
+    
     private func configureView(){
         
+        let interction = UIContextMenuInteraction(delegate: self)
+        view.addInteraction(interction)
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
         
@@ -69,17 +76,17 @@ final class CollectionViewCell: UICollectionViewCell {
         nameLable.translatesAutoresizingMaskIntoConstraints = false
         daysCount.translatesAutoresizingMaskIntoConstraints = false
         emoji.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubviews([nameLable, emoji, daysCount])
-        
+        view.addSubviews([nameLable, emoji])
+        contentView.addSubview(daysCount)
         NSLayoutConstraint.activate([
-            nameLable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            nameLable.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            nameLable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            nameLable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             nameLable.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12),
             
             emoji.widthAnchor.constraint(equalToConstant: 24),
             emoji.heightAnchor.constraint(equalToConstant: 24),
-            emoji.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            emoji.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            emoji.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
+            emoji.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
             
             daysCount.widthAnchor.constraint(equalToConstant: 101),
             daysCount.heightAnchor.constraint(equalToConstant: 18),
@@ -161,9 +168,41 @@ final class CollectionViewCell: UICollectionViewCell {
             return false
         }
     }
-    
-    @objc func didTapDoneButton(){
+}
+
+extension CollectionViewCell: UIContextMenuInteractionDelegate {
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         
-        delegate?.didTapCollectionCellButton(self)
+        let attachText = NSLocalizedString("attach", comment: "")
+        let editText = NSLocalizedString("edit", comment: "")
+        let deleteText = NSLocalizedString("delete", comment: "")
+
+        return UIContextMenuConfiguration(actionProvider:  { _ in
+            
+            return UIMenu(children: [
+                
+                UIAction(title: attachText,
+                         handler: { [weak self] _ in
+                             
+                             guard let self else { return }
+                             self.delegate?.attachMenuButtonTapped(self)
+                }),
+                
+                UIAction(title: editText,
+                         handler: { [weak self] _ in
+                             
+                             guard let self else { return }
+                             self.delegate?.editMenuButtonTapped(self)
+                }),
+                
+                UIAction(title: deleteText,
+                         attributes: .destructive,
+                         handler: { [weak self] _ in
+                             
+                             guard let self else { return }
+                             self.delegate?.deleteMenuButtonTapped(self)
+                })
+            ])
+        })
     }
 }

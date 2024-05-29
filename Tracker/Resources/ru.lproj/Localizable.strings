@@ -11,9 +11,13 @@
 "emptyState.title" = "Что будем отслеживать?";
 "delete.confirmation" = "Уверены что хотите удалить трекер?";
 
+"attached" = "Закрепленные";
+
+"edit" = "Редактировать";
+"attach" = "Закрепить";
 "delete" = "Удалить";
-"cancel" = "Отменить";
 "create" = "Создать";
+"cancel" = "Отменить";
 "doneButton.title" = "Готово";
 "button.habbit" = "Привычка";
 "button.irregularEvent" = "Нерегулярное событие";

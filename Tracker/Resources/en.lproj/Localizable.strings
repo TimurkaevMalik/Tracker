@@ -11,9 +11,13 @@
 "trackersControler.emptyState.title" = "What should we track?";
 "delete.confirmation" = "Are you sure you want to delete the tracker?";
 
+"attached" = Attached;
+
+"edit" = Edit;
+"attach" = Attach;
 "delete" = Delete;
-"cancel" = Cancel;
 "create" = Create;
+"cancel" = Cancel;
 "doneButton.title" = Done;
 "button.habbit" = Habbit;
 "button.irregularEvent" = "Irregular event";
