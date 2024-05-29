@@ -69,6 +69,33 @@ final class TrackerCategoryStore: NSObject {
         appDelegate.saveContext()
     }
     
+    func updateAttachedCategory() {
+        
+        if Locale.current.languageCode == "ru" {
+            if fetchCategory(with: "Закрепленные") == nil {
+                
+                guard let categoryCoreData = fetchCategory(with: "Attached") else {
+                    return
+                }
+                
+                categoryCoreData.titleOfCategory = "Закрепленные"
+                appDelegate.saveContext()
+                
+            }
+        } else if Locale.current.languageCode == "en" {
+                
+            if fetchCategory(with: "Attached") == nil {
+                
+                guard let categoryCoreData = fetchCategory(with: "Закрепленные") else {
+                    return
+                }
+                
+                categoryCoreData.titleOfCategory = "Attached"
+                appDelegate.saveContext()
+            }
+        }
+    }
+    
     func fetchAllCategories() -> [TrackerCategoryCoreData]? {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: categoryName)

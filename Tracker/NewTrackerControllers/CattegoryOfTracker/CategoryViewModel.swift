@@ -73,6 +73,7 @@ final class CategoryViewModel {
         }
         let convertedCategories = convertToCategotyArray(categoryCoreData)
         
+        
         return convertedCategories.map({ $0.titleOfCategory })
     }
     
@@ -87,7 +88,9 @@ final class CategoryViewModel {
             }
         }
         
-        return categoryArray
+        let attachedText = NSLocalizedString("attached", comment: "")
+        
+        return categoryArray.filter({$0.titleOfCategory != attachedText})
     }
     
 }

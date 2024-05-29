@@ -20,7 +20,6 @@ class OnboardingViewController: UIPageViewController {
         return [blueBoard, redBoard]
     }()
     
-    
     override init(
         transitionStyle style: UIPageViewController.TransitionStyle,
         navigationOrientation: UIPageViewController.NavigationOrientation,

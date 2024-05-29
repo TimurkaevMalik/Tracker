@@ -168,9 +168,14 @@ extension TrackerStore: TrackerStoreProtocol {
         do {
             let trackers = try context.fetch(fetchRequest)
             
-            guard let tracker = trackers.first(where: { $0.id == id }) else { return }
+            let tracker = trackers.filter( { $0.id == id })
+     
+//            for tracker in tracker {
+//                
+//            }
             
-            context.delete(tracker)
+            tracker.forEach({ context.delete($0) })
+            
             appDelegate.saveContext()
             
         } catch let error as NSError {

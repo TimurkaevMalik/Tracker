@@ -18,6 +18,7 @@ final class TrackerViewController: UIViewController {
     private lazy var collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
     private var trackerStore: TrackerStoreProtocol?
+    private var trackerCategoryStore: TrackerCategoryStore?
     private var trackerRecordStore: RecordStoreProtocol?
     private var categories: [TrackerCategory] = []
     private var visibleTrackers: [TrackerCategory] = []
@@ -55,7 +56,9 @@ final class TrackerViewController: UIViewController {
     
     private init(appDelegate: AppDelegate) {
         super.init(nibName: nil, bundle: nil)
+        
         trackerStore = TrackerStore(self, appDelegate: appDelegate)
+        trackerCategoryStore = TrackerCategoryStore(appDelegate: appDelegate)
         trackerRecordStore = TrackerRecordStore(self, appDelegate: appDelegate)
     }
     
@@ -115,7 +118,7 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configureSearchController(){
-//        searchController.searchBar.delegate = self
+        //        searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         
         let placeHolder = NSLocalizedString("searchBar.placeholder", comment: "Text displayed inside of searchBar as placeholder")
@@ -239,12 +242,22 @@ final class TrackerViewController: UIViewController {
     private func showVisibleTrackers(dateDescription: String){
         
         checkForVisibleTrackersAt(dateDescription: dateDescription)
+        
         collectionView.reloadData()
     }
     
     private func checkForVisibleTrackersAt(dateDescription: String) {
         
-        visibleTrackers.removeAll()
+        let attachedText = NSLocalizedString("attached", comment: "")
+        
+        if let attachedCategory = categories.first(where: { $0.titleOfCategory == attachedText }),
+            !attachedCategory.trackersArray.isEmpty {
+            
+            visibleTrackers = [attachedCategory]
+        } else {
+            visibleTrackers.removeAll()
+        }
+        
         
         var selectedDate = ""
         
@@ -269,15 +282,19 @@ final class TrackerViewController: UIViewController {
                             
                             let locolizedDay = NSLocalizedString(dayOfWeek, comment: "")
                             
-                            if locolizedDay.lowercased() == selectedDate {
+                            if locolizedDay.lowercased() == selectedDate,
+                               !visibleTrackers.contains(where: { $0.trackersArray.contains(where: { $0.id == tracker.id }) }) {
                                 
                                 trackers.append(tracker)
                             }
                         }
                     }
-                } else  {
-                    trackers.append(tracker)
+                } else if !visibleTrackers.contains(where: {
                     
+                    $0.trackersArray.contains(where: { $0.id == tracker.id })
+                }) {
+                    
+                    trackers.append(tracker)
                 }
             }
             if !trackers.isEmpty {
@@ -318,6 +335,8 @@ final class TrackerViewController: UIViewController {
         
         currentDate = datePicker.date
         configureTrackerViews()
+        
+        trackerCategoryStore?.updateAttachedCategory()
         
         if completedTrackers.isEmpty, let trackerRecordStore {
             completedTrackers = trackerRecordStore.fetchAllConvertedRecords()
@@ -447,53 +466,57 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
 }
 
 extension TrackerViewController: CollectionViewCellDelegate {
+    
     func attachMenuButtonTapped(_ cell: CollectionViewCell) {
+        
         guard let indexPath = collectionView.indexPath(for: cell) else {
             return
         }
         
         let category = visibleTrackers[indexPath.section]
         let tracker = category.trackersArray[indexPath.row]
-        
-        trackers.removeAll()
-        
-        if category.trackersArray.count != 1 {
-            
-            trackers = category.trackersArray.filter({ $0.id != tracker.id })
-            visibleTrackers[indexPath.section] = TrackerCategory(
-                titleOfCategory: category.titleOfCategory,
-                trackersArray: trackers)
-            
-            collectionView.deleteItems(at: [indexPath])
-        } else {
-            
-            visibleTrackers.remove(at: indexPath.section)
-            collectionView.deleteSections([indexPath.section])
-        }
-        
         let attachedText = NSLocalizedString("attached", comment: "")
         
-        if let categoryIndex = visibleTrackers.firstIndex(where: { $0.titleOfCategory == attachedText}) {
-            
-            trackers.removeAll()
-            
-            trackers = visibleTrackers[categoryIndex].trackersArray
-            trackers.append(tracker)
-            
-            visibleTrackers[categoryIndex] = TrackerCategory(
-                titleOfCategory: attachedText,
-                trackersArray: trackers)
-            
-            let count = visibleTrackers[categoryIndex].trackersArray.count - 1
-            collectionView.insertItems(at: [IndexPath(item: count, section: categoryIndex)])
-        } else {
-            
-            visibleTrackers.insert(TrackerCategory(
-                titleOfCategory: attachedText,
-                trackersArray: [tracker]), at: 0)
-            
-            collectionView.insertSections([0])
-        }
+        trackerStore?.storeNewTracker(tracker, for: attachedText)
+//        trackers.removeAll()
+//        
+//        if category.trackersArray.count != 1 {
+//            
+//            trackers = category.trackersArray.filter({ $0.id != tracker.id })
+//            visibleTrackers[indexPath.section] = TrackerCategory(
+//                titleOfCategory: category.titleOfCategory,
+//                trackersArray: trackers)
+//            
+//            collectionView.deleteItems(at: [indexPath])
+//        } else {
+//            
+//            visibleTrackers.remove(at: indexPath.section)
+//            collectionView.deleteSections([indexPath.section])
+//        }
+//        
+//        let attachedText = NSLocalizedString("attached", comment: "")
+//        
+//        if let categoryIndex = visibleTrackers.firstIndex(where: { $0.titleOfCategory == attachedText}) {
+//            
+//            trackers.removeAll()
+//            
+//            trackers = visibleTrackers[categoryIndex].trackersArray
+//            trackers.append(tracker)
+//            
+//            visibleTrackers[categoryIndex] = TrackerCategory(
+//                titleOfCategory: attachedText,
+//                trackersArray: trackers)
+//            
+//            let count = visibleTrackers[categoryIndex].trackersArray.count - 1
+//            collectionView.insertItems(at: [IndexPath(item: count, section: categoryIndex)])
+//        } else {
+//            
+//            visibleTrackers.insert(TrackerCategory(
+//                titleOfCategory: attachedText,
+//                trackersArray: [tracker]), at: 0)
+//            
+//            collectionView.insertSections([0])
+//        }
     }
     
     func editMenuButtonTapped(_ cell: CollectionViewCell) {
@@ -512,7 +535,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
         let category = visibleTrackers[indexPath.section]
         let tracker = category.trackersArray[indexPath.row]
-                
+        
         trackerStore?.deleteTrackerWith(id: tracker.id)
     }
     
@@ -554,14 +577,13 @@ extension TrackerViewController: CollectionViewCellDelegate {
         }
         
         let category = visibleTrackers[indexPath.section]
+        
         guard let categoryIndex = categories.firstIndex(where: { $0.titleOfCategory == category.titleOfCategory}) else { return }
-        print(indexPath)
-        print(categoryIndex)
         
         if category.trackersArray.count != 1 {
             
             trackers.removeAll()
-
+            
             trackers = category.trackersArray.filter({ $0.id != idOfCell })
             visibleTrackers[indexPath.section] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
             
@@ -569,7 +591,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
             categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
-
+            
             collectionView.deleteItems(at: [indexPath])
         } else {
             
@@ -581,6 +603,12 @@ extension TrackerViewController: CollectionViewCellDelegate {
             visibleTrackers.remove(at: indexPath.section)
             
             collectionView.deleteSections([indexPath.section])
+        }
+        
+        let localizedTitle = NSLocalizedString("attached", comment: "")
+        
+        if category.titleOfCategory == localizedTitle {
+            checkForSameTrackerWith(id: idOfCell)
         }
         
         if visibleTrackers.isEmpty {
@@ -642,14 +670,29 @@ extension TrackerViewController: CollectionViewCellDelegate {
 
 extension TrackerViewController: TrackerStoreDelegate {
     
+    func checkForSameTrackerWith(id: UUID) {
+        
+        for index in 0..<categories.count {
+            
+            if categories[index].trackersArray.contains(where: { $0.id == id }) {
+                
+                trackers = categories[index].trackersArray.filter({ $0.id != id })
+                
+                categories[index] = TrackerCategory(
+                    titleOfCategory: categories[index].titleOfCategory,
+                    trackersArray: trackers)
+            }
+        }
+    }
+    
     func didAdd(tracker: Tracker, with categoryTitle: String) {
         
         guard let actualDate = currentDate?.description(with: .current) else { return }
         
         trackers.removeAll()
         
-        if categories.contains(where: { category in
-            category.titleOfCategory == categoryTitle
+        if categories.contains(where: {
+            $0.titleOfCategory == categoryTitle
         }) {
             for index in 0..<categories.count {
                 
@@ -743,5 +786,5 @@ extension TrackerViewController: UISearchResultsUpdating {
 //extension TrackerViewController: UICollectionViewDelegate { }
 
 //extension TrackerViewController: UISearchBarDelegate {
-    
+
 //}
