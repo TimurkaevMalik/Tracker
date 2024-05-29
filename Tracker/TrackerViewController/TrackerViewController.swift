@@ -329,17 +329,16 @@ final class TrackerViewController: UIViewController {
         }
     }
     
-    
-    @objc func didTapPlusButton(){
-        
-        presentCreatingTrackerView()
-    }
-    
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
         
         currentDate = sender.date
         
         showVisibleTrackers(dateDescription: sender.date.description(with: .current))
+    }
+    
+    @objc func didTapPlusButton(){
+        
+        presentCreatingTrackerView()
     }
 }
 
@@ -488,26 +487,32 @@ extension TrackerViewController: CollectionViewCellDelegate {
         }
         
         let category = visibleTrackers[indexPath.section]
-        guard let indexOfCategory = categories.firstIndex(where: { $0.titleOfCategory == category.titleOfCategory}) else { return }
+        guard let categoryIndex = categories.firstIndex(where: { $0.titleOfCategory == category.titleOfCategory}) else { return }
         print(indexPath)
-        
-        trackers.removeAll()
+        print(categoryIndex)
         
         if category.trackersArray.count != 1 {
-            for tracker in category.trackersArray {
-                if tracker.id != idOfCell {
-                    
-                    trackers.append(tracker)
-                }
-            }
             
-            self.categories[indexOfCategory] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
-            checkForVisibleTrackersAt(dateDescription: datePicker.date.description(with: .current))
+            trackers.removeAll()
+
+            trackers = category.trackersArray.filter({ $0.id != idOfCell })
+            visibleTrackers[indexPath.section] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+            
+            trackers.removeAll()
+            
+            trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
+            categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+
             collectionView.deleteItems(at: [indexPath])
         } else {
             
-            self.categories.remove(at: indexOfCategory)
-            checkForVisibleTrackersAt(dateDescription: datePicker.date.description(with: .current))
+            trackers.removeAll()
+            
+            trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
+            categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+            
+            visibleTrackers.remove(at: indexPath.section)
+            
             collectionView.deleteSections([indexPath.section])
         }
         
@@ -641,7 +646,31 @@ extension TrackerViewController: RecordStoreDelegate {
 
 extension TrackerViewController: UISearchResultsUpdating {
     
-    func updateSearchResults(for searchController: UISearchController){}
+    func updateSearchResults(for searchController: UISearchController){
+        
+        trackers.removeAll()
+        if let searchText = searchController.searchBar.text , !searchText.isEmpty {
+            
+            visibleTrackers.removeAll()
+            
+            for category in categories {
+                trackers.removeAll()
+                
+                trackers = category.trackersArray.filter { tracker in
+                    tracker.name.lowercased().contains(searchText.lowercased())
+                }
+                if !trackers.isEmpty {
+                    visibleTrackers.append(TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers))
+                }
+            }
+            
+        } else if let currentDate {
+            
+            checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
+        }
+        
+        collectionView.reloadData()
+    }
 }
 
 extension TrackerViewController: UICollectionViewDelegate {
