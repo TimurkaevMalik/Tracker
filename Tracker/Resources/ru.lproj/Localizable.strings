@@ -39,7 +39,9 @@
 
 "trackerTypeController.title" = "Создание трекера";
 "habbitController.title" = "Новая привычка";
+"habbitController.editing.title" = "Редактирование привычки";
 "eventController.title" = "Новое событие";
+"eventController.editing.title" = "Редактирование события";
 "newCategoryView.title" = "Новая категория";
 
 "warning.categoryAlreadyExists" = "Такая категория уже существует";

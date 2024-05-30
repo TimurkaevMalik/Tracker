@@ -28,7 +28,7 @@ class ChosenTrackerController: UIViewController {
     private let tableView = UITableView()
     private let collectionView = UICollectionView(frame: .zero, collectionViewLayout: UICollectionViewFlowLayout())
     
-    private let trackerType: TrackerType
+    private let actionType: ActionType
     private let params = GeomitricParams(cellCount: 6, leftInset: 18, rightInset: 18, cellSpacing: 5)
     
     private var tableViewCells: [String] = []
@@ -54,10 +54,10 @@ class ChosenTrackerController: UIViewController {
     private let colorsArray: [UIColor] = [.ypRed, .ypOrange, .ypMediumBlue, .ypElectricViolet, .ypGreen, .ypViolet, .ypLightPink, .ypCyan, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypMediumLightBlue, .ypFrenchViolet, .ypGrape, .ypSlateBlue, .ypMediumLightGreen]
     
     
-    init(trackerType: TrackerType,
+    init(actionType: ActionType,
          delegate: TrackerViewControllerDelegate){
         
-        self.trackerType = trackerType
+        self.actionType = actionType
         self.delegate = delegate
         super.init(nibName: nil, bundle: nil)
         
@@ -108,13 +108,26 @@ class ChosenTrackerController: UIViewController {
         
         checkIsTextFieldEmpty()
         
-        if trackerType == TrackerType.habbit {
-            guard !scheduleOfTracker.isEmpty else {
-                showWarningLabel(with: fieldsfullnessText)
-                highLightButton()
-                return
+        switch actionType {
+            
+        case .create(let value):
+            if value == TrackerType.habbit {
+                guard !scheduleOfTracker.isEmpty else {
+                    showWarningLabel(with: fieldsfullnessText)
+                    highLightButton()
+                    return
+                }
+            }
+        case .edit(let value):
+            if value == TrackerType.habbit {
+                guard !scheduleOfTracker.isEmpty else {
+                    showWarningLabel(with: fieldsfullnessText)
+                    highLightButton()
+                    return
+                }
             }
         }
+        
         
         guard
             let nameOfCategory = nameOfCategory,
@@ -253,11 +266,24 @@ class ChosenTrackerController: UIViewController {
     private func configureTitleLabelView(){
         var titleLabelText: String?
         
-        if trackerType == TrackerType.habbit {
-            titleLabelText = NSLocalizedString("habbitController.title", comment: "Text displayed on the top of screen")
-        } else if trackerType == TrackerType.irregularEvent {
-            titleLabelText = NSLocalizedString("eventController.title", comment: "Text displayed on the top of screen")
+        switch actionType {
+        case .create(let value):
+            
+            if value ==  TrackerType.habbit {
+                titleLabelText = NSLocalizedString("habbitController.title", comment: "Text displayed on the top of screen")
+            } else if value == TrackerType.irregularEvent {
+                titleLabelText = NSLocalizedString("eventController.title", comment: "Text displayed on the top of screen")
+            }
+        case .edit(let value):
+            
+            if value ==  TrackerType.habbit {
+                titleLabelText = NSLocalizedString("habbitController.editing.title", comment: "Text displayed on the top of screen")
+            } else if value == TrackerType.irregularEvent {
+                titleLabelText = NSLocalizedString("eventController.editing.title", comment: "Text displayed on the top of screen")
+            }
         }
+        
+        
         
         titleLabel.text = titleLabelText
         titleLabel.font = UIFont.systemFont(ofSize: 16)
@@ -451,11 +477,22 @@ class ChosenTrackerController: UIViewController {
         let categoryCellTitle = NSLocalizedString("category", comment: "Text displayed on tableView cell")
         let scheduleCellTitle = NSLocalizedString("schedule", comment: "Text displayed on tableView cell")
         
-        if trackerType == TrackerType.irregularEvent {
-            tableViewCells.append(categoryCellTitle)
-        } else {
-            tableViewCells.append(categoryCellTitle)
-            tableViewCells.append(scheduleCellTitle)
+        switch actionType {
+        
+        case .create(value: let value):
+            if value == TrackerType.irregularEvent {
+                tableViewCells.append(categoryCellTitle)
+            } else {
+                tableViewCells.append(categoryCellTitle)
+                tableViewCells.append(scheduleCellTitle)
+            }
+        case .edit(value: let value):
+            if value == TrackerType.irregularEvent {
+                tableViewCells.append(categoryCellTitle)
+            } else {
+                tableViewCells.append(categoryCellTitle)
+                tableViewCells.append(scheduleCellTitle)
+            }
         }
     }
     

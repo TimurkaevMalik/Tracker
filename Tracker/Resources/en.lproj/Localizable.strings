@@ -38,7 +38,9 @@
 
 "trackerTypeController.title" = "Creating a Tracker";
 "habbitController.title" = "New habbit";
+"habbitController.editing.title" = "Editing habbit";
 "eventController.title" = "New event";
+"eventController.editing.title" = "Editing event";
 "newCategoryView.title" = "New category";
 
 "warning.categoryAlreadyExists" = "This category already exists";

@@ -541,6 +541,12 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
         let category = visibleTrackers[indexPath.section]
         let tracker = category.trackersArray[indexPath.row]
+        
+        let type = tracker.schedule.isEmpty ? ActionType.edit(value: TrackerType.irregularEvent) : ActionType.edit(value: TrackerType.habbit)
+        
+        let viewController = ChosenTrackerController(actionType: type, delegate: self)
+        
+        present(viewController, animated: true)
     }
     
     func deleteMenuButtonTappedOn(_ indexPath: IndexPath) {
