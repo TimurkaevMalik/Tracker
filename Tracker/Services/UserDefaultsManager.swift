@@ -28,7 +28,7 @@ class UserDefaultsManager {
                 
                 let trackerCategoryStore = TrackerCategoryStore(appDelegate: appDelegate)
                 
-                trackerCategoryStore.storeCategory(TrackerCategory(titleOfCategory: "Attached", trackersArray: []))
+                trackerCategoryStore.storeCategory(TrackerCategory(titleOfCategory: "pined", trackersArray: []))
             }
         }
     }

@@ -41,8 +41,9 @@ protocol NewCategoryViewProtocol: AnyObject {
 
 protocol CollectionViewCellDelegate: AnyObject {
     func contextMenuForCell(_ cell: CollectionViewCell) -> UIContextMenuConfiguration?
-    func attachMenuButtonTapped(_ cell: CollectionViewCell)
-    func editMenuButtonTapped(_ cell: CollectionViewCell)
-    func deleteMenuButtonTapped(_ cell: CollectionViewCell)
+    func pinMenuButtonTappedOn(_ indexPath: IndexPath)
+    func unpinMenuButtonTappedOn(_ indexPath: IndexPath)
+    func editMenuButtonTappedOn(_ indexPath: IndexPath)
+    func deleteMenuButtonTappedOn(_ indexPath: IndexPath)
     func plusButtonTapped(_ cell: CollectionViewCell)
 }

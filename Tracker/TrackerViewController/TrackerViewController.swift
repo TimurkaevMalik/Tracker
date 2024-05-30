@@ -248,12 +248,12 @@ final class TrackerViewController: UIViewController {
     
     private func checkForVisibleTrackersAt(dateDescription: String) {
         
-        let attachedText = NSLocalizedString("attached", comment: "")
+        let pinedText = NSLocalizedString("pined", comment: "")
         
-        if let attachedCategory = categories.first(where: { $0.titleOfCategory == attachedText }),
-           !attachedCategory.trackersArray.isEmpty {
+        if let pinedCategory = categories.first(where: { $0.titleOfCategory == pinedText }),
+           !pinedCategory.trackersArray.isEmpty {
             
-            visibleTrackers = [attachedCategory]
+            visibleTrackers = [pinedCategory]
         } else {
             visibleTrackers.removeAll()
         }
@@ -336,7 +336,7 @@ final class TrackerViewController: UIViewController {
         currentDate = datePicker.date
         configureTrackerViews()
         
-        trackerCategoryStore?.updateAttachedCategory()
+        trackerCategoryStore?.updatePinedCategory()
         
         if completedTrackers.isEmpty, let trackerRecordStore {
             completedTrackers = trackerRecordStore.fetchAllConvertedRecords()
@@ -471,31 +471,31 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
         guard let indexPath = collectionView.indexPath(for: cell) else { return nil }
         
-        let attachedText = NSLocalizedString("attached", comment: "")
+        let pinedText = NSLocalizedString("pined", comment: "")
         let editText = NSLocalizedString("edit", comment: "")
         let deleteText = NSLocalizedString("delete", comment: "")
         
         var pinAction: UIAction
         
-        if visibleTrackers[indexPath.section].titleOfCategory == attachedText {
+        if visibleTrackers[indexPath.section].titleOfCategory == pinedText {
             
-            let unpinText = NSLocalizedString("unpin", comment: "")
+            let unpinText = NSLocalizedString("button.unpin", comment: "")
             
             pinAction = UIAction(title: unpinText,
-                              handler: { [weak self] _ in
+                                 handler: { [weak self] _ in
                 
                 guard let self else { return }
-                self.attachMenuButtonTapped(cell)
+                self.unpinMenuButtonTappedOn(indexPath)
             })
         } else {
             
-            let attachText = NSLocalizedString("attach", comment: "")
+            let pinText = NSLocalizedString("button.pin", comment: "")
             
-            pinAction = UIAction(title: attachText,
-                              handler: { [weak self] _ in
+            pinAction = UIAction(title: pinText,
+                                 handler: { [weak self] _ in
                 
                 guard let self else { return }
-                self.attachMenuButtonTapped(cell)
+                self.pinMenuButtonTappedOn(indexPath)
             })
         }
         
@@ -503,7 +503,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
                                   handler: { [weak self] _ in
             
             guard let self else { return }
-            self.editMenuButtonTapped(cell)
+            self.editMenuButtonTappedOn(indexPath)
         })
         
         let deleleteAction = UIAction(title: deleteText,
@@ -511,7 +511,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
                                       handler: { [weak self] _ in
             
             guard let self else { return }
-            self.deleteMenuButtonTapped(cell)
+            self.deleteMenuButtonTappedOn(indexPath)
         })
         
         return UIContextMenuConfiguration(actionProvider:  { _ in
@@ -519,33 +519,28 @@ extension TrackerViewController: CollectionViewCellDelegate {
         })
     }
     
-    
-    func attachMenuButtonTapped(_ cell: CollectionViewCell) {
-        
-        guard let indexPath = collectionView.indexPath(for: cell) else {
-            return
-        }
+    func pinMenuButtonTappedOn(_ indexPath: IndexPath) {
         
         let category = visibleTrackers[indexPath.section]
         let tracker = category.trackersArray[indexPath.row]
-        let attachedText = NSLocalizedString("attached", comment: "")
+        let pinedText = NSLocalizedString("pined", comment: "")
         
-        trackerStore?.storeNewTracker(tracker, for: attachedText)
+        trackerStore?.storeNewTracker(tracker, for: pinedText)
     }
     
-    func editMenuButtonTapped(_ cell: CollectionViewCell) {
-        guard let indexPath = collectionView.indexPath(for: cell) else {
-            return
-        }
+    func unpinMenuButtonTappedOn(_ indexPath: IndexPath) {
+        
+        
+        
+    }
+    
+    func editMenuButtonTappedOn(_ indexPath: IndexPath) {
         
         let category = visibleTrackers[indexPath.section]
         let tracker = category.trackersArray[indexPath.row]
     }
     
-    func deleteMenuButtonTapped(_ cell: CollectionViewCell) {
-        guard let indexPath = collectionView.indexPath(for: cell) else {
-            return
-        }
+    func deleteMenuButtonTappedOn(_ indexPath: IndexPath) {
         
         let category = visibleTrackers[indexPath.section]
         let tracker = category.trackersArray[indexPath.row]
@@ -619,9 +614,9 @@ extension TrackerViewController: CollectionViewCellDelegate {
             collectionView.deleteSections([indexPath.section])
         }
         
-        let localizedTitle = NSLocalizedString("attached", comment: "")
+        let pinedText = NSLocalizedString("pined", comment: "")
         
-        if category.titleOfCategory == localizedTitle {
+        if category.titleOfCategory == pinedText {
             checkForSameTrackerWith(id: idOfCell)
         }
         

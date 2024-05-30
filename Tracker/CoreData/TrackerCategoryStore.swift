@@ -69,12 +69,12 @@ final class TrackerCategoryStore: NSObject {
         appDelegate.saveContext()
     }
     
-    func updateAttachedCategory() {
+    func updatePinedCategory() {
         
         if Locale.current.languageCode == "ru" {
             if fetchCategory(with: "Закрепленные") == nil {
                 
-                guard let categoryCoreData = fetchCategory(with: "Attached") else {
+                guard let categoryCoreData = fetchCategory(with: "Pined") else {
                     return
                 }
                 
@@ -84,13 +84,13 @@ final class TrackerCategoryStore: NSObject {
             }
         } else if Locale.current.languageCode == "en" {
                 
-            if fetchCategory(with: "Attached") == nil {
+            if fetchCategory(with: "Pined") == nil {
                 
                 guard let categoryCoreData = fetchCategory(with: "Закрепленные") else {
                     return
                 }
                 
-                categoryCoreData.titleOfCategory = "Attached"
+                categoryCoreData.titleOfCategory = "Pined"
                 appDelegate.saveContext()
             }
         }

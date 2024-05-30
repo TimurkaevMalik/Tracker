@@ -88,9 +88,9 @@ final class CategoryViewModel {
             }
         }
         
-        let attachedText = NSLocalizedString("attached", comment: "")
+        let pinedText = NSLocalizedString("pined", comment: "")
         
-        return categoryArray.filter({$0.titleOfCategory != attachedText})
+        return categoryArray.filter({$0.titleOfCategory != pinedText})
     }
     
 }

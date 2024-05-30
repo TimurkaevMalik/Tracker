@@ -11,11 +11,11 @@
 "trackersControler.emptyState.title" = "What should we track?";
 "delete.confirmation" = "Are you sure you want to delete the tracker?";
 
-"attached" = Attached;
+"pined" = Pined;
 
 "edit" = Edit;
-"attach" = Attach;
-"unpin" = Unpin;
+"button.pin" = Pin;
+"button.unpin" = Unpin;
 "delete" = Delete;
 "create" = Create;
 "cancel" = Cancel;
