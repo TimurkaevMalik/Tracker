@@ -97,7 +97,7 @@ final class TrackerTypeController: UIViewController {
         guard let delegate else { return }
         
         let type = ActionType.create(value: TrackerType.habbit)
-        let viewController = ChosenTrackerController(actionType: type, delegate: delegate)
+        let viewController = ChosenTrackerController(actionType: type, delegate: delegate, category: nil)
         
         present(viewController, animated: true)
     }
@@ -107,7 +107,7 @@ final class TrackerTypeController: UIViewController {
         guard let delegate else { return }
         
         let type = ActionType.create(value: TrackerType.irregularEvent)
-        let viewController = ChosenTrackerController(actionType: type, delegate: delegate)
+        let viewController = ChosenTrackerController(actionType: type, delegate: delegate, category: nil)
         
         present(viewController, animated: true)
     }

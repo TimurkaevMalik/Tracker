@@ -544,7 +544,12 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
         let type = tracker.schedule.isEmpty ? ActionType.edit(value: TrackerType.irregularEvent) : ActionType.edit(value: TrackerType.habbit)
         
-        let viewController = ChosenTrackerController(actionType: type, delegate: self)
+        let viewController = ChosenTrackerController(
+            actionType: type,
+            delegate: self,
+            category: TrackerCategory(
+                titleOfCategory: category.titleOfCategory,
+                trackersArray: [tracker]))
         
         present(viewController, animated: true)
     }
