@@ -15,6 +15,7 @@ class ChosenTrackerController: UIViewController {
     private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     
     private let titleLabel = UILabel()
+    private let daysCountLabel = UILabel()
     private let limitWarningLabel = UILabel()
     private let titleLabelContainer = UIView()
     
@@ -43,6 +44,7 @@ class ChosenTrackerController: UIViewController {
     private var nameOfTracker: String?
     private var colorOfTracker: UIColor?
     private var emojiOfTracker: String?
+    private var daysCountText: String?
     
     private let warningLabelTitle = NSLocalizedString("cancel", comment: "Text displayed on cancel button")
     
@@ -55,19 +57,20 @@ class ChosenTrackerController: UIViewController {
     private let colorsArray: [UIColor] = [.ypRed, .ypOrange, .ypMediumBlue, .ypElectricViolet, .ypGreen, .ypViolet, .ypLightPink, .ypCyan, .ypLightGreen, .ypBlueMagneta, .ypTomato, .ypPink, .ypWarmYellow, .ypMediumLightBlue, .ypFrenchViolet, .ypGrape, .ypSlateBlue, .ypMediumLightGreen]
     
     
-    init(actionType: ActionType,
-         delegate: TrackerViewControllerDelegate, category: TrackerCategory?){
+    init(actionType: ActionType, tracker: TrackerToEdit?,
+         delegate: TrackerViewControllerDelegate){
         
         self.actionType = actionType
         self.delegate = delegate
         
         super.init(nibName: nil, bundle: nil)
         
-        nameOfCategory = category?.titleOfCategory
-        nameOfTracker = category?.trackersArray.first?.name
-        colorOfTracker = category?.trackersArray.first?.color
-        emojiOfTracker = category?.trackersArray.first?.emoji
-        scheduleOfTracker = category?.trackersArray.first?.schedule as? [String] ?? []
+        nameOfCategory = tracker?.titleOfCategory
+        nameOfTracker = tracker?.name
+        colorOfTracker = tracker?.color
+        emojiOfTracker = tracker?.emoji
+        scheduleOfTracker = tracker?.schedule as? [String] ?? []
+        daysCountText = tracker?.daysCount
     }
     
     required init?(coder: NSCoder) {
@@ -76,9 +79,8 @@ class ChosenTrackerController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        configureControllerBasedOn(actionType: actionType)
-        configureControllerUI()
-        textField.text = nameOfTracker
+        configureViewsBasedOn(actionType: actionType)
+        configureRestOfControllerUI()
     }
     
     @objc func didEnterTextInTextField(_ sender: UITextField){
@@ -150,11 +152,9 @@ class ChosenTrackerController: UIViewController {
         delegate?.dismisTrackerTypeController()
     }
     
-    private func configureControllerUI() {
+    private func configureRestOfControllerUI() {
         view.backgroundColor = .ypWhite
         
-        configureScrollView()
-        configureTextFieldAndClearButton()
         configureLimitWarningLabel()
         configureTableView()
         configureCollection()
@@ -162,8 +162,7 @@ class ChosenTrackerController: UIViewController {
         configureTitleLabelView()
     }
     
-    
-    private func configureControllerBasedOn(actionType: ActionType){
+    private func configureViewsBasedOn(actionType: ActionType) {
         
         let categoryCellTitle = NSLocalizedString("category", comment: "Text displayed on tableView cell")
         let scheduleCellTitle = NSLocalizedString("schedule", comment: "Text displayed on tableView cell")
@@ -173,21 +172,53 @@ class ChosenTrackerController: UIViewController {
         case .create(value: let value):
             if value == TrackerType.irregularEvent {
                 tableViewCells.append(categoryCellTitle)
+                
+                configureScrollView(contentHeight: 1.13)
             } else {
                 tableViewCells.append(categoryCellTitle)
                 tableViewCells.append(scheduleCellTitle)
+                
+                configureScrollView(contentHeight: 1.24)
             }
+            configureTextField(under: scrollContentView.topAnchor, constant: 0)
+            
         case .edit(value: let value):
+            
             if value == TrackerType.irregularEvent {
+                
                 tableViewCells.append(categoryCellTitle)
+                configureScrollView(contentHeight: 1.13)
+                configureTextField(under: scrollContentView.topAnchor, constant: 0)
+                
             } else {
                 tableViewCells.append(categoryCellTitle)
                 tableViewCells.append(scheduleCellTitle)
+                
+                configureScrollView(contentHeight: 1.36)
+                configureDaysCountLabel()
+                configureTextField(under: daysCountLabel.bottomAnchor, constant: 40)
             }
         }
     }
     
-    private func configureScrollView(){
+    private func configureDaysCountLabel() {
+        daysCountLabel.text = daysCountText
+        daysCountLabel.textAlignment = .center
+        daysCountLabel.font = UIFont.boldSystemFont(ofSize: 32)
+        daysCountLabel.textColor = .ypBlack
+        
+        daysCountLabel.translatesAutoresizingMaskIntoConstraints = false
+        scrollView.addSubview(daysCountLabel)
+        
+        NSLayoutConstraint.activate([
+            daysCountLabel.heightAnchor.constraint(equalToConstant: 38),
+            daysCountLabel.topAnchor.constraint(equalTo: scrollContentView.topAnchor),
+            daysCountLabel.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor, constant: 16),
+            daysCountLabel.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor, constant: -16),
+        ])
+    }
+    
+    private func configureScrollView(contentHeight: CGFloat){
         
         scrollView.showsVerticalScrollIndicator = false
         scrollView.translatesAutoresizingMaskIntoConstraints = false
@@ -208,7 +239,7 @@ class ChosenTrackerController: UIViewController {
             scrollContentView.leadingAnchor.constraint(equalTo: scrollView.leadingAnchor, constant: -2),
             
             scrollContentView.widthAnchor.constraint(equalTo: scrollView.widthAnchor, constant: -4),
-            scrollContentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: 1.27)
+            scrollContentView.heightAnchor.constraint(equalTo: scrollView.heightAnchor, multiplier: contentHeight)
         ])
     }
     
@@ -299,28 +330,8 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureTitleLabelView(){
-        var titleLabelText: String?
         
-        switch actionType {
-        case .create(let value):
-            
-            if value ==  TrackerType.habbit {
-                titleLabelText = NSLocalizedString("habbitController.title", comment: "Text displayed on the top of screen")
-            } else if value == TrackerType.irregularEvent {
-                titleLabelText = NSLocalizedString("eventController.title", comment: "Text displayed on the top of screen")
-            }
-        case .edit(let value):
-            
-            if value ==  TrackerType.habbit {
-                titleLabelText = NSLocalizedString("habbitController.editing.title", comment: "Text displayed on the top of screen")
-            } else if value == TrackerType.irregularEvent {
-                titleLabelText = NSLocalizedString("eventController.editing.title", comment: "Text displayed on the top of screen")
-            }
-        }
-        
-        
-        
-        titleLabel.text = titleLabelText
+        titleLabel.text = locolizedTitleBy(actionType)
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         titleLabelContainer.backgroundColor = .ypWhite
         
@@ -339,14 +350,17 @@ class ChosenTrackerController: UIViewController {
         ])
     }
     
-    private func configureTextFieldAndClearButton(){
+    private func configureTextField(under anchor: NSLayoutYAxisAnchor,
+                                    constant: CGFloat){
+        
         let enterNameText = NSLocalizedString("placeholder.enterTrackerName", comment: "")
         
+        textField.placeholder = enterNameText
+        textField.text = nameOfTracker
         textField.delegate = self
         textField.backgroundColor = .ypLightGray
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
-        textField.placeholder = enterNameText
         textField.leftViewMode = .always
         
         
@@ -366,7 +380,7 @@ class ChosenTrackerController: UIViewController {
         
         NSLayoutConstraint.activate([
             textField.heightAnchor.constraint(equalToConstant: 75),
-            textField.topAnchor.constraint(equalTo: scrollContentView.topAnchor),
+            textField.topAnchor.constraint(equalTo: anchor, constant: constant),
             textField.leadingAnchor.constraint(equalTo: scrollContentView.leadingAnchor, constant: 16),
             textField.trailingAnchor.constraint(equalTo: scrollContentView.trailingAnchor, constant: -16),
             
@@ -401,6 +415,35 @@ class ChosenTrackerController: UIViewController {
         } else {
             tableView.bottomAnchor.constraint(equalTo: tableView.topAnchor, constant: 74).isActive = true
         }
+    }
+    
+    private func locolizedTitleBy(_ actionType: ActionType) -> String? {
+        
+        switch actionType {
+        case .create(let value):
+            
+            if value ==  TrackerType.habbit {
+                
+                return NSLocalizedString("habbitController.title", comment: "Text displayed on the top of screen")
+                
+            } else if value == TrackerType.irregularEvent {
+                
+                return NSLocalizedString("eventController.title", comment: "Text displayed on the top of screen")
+            }
+            
+        case .edit(let value):
+            
+            if value ==  TrackerType.habbit {
+                
+                return NSLocalizedString("habbitController.editing.title", comment: "Text displayed on the top of screen")
+                
+            } else if value == TrackerType.irregularEvent {
+                
+                return NSLocalizedString("eventController.editing.title", comment: "Text displayed on the top of screen")
+            }
+        }
+        
+        return nil
     }
     
     private func highLightButton(){
@@ -616,20 +659,14 @@ extension ChosenTrackerController: UICollectionViewDataSource {
             
             cell.layer.masksToBounds = true
             cell.layer.cornerRadius = 16
-            
             cell.cellLabel.text = emojisArray[indexPath.row]
             
-            
-            cell.isSelected = emojisArray[indexPath.row] == emojiOfTracker ? true : false
-            
-            if cell.isSelected == true {
+            if emojisArray[indexPath.row] == emojiOfTracker {
                 
                 cell.isSelected = true
                 cell.backgroundColor = .ypMediumLightGray
                 chosenEmojiCell = cell
             }
-            print("\(cell.isSelected)" + "✅")
-            
             
             return cell
             
@@ -643,22 +680,18 @@ extension ChosenTrackerController: UICollectionViewDataSource {
             cell.layer.masksToBounds = true
             cell.layer.cornerRadius = 8
             
-            
-            if let colorOfTracker, let colorCell = cell.colorCell.backgroundColor {
+            if let colorOfTracker {
                 
-                let colorCellHex = colorMarshalling.hexString(from: colorCell)
+                let colorCellHex = colorMarshalling.hexString(from: colorsArray[indexPath.row])
                 let trackerColorHex = colorMarshalling.hexString(from: colorOfTracker)
                 
-                cell.isSelected =  colorCellHex == trackerColorHex ? true : false
+                if colorCellHex == trackerColorHex {
+                    
+                    cell.layer.borderWidth = 3
+                    cell.layer.borderColor = colorsArray[indexPath.row].withAlphaComponent(0.3).cgColor
+                    chosenColorCell = cell
+                }
             }
-            
-            if cell.isSelected == true {
-                
-                cell.layer.borderWidth = 3
-                cell.layer.borderColor = colorsArray[indexPath.row].withAlphaComponent(0.3).cgColor
-                chosenColorCell = cell
-            }
-            print(cell.isSelected)
             
             return cell
         }

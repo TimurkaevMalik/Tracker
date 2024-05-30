@@ -10,6 +10,7 @@
 		22669763AA05A8696FDA72C9 /* Pods_Tracker.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1E4AF14824A3209F7AC5CBC7 /* Pods_Tracker.framework */; };
 		3E7AB350A477567EB3CE3E43 /* Pods_TrackerTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 8BF823E479417F167E2DFED5 /* Pods_TrackerTests.framework */; };
 		BC1A79C12C010F66005B06C5 /* Localizable.strings in Resources */ = {isa = PBXBuildFile; fileRef = BC1A79BF2C010F66005B06C5 /* Localizable.strings */; };
+		BC1D89B72C091AFD00F3C256 /* TrackerToEdit.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC1D89B62C091AFD00F3C256 /* TrackerToEdit.swift */; };
 		BC2B8CD22BD2F0C60098D664 /* CategoryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B8CD12BD2F0C60098D664 /* CategoryView.swift */; };
 		BC2B8CD42BD2F5FE0098D664 /* CategoryCellView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2B8CD32BD2F5FE0098D664 /* CategoryCellView.swift */; };
 		BC2D1FB42BE970AC00609ECF /* TrackerStore.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC2D1FB32BE970AC00609ECF /* TrackerStore.swift */; };
@@ -70,6 +71,7 @@
 		BC1A79C02C010F66005B06C5 /* en */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = en; path = en.lproj/Localizable.strings; sourceTree = "<group>"; };
 		BC1A79C22C011107005B06C5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/LaunchScreen.strings; sourceTree = "<group>"; };
 		BC1A79C32C011107005B06C5 /* ru */ = {isa = PBXFileReference; lastKnownFileType = text.plist.strings; name = ru; path = ru.lproj/Localizable.strings; sourceTree = "<group>"; };
+		BC1D89B62C091AFD00F3C256 /* TrackerToEdit.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerToEdit.swift; sourceTree = "<group>"; };
 		BC2B8CD12BD2F0C60098D664 /* CategoryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryView.swift; sourceTree = "<group>"; };
 		BC2B8CD32BD2F5FE0098D664 /* CategoryCellView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CategoryCellView.swift; sourceTree = "<group>"; };
 		BC2D1FB32BE970AC00609ECF /* TrackerStore.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TrackerStore.swift; sourceTree = "<group>"; };
@@ -256,6 +258,7 @@
 				BC5E5DBB2BC9A17A00BD7655 /* TrackerCategory.swift */,
 				BC5E5DBD2BC9A18800BD7655 /* TrackerRecord.swift */,
 				BC5EA0652BF631F800DB3C45 /* TrackerType.swift */,
+				BC1D89B62C091AFD00F3C256 /* TrackerToEdit.swift */,
 			);
 			path = Tracker;
 			sourceTree = "<group>";
@@ -527,6 +530,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				BC5915772BD1C7E8005058ED /* ScheduleOfTracker.swift in Sources */,
+				BC1D89B72C091AFD00F3C256 /* TrackerToEdit.swift in Sources */,
 				BC5E5DBC2BC9A17A00BD7655 /* TrackerCategory.swift in Sources */,
 				BCB8EADC2BFD33F40053BA61 /* UserDefaultsManager.swift in Sources */,
 				BCF6219E2BBF4595001DE986 /* TrackerViewController.swift in Sources */,

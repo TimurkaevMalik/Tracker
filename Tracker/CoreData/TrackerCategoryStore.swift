@@ -178,14 +178,12 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
             let categoryCoreData = anObject as? TrackerCategoryCoreData,
             let category = convertCoreDataToCategory(categoryCoreData)
         else { return }
-        print(type)
+        
         switch type {
-            
         case .insert:
             delegate?.didStoreCategory(category)
         case .update:
             delegate?.storeDidUpdate(category: category)
-            
         case .delete:
             break
         default:

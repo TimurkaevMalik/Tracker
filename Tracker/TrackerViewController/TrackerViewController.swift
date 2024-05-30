@@ -541,15 +541,21 @@ extension TrackerViewController: CollectionViewCellDelegate {
         
         let category = visibleTrackers[indexPath.section]
         let tracker = category.trackersArray[indexPath.row]
+        let daysCount = completedTrackers.first(where: { $0.id == tracker.id })?.date.count
+        let localizedDaysText = NSLocalizedString("numberOfDays",
+                                                  comment: "")
         
         let type = tracker.schedule.isEmpty ? ActionType.edit(value: TrackerType.irregularEvent) : ActionType.edit(value: TrackerType.habbit)
         
+        let trackerToEdit = TrackerToEdit(
+            titleOfCategory: category.titleOfCategory, id: tracker.id,
+            name: tracker.name, color: tracker.color,
+            emoji: tracker.emoji, schedule: tracker.schedule,
+            daysCount: String(format: localizedDaysText, daysCount ?? 0))
+        
         let viewController = ChosenTrackerController(
-            actionType: type,
-            delegate: self,
-            category: TrackerCategory(
-                titleOfCategory: category.titleOfCategory,
-                trackersArray: [tracker]))
+            actionType: type, tracker: trackerToEdit,
+            delegate: self)
         
         present(viewController, animated: true)
     }
