@@ -10,8 +10,9 @@ import CoreData
 
 protocol TrackerStoreProtocol {
     func storeNewTracker(_ tracker: Tracker, for categoryTitle: String)
-    func deleteTrackerWith(id: UUID)
+    func fetchTracker(with id: UUID) -> Tracker?
     func updateCategoriesArray() -> [TrackerCategory]?
+    func deleteTrackerWith(id: UUID)
 }
 
 final class TrackerStore: NSObject {
@@ -160,6 +161,22 @@ extension TrackerStore: TrackerStoreProtocol {
         categoryCoreData?.addToTrackersArray(trackerCoreData)
         
         appDelegate.saveContext()
+    }
+    
+    func fetchTracker(with id: UUID) -> Tracker? {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
+        
+        do {
+            guard let trackerCoreData = try context.fetch(fetchRequest).first(where: { $0.id == id }) else {
+                return nil
+            }
+            
+           return convertCoreDataToTracker(trackerCoreData)
+            
+        } catch let error as NSError {
+            assertionFailure("\(error)")
+            return nil
+        }
     }
     
     func deleteTrackerWith(id: UUID) {

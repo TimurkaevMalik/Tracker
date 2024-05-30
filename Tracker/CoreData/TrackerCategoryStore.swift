@@ -127,6 +127,20 @@ final class TrackerCategoryStore: NSObject {
         }
     }
     
+    func deleteTrackerWith(_ id: UUID, from categoryTitle: String) {
+        
+        guard
+            let categoryCoreData = fetchCategory(with: categoryTitle),
+            let tracker = categoryCoreData.trackersArray?.first(where: { ($0 as? TrackerCoreData)?.id == id }) as? NSManagedObject
+        else {
+            return
+        }
+    
+        context.delete(tracker)
+        
+        appDelegate.saveContext()
+    }
+    
     func convertToCategotyArray( _ response: [TrackerCategoryCoreData]) -> [TrackerCategory] {
         
         var categoryArray: [TrackerCategory] = []
@@ -164,7 +178,7 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
             let categoryCoreData = anObject as? TrackerCategoryCoreData,
             let category = convertCoreDataToCategory(categoryCoreData)
         else { return }
-        
+        print(type)
         switch type {
             
         case .insert:
