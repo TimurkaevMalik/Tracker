@@ -574,58 +574,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             shouldRecordDate(bool, idOfCell: idOfCell)
         }
-        
-    }
-    
-    private func closeCollectionCellAt(idOfCell: UUID){
-        
-        let cells = collectionView.visibleCells as? [CollectionViewCell]
-        
-        guard
-            let cell = cells?.first(where: { $0.idOfCell == idOfCell }),
-            let indexPath = collectionView.indexPath(for: cell)
-        else {
-            return
-        }
-        
-        let category = visibleTrackers[indexPath.section]
-        
-        guard let categoryIndex = categories.firstIndex(where: { $0.titleOfCategory == category.titleOfCategory}) else { return }
-        
-        if category.trackersArray.count != 1 {
-            
-            trackers.removeAll()
-            
-            trackers = category.trackersArray.filter({ $0.id != idOfCell })
-            visibleTrackers[indexPath.section] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
-            
-            trackers.removeAll()
-            
-            trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
-            categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
-            
-            collectionView.deleteItems(at: [indexPath])
-        } else {
-            
-            trackers.removeAll()
-            
-            trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
-            categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
-            
-            visibleTrackers.remove(at: indexPath.section)
-            
-            collectionView.deleteSections([indexPath.section])
-        }
-        
-        let pinedText = NSLocalizedString("pined", comment: "")
-        
-        if category.titleOfCategory == pinedText {
-            checkForSameTrackerWith(id: idOfCell)
-        }
-        
-        if visibleTrackers.isEmpty {
-            collectionView.backgroundColor = .clear
-        }
     }
     
     private func shouldRecordDate(_ bool: Bool, idOfCell: UUID){
@@ -682,27 +630,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
 
 extension TrackerViewController: TrackerStoreDelegate {
     
-    func checkForSameTrackerWith(id: UUID) {
-        
-        for index in 0..<categories.count {
-            
-            if categories[index].trackersArray.contains(where: { $0.id == id }) {
-                
-                if trackerStore?.fetchTracker(with: id) != nil {
-                    
-                    showVisibleTrackers(dateDescription: currentDate?.description(with: .current))
-                    
-                } else {
-                    trackers = categories[index].trackersArray.filter({ $0.id != id })
-                    
-                    categories[index] = TrackerCategory(
-                        titleOfCategory: categories[index].titleOfCategory,
-                        trackersArray: trackers)
-                }
-            }
-        }
-    }
-    
     func didAdd(tracker: Tracker, with categoryTitle: String) {
         
         trackers.removeAll()
@@ -737,6 +664,96 @@ extension TrackerViewController: TrackerStoreDelegate {
     }
     
     func didUpdate(tracker: Tracker) {}
+    
+    private func closeCollectionCellAt(idOfCell: UUID){
+        
+        let cells = collectionView.visibleCells as? [CollectionViewCell]
+        
+        guard
+            let cell = cells?.first(where: { $0.idOfCell == idOfCell }),
+            let indexPath = collectionView.indexPath(for: cell)
+        else {
+            return
+        }
+        
+        let category = visibleTrackers[indexPath.section]
+        
+        guard let categoryIndex = categories.firstIndex(where: { $0.titleOfCategory == category.titleOfCategory}) else { return }
+        
+        if category.trackersArray.count != 1 {
+            
+            trackers.removeAll()
+            
+            trackers = category.trackersArray.filter({ $0.id != idOfCell })
+            visibleTrackers[indexPath.section] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+            
+            trackers.removeAll()
+            
+            trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
+            categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+            
+            collectionView.deleteItems(at: [indexPath])
+        } else {
+            
+            trackers.removeAll()
+            
+            trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
+            categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+            
+            visibleTrackers.remove(at: indexPath.section)
+            
+            collectionView.deleteSections([indexPath.section])
+        }
+        
+        let pinedText = NSLocalizedString("pined", comment: "")
+        
+        if category.titleOfCategory == pinedText {
+            shouldRemoveOrInsertSameTracker(id: idOfCell)
+        }
+    }
+    
+    private func shouldRemoveOrInsertSameTracker(id: UUID) {
+        
+        guard let index = categories.firstIndex(where: { $0.trackersArray.contains(where: { $0.id == id })}) else {
+            return
+        }
+        
+        if trackerStore?.fetchTracker(with: id) != nil {
+            
+            insertItemOf(categoryIndex: index)
+        } else {
+            deleteSameTrackerWith(id: id, categoryIndex: index)
+        }
+    }
+    
+    private func insertItemOf(categoryIndex index: Int) {
+        
+        if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == categories[index].titleOfCategory }) {
+            
+            visibleTrackers[section] = categories[index]
+            
+            collectionView.reloadSections([section])
+            
+        } else {
+            
+            visibleTrackers.append(categories[index])
+            visibleTrackers.sort(by: { $0.titleOfCategory < $1.titleOfCategory })
+            
+            guard let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == categories[index].titleOfCategory}) else { return }
+            
+            collectionView.insertSections([section])
+        }
+    }
+    
+    private func deleteSameTrackerWith(id: UUID, categoryIndex index: Int) {
+        
+        trackers = categories[index].trackersArray.filter({ $0.id != id })
+        
+        categories[index] = TrackerCategory(
+            titleOfCategory: categories[index].titleOfCategory,
+            trackersArray: trackers)
+    }
+    
 }
 
 extension TrackerViewController: RecordStoreDelegate {
