@@ -45,7 +45,7 @@ class ChosenTrackerController: UIViewController {
     private var colorOfTracker: UIColor?
     private var emojiOfTracker: String?
     private var daysCountText: String?
-    
+    private var editingTrackerId: UUID?
     private let warningLabelTitle = NSLocalizedString("cancel", comment: "Text displayed on cancel button")
     
     private let tableCellIdentifier = "tableCellIdentifier"
@@ -71,6 +71,7 @@ class ChosenTrackerController: UIViewController {
         emojiOfTracker = tracker?.emoji
         scheduleOfTracker = tracker?.schedule as? [String] ?? []
         daysCountText = tracker?.daysCount
+        editingTrackerId = tracker?.id
     }
     
     required init?(coder: NSCoder) {
@@ -109,27 +110,6 @@ class ChosenTrackerController: UIViewController {
         
         checkIsTextFieldEmpty()
         
-        switch actionType {
-            
-        case .create(let value):
-            if value == TrackerType.habbit {
-                guard !scheduleOfTracker.isEmpty else {
-                    showWarningLabel(with: fieldsfullnessText)
-                    highLightButton()
-                    return
-                }
-            }
-        case .edit(let value):
-            if value == TrackerType.habbit {
-                guard !scheduleOfTracker.isEmpty else {
-                    showWarningLabel(with: fieldsfullnessText)
-                    highLightButton()
-                    return
-                }
-            }
-        }
-        
-        
         guard
             let nameOfCategory = nameOfCategory,
             let name = nameOfTracker,
@@ -141,11 +121,44 @@ class ChosenTrackerController: UIViewController {
             return
         }
         
-        let newTracker = Tracker(id: UUID(), name: name, color: color, emoji: emoji, schedule: scheduleOfTracker)
-        
-        let newCategory = TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: [newTracker])
-        
-        delegate?.addNewTracker(trackerCategory: newCategory)
+        switch actionType {
+            
+        case .create(let value):
+            
+            if value == TrackerType.habbit {
+                guard !scheduleOfTracker.isEmpty else {
+                    showWarningLabel(with: fieldsfullnessText)
+                    highLightButton()
+                    return
+                }
+            }
+            
+            let newTracker = Tracker(id: UUID(), name: name, color: color, emoji: emoji, schedule: scheduleOfTracker)
+            
+            let newCategory = TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: [newTracker])
+            
+            delegate?.addNewTracker(trackerCategory: newCategory)
+            
+        case .edit(let value):
+            if value == TrackerType.habbit {
+                guard !scheduleOfTracker.isEmpty else {
+                    showWarningLabel(with: fieldsfullnessText)
+                    highLightButton()
+                    return
+                }
+            }
+            
+            guard 
+                let id = editingTrackerId,
+                let daysCountText
+            else { return }
+            
+            delegate?.didEditTracker(tracker: TrackerToEdit(
+                titleOfCategory: nameOfCategory, id: id,
+                name: name, color: color, emoji: emoji,
+                schedule: scheduleOfTracker, daysCount: daysCountText))
+            
+        }
     }
     
     @objc func cancelButtonTapped(){
@@ -578,7 +591,7 @@ extension ChosenTrackerController: UITableViewDataSource {
         
         if indexPath.row == 0 {
             cell.updateTextOfCellWith(name: tableViewCells[indexPath.row],
-                                      text: nameOfTracker ?? "")
+                                      text: nameOfCategory ?? "")
             
         } else if indexPath.row == 1 {
             shouldAddDates(scheduleOfTracker, on: cell)

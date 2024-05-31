@@ -92,7 +92,6 @@ final class CategoryViewModel {
         
         return categoryArray.filter({$0.titleOfCategory != pinedText})
     }
-    
 }
 
 extension CategoryViewModel: CategoryStoreDelegate {

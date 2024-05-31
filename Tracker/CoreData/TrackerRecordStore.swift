@@ -14,6 +14,7 @@ protocol RecordStoreProtocol {
     func storeRecord(_ record: TrackerRecord)
     func updateRecord(_ record: TrackerRecord)
     func deleteRecord(_ record: TrackerRecord)
+    func deleteAllRecordsOfTracker(_ id: UUID)
     func fetchAllConvertedRecords() -> [TrackerRecord]
     func fetchConvertedRecordWith(id: UUID) -> TrackerRecord?
 }
@@ -192,6 +193,13 @@ extension TrackerRecordStore: RecordStoreProtocol {
             context.delete(recordCoreData)
         }
         
+        appDelegate.saveContext()
+    }
+    
+    func deleteAllRecordsOfTracker(_ id: UUID) {
+        guard let recordCoreData = fetchRecordWith(id: id) else { return }
+        
+        context.delete(recordCoreData)
         appDelegate.saveContext()
     }
 }

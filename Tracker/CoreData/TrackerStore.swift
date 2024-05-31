@@ -186,10 +186,6 @@ extension TrackerStore: TrackerStoreProtocol {
             let trackers = try context.fetch(fetchRequest)
             
             let tracker = trackers.filter( { $0.id == id })
-     
-//            for tracker in tracker {
-//                
-//            }
             
             tracker.forEach({ context.delete($0) })
             

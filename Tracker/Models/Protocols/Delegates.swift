@@ -22,6 +22,7 @@ protocol RecordStoreDelegate: AnyObject {
 protocol TrackerViewControllerDelegate: AnyObject {
     func dismisTrackerTypeController()
     func addNewTracker(trackerCategory: TrackerCategory)
+    func didEditTracker(tracker: TrackerToEdit)
 }
 
 protocol ScheduleOfTrackerDelegate: AnyObject {

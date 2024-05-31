@@ -118,7 +118,6 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configureSearchController(){
-        //        searchController.searchBar.delegate = self
         searchController.searchResultsUpdater = self
         
         let placeHolder = NSLocalizedString("searchBar.placeholder", comment: "Text displayed inside of searchBar as placeholder")
@@ -366,10 +365,24 @@ final class TrackerViewController: UIViewController {
 extension TrackerViewController: TrackerViewControllerDelegate {
     
     func addNewTracker(trackerCategory: TrackerCategory) {
-        
         self.dismiss(animated: true)
         
         trackerStore?.storeNewTracker(trackerCategory.trackersArray[0], for: trackerCategory.titleOfCategory)
+    }
+    
+    func didEditTracker(tracker: TrackerToEdit) {
+        
+        self.dismiss(animated: true) { [weak self] in
+            
+            guard let self else { return }
+            
+            let editedTracker = Tracker(id: tracker.id, name: tracker.name, color: tracker.color, emoji: tracker.emoji, schedule: tracker.schedule)
+            
+            self.trackerStore?.deleteTrackerWith(id: tracker.id)
+            self.trackerStore?.storeNewTracker(editedTracker,
+                                          for: tracker.titleOfCategory)
+        }
+        
     }
     
     func dismisTrackerTypeController() {
@@ -566,6 +579,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
         let tracker = category.trackersArray[indexPath.row]
         
         trackerStore?.deleteTrackerWith(id: tracker.id)
+        trackerRecordStore?.deleteAllRecordsOfTracker(tracker.id)
     }
     
     func plusButtonTapped(_ cell: CollectionViewCell) {
@@ -658,7 +672,8 @@ extension TrackerViewController: TrackerStoreDelegate {
                 
                 let category = categories[index]
                 
-                if category.titleOfCategory == categoryTitle {
+                if category.titleOfCategory == categoryTitle,
+                   let currentDate {
                     
                     trackers = category.trackersArray
                     trackers.append(tracker)
@@ -672,7 +687,34 @@ extension TrackerViewController: TrackerStoreDelegate {
             categories.sort(by: { $0.titleOfCategory < $1.titleOfCategory })
         }
         
-        showVisibleTrackers(dateDescription: currentDate?.description(with: .current))
+        reloadSectionOrData()
+    }
+    
+    func reloadSectionOrData() {
+        let oldCount = visibleTrackers.count
+        let oldVisibleTrackers = visibleTrackers
+        
+        if let currentDate {
+            checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
+            
+            let newCount = visibleTrackers.count
+        
+            if oldCount < newCount {
+                
+                let newCategory = visibleTrackers.first(where: { category in
+                    
+                    !oldVisibleTrackers.contains(where: { $0.titleOfCategory == category.titleOfCategory})
+                })
+                
+                if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == newCategory?.titleOfCategory}) {
+                    
+                    collectionView.insertSections([section])
+                }
+            } else if oldCount == newCount {
+                
+                collectionView.reloadData()
+            }
+        }
     }
     
     func didDelete(tracker: Tracker) {
@@ -832,9 +874,3 @@ extension TrackerViewController: UISearchResultsUpdating {
         collectionView.reloadData()
     }
 }
-
-//extension TrackerViewController: UICollectionViewDelegate { }
-
-//extension TrackerViewController: UISearchBarDelegate {
-
-//}
