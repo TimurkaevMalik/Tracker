@@ -245,19 +245,22 @@ final class TrackerViewController: UIViewController {
         collectionView.reloadData()
     }
     
-    private func checkForVisibleTrackersAt(dateDescription: String?) {
-        guard let dateDescription else { return }
-        
+    private func updatePinedTrackers() -> [TrackerCategory] {
         let pinedText = NSLocalizedString("pined", comment: "")
         
         if let pinedCategory = categories.first(where: { $0.titleOfCategory == pinedText }),
            !pinedCategory.trackersArray.isEmpty {
             
-            visibleTrackers = [pinedCategory]
+            return [pinedCategory]
         } else {
-            visibleTrackers.removeAll()
+            return []
         }
+    }
+    
+    private func checkForVisibleTrackersAt(dateDescription: String?) {
+        guard let dateDescription else { return }
         
+        visibleTrackers = updatePinedTrackers()
         
         var selectedDate = ""
         
@@ -374,13 +377,24 @@ extension TrackerViewController: TrackerViewControllerDelegate {
         
         self.dismiss(animated: true) { [weak self] in
             
-            guard let self else { return }
+            let pinedText = NSLocalizedString("pined", comment: "")
+            
+            guard
+                let self,
+                let oldCategory = (categories.filter {
+                   $0.trackersArray.contains(where: {$0.id == tracker.id})
+               }.first(where: { $0.titleOfCategory != pinedText }))
+            else { return }
             
             let editedTracker = Tracker(id: tracker.id, name: tracker.name, color: tracker.color, emoji: tracker.emoji, schedule: tracker.schedule)
             
-            self.trackerStore?.deleteTrackerWith(id: tracker.id)
-            self.trackerStore?.storeNewTracker(editedTracker,
-                                               for: tracker.titleOfCategory)
+            print(oldCategory.titleOfCategory)
+            
+            self.trackerStore?.deleteTrackerOf(
+                categoryTitle: oldCategory.titleOfCategory, id: tracker.id)
+            
+            self.trackerStore?.storeNewTracker(
+                editedTracker, for: tracker.titleOfCategory)
         }
         
     }
@@ -552,11 +566,17 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     func editMenuButtonTappedOn(_ indexPath: IndexPath) {
         
-        let category = visibleTrackers[indexPath.section]
-        let tracker = category.trackersArray[indexPath.row]
+        let tracker = visibleTrackers[indexPath.section].trackersArray[indexPath.row]
         let daysCount = completedTrackers.first(where: { $0.id == tracker.id })?.date.count
-        let localizedDaysText = NSLocalizedString("numberOfDays",
-                                                  comment: "")
+        
+        let pinedText = NSLocalizedString("pined", comment: "")
+        let daysText = NSLocalizedString("numberOfDays", comment: "")
+        
+        guard let category = (categories.filter {
+            $0.trackersArray.contains(where: {$0.id == tracker.id})
+        }.first(where: { $0.titleOfCategory != pinedText })) else {
+            return
+        }
         
         let type = tracker.schedule.isEmpty ? ActionType.edit(value: TrackerType.irregularEvent) : ActionType.edit(value: TrackerType.habbit)
         
@@ -564,7 +584,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
             titleOfCategory: category.titleOfCategory, id: tracker.id,
             name: tracker.name, color: tracker.color,
             emoji: tracker.emoji, schedule: tracker.schedule,
-            daysCount: String(format: localizedDaysText, daysCount ?? 0))
+            daysCount: String(format: daysText, daysCount ?? 0))
         
         let viewController = ChosenTrackerController(
             actionType: type, tracker: trackerToEdit,
@@ -718,6 +738,7 @@ extension TrackerViewController: TrackerStoreDelegate {
     func didUpdate(tracker: Tracker) {}
     
     private func reloadSectionOrData() {
+        
         let oldCount = visibleTrackers.count
         let oldVisibleTrackers = visibleTrackers
         
@@ -725,12 +746,17 @@ extension TrackerViewController: TrackerStoreDelegate {
         
         let newCount = visibleTrackers.count
         
-        if oldCount < newCount {
+        let newCategory = visibleTrackers.first(where: { category in
             
-            let newCategory = visibleTrackers.first(where: { category in
-                
-                !oldVisibleTrackers.contains(where: { $0.titleOfCategory == category.titleOfCategory})
-            })
+            !oldVisibleTrackers.contains(where: { $0.titleOfCategory == category.titleOfCategory})})
+        
+        print(categories)
+        if
+            let pinedTrackers = updatePinedTrackers().first,
+           !(pinedTrackers.trackersArray.first(where: { tracker in
+               newCategory!.trackersArray.contains(where: { $0.id == tracker.id })}) != nil) {
+            
+        } else if oldCount < newCount {
             
             if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == newCategory?.titleOfCategory}) {
                 
@@ -741,7 +767,6 @@ extension TrackerViewController: TrackerStoreDelegate {
             collectionView.reloadData()
         }
     }
-    
     
     private func closeCollectionCellAt(idOfCell: UUID){
         
