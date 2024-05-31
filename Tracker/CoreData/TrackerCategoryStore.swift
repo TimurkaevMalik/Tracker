@@ -69,7 +69,7 @@ final class TrackerCategoryStore: NSObject {
         appDelegate.saveContext()
     }
     
-    func updatePinedCategory() {
+    func locolizePinedCategory() {
         
         if Locale.current.languageCode == "ru" {
             if fetchCategory(with: "Закрепленные") == nil {

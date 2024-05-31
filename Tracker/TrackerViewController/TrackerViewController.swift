@@ -240,13 +240,13 @@ final class TrackerViewController: UIViewController {
     
     private func showVisibleTrackers(dateDescription: String?){
         
-        guard let dateDescription else { return }
         checkForVisibleTrackersAt(dateDescription: dateDescription)
         
         collectionView.reloadData()
     }
     
-    private func checkForVisibleTrackersAt(dateDescription: String) {
+    private func checkForVisibleTrackersAt(dateDescription: String?) {
+        guard let dateDescription else { return }
         
         let pinedText = NSLocalizedString("pined", comment: "")
         
@@ -328,7 +328,7 @@ final class TrackerViewController: UIViewController {
         
         return false
     }
-    
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -336,7 +336,7 @@ final class TrackerViewController: UIViewController {
         currentDate = datePicker.date
         configureTrackerViews()
         
-        trackerCategoryStore?.updatePinedCategory()
+        trackerCategoryStore?.locolizePinedCategory()
         
         if completedTrackers.isEmpty, let trackerRecordStore {
             completedTrackers = trackerRecordStore.fetchAllConvertedRecords()
@@ -380,7 +380,7 @@ extension TrackerViewController: TrackerViewControllerDelegate {
             
             self.trackerStore?.deleteTrackerWith(id: tracker.id)
             self.trackerStore?.storeNewTracker(editedTracker,
-                                          for: tracker.titleOfCategory)
+                                               for: tracker.titleOfCategory)
         }
         
     }
@@ -525,7 +525,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
                                       handler: { [weak self] _ in
             
             guard let self else { return }
-            self.deleteMenuButtonTappedOn(indexPath)
+            self.deleteAtertForTracker(indexPath)
         })
         
         return UIContextMenuConfiguration(actionProvider:  { _ in
@@ -657,6 +657,27 @@ extension TrackerViewController: CollectionViewCellDelegate {
             trackerRecordStore?.deleteRecord(TrackerRecord(id: id, date: records))
         }
     }
+    
+    private func deleteAtertForTracker(_ indexPath: IndexPath) {
+        
+        let alertTitle = NSLocalizedString("delete.confirmation", comment: "")
+        let cancelText = NSLocalizedString("cancel", comment: "")
+        let deleteText = NSLocalizedString("delete", comment: "")
+        
+        let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .actionSheet)
+        
+        let cancel = UIAlertAction(title: cancelText, style: .cancel)
+        let delete = UIAlertAction(title: deleteText, style: .destructive) { [weak self] _ in
+            
+            guard let self else { return }
+            self.deleteMenuButtonTappedOn(indexPath)
+        }
+        
+        alert.addAction(delete)
+        alert.addAction(cancel)
+        
+        present(alert, animated: true)
+    }
 }
 
 extension TrackerViewController: TrackerStoreDelegate {
@@ -666,14 +687,13 @@ extension TrackerViewController: TrackerStoreDelegate {
         trackers.removeAll()
         
         if categories.contains(where: {
-            $0.titleOfCategory == categoryTitle
-        }) {
+            $0.titleOfCategory == categoryTitle}) {
+            
             for index in 0..<categories.count {
                 
                 let category = categories[index]
                 
-                if category.titleOfCategory == categoryTitle,
-                   let currentDate {
+                if category.titleOfCategory == categoryTitle {
                     
                     trackers = category.trackersArray
                     trackers.append(tracker)
@@ -690,39 +710,38 @@ extension TrackerViewController: TrackerStoreDelegate {
         reloadSectionOrData()
     }
     
-    func reloadSectionOrData() {
-        let oldCount = visibleTrackers.count
-        let oldVisibleTrackers = visibleTrackers
-        
-        if let currentDate {
-            checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
-            
-            let newCount = visibleTrackers.count
-        
-            if oldCount < newCount {
-                
-                let newCategory = visibleTrackers.first(where: { category in
-                    
-                    !oldVisibleTrackers.contains(where: { $0.titleOfCategory == category.titleOfCategory})
-                })
-                
-                if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == newCategory?.titleOfCategory}) {
-                    
-                    collectionView.insertSections([section])
-                }
-            } else if oldCount == newCount {
-                
-                collectionView.reloadData()
-            }
-        }
-    }
-    
     func didDelete(tracker: Tracker) {
         
         closeCollectionCellAt(idOfCell: tracker.id)
     }
     
     func didUpdate(tracker: Tracker) {}
+    
+    private func reloadSectionOrData() {
+        let oldCount = visibleTrackers.count
+        let oldVisibleTrackers = visibleTrackers
+        
+        checkForVisibleTrackersAt(dateDescription: currentDate?.description(with: .current))
+        
+        let newCount = visibleTrackers.count
+        
+        if oldCount < newCount {
+            
+            let newCategory = visibleTrackers.first(where: { category in
+                
+                !oldVisibleTrackers.contains(where: { $0.titleOfCategory == category.titleOfCategory})
+            })
+            
+            if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == newCategory?.titleOfCategory}) {
+                
+                collectionView.insertSections([section])
+            }
+        } else if oldCount == newCount {
+            
+            collectionView.reloadData()
+        }
+    }
+    
     
     private func closeCollectionCellAt(idOfCell: UUID){
         
@@ -866,9 +885,9 @@ extension TrackerViewController: UISearchResultsUpdating {
                 }
             }
             
-        } else if let currentDate {
+        } else {
             
-            checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
+            checkForVisibleTrackersAt(dateDescription: currentDate?.description(with: .current))
         }
         
         collectionView.reloadData()
