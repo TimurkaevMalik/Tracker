@@ -10,6 +10,7 @@ import CoreData
 
 protocol TrackerStoreProtocol {
     func storeNewTracker(_ tracker: Tracker, for categoryTitle: String)
+    func updateTracker(_ tracker: Tracker, for categoryTitle: String)
     func fetchTracker(with id: UUID) -> Tracker?
     func updateCategoriesArray() -> [TrackerCategory]?
     func deleteTrackerOf(categoryTitle: String, id: UUID)
@@ -164,6 +165,47 @@ extension TrackerStore: TrackerStoreProtocol {
         appDelegate.saveContext()
     }
     
+    func updateTracker(_ tracker: Tracker, for categoryTitle: String) {
+        guard let trackersCoreData = fetchAllTrackers() else { return }
+        
+        let pinedText = NSLocalizedString("pined", comment: "")
+        let filteredCoreData = trackersCoreData.filter({ $0.id == tracker.id })
+        
+        filteredCoreData.forEach { filteredTracker in
+            
+            filteredTracker.name = tracker.name
+            filteredTracker.color = uiColorMarshalling.hexString(from: tracker.color)
+            filteredTracker.emoji = tracker.emoji
+            
+            if !tracker.schedule.isEmpty {
+                let schedule: [String] = tracker.schedule.map { element in
+                    
+                    return element ?? ""
+                }
+                let weekdays: String = schedule.joined(separator: " ")
+                
+                filteredTracker.schedule = weekdays
+                
+            } else {
+                filteredTracker.schedule = nil
+            }
+        }
+        
+        
+        if let nonpinedTracker = filteredCoreData.first(where: { $0.trackerCategory?.titleOfCategory != pinedText }),
+           let oldTitle = nonpinedTracker.trackerCategory?.titleOfCategory,
+           oldTitle != categoryTitle {
+            
+            let oldCategory = trackerCategoryStore.fetchCategory(with: oldTitle)
+            oldCategory?.removeFromTrackersArray(nonpinedTracker)
+            
+           let newCategory = trackerCategoryStore.fetchCategory(with: categoryTitle)
+            newCategory?.addToTrackersArray( nonpinedTracker )
+        }
+        
+        appDelegate.saveContext()
+    }
+    
     func fetchTracker(with id: UUID) -> Tracker? {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
         
@@ -271,7 +313,9 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
             delegate?.didDelete(tracker: tracker)
             
         case .update:
-            break
+            if let title = trackerCoreData.trackerCategory?.titleOfCategory {
+                delegate?.didUpdate(tracker: tracker, categoryTitle: title)
+            }
         default:
             break
         }

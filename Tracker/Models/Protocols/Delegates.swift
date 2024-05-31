@@ -8,7 +8,7 @@
 import UIKit
 
 protocol TrackerStoreDelegate: AnyObject {
-    func didUpdate(tracker: Tracker)
+    func didUpdate(tracker: Tracker, categoryTitle: String)
     func didDelete(tracker: Tracker)
     func didAdd(tracker: Tracker, with categoryTitle: String)
 }

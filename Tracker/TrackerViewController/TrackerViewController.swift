@@ -388,13 +388,17 @@ extension TrackerViewController: TrackerViewControllerDelegate {
             
             let editedTracker = Tracker(id: tracker.id, name: tracker.name, color: tracker.color, emoji: tracker.emoji, schedule: tracker.schedule)
             
-            print(oldCategory.titleOfCategory)
-            
-            self.trackerStore?.deleteTrackerOf(
-                categoryTitle: oldCategory.titleOfCategory, id: tracker.id)
-            
-            self.trackerStore?.storeNewTracker(
-                editedTracker, for: tracker.titleOfCategory)
+            if !updatePinedTrackers().contains(where: { $0.trackersArray.contains(where: { $0.id == tracker.id })}) {
+                
+                self.trackerStore?.deleteTrackerOf(
+                    categoryTitle: oldCategory.titleOfCategory, id: tracker.id)
+                
+                self.trackerStore?.storeNewTracker(
+                    editedTracker, for: tracker.titleOfCategory)
+            } else {
+                
+                trackerStore?.updateTracker(editedTracker, for: tracker.titleOfCategory)
+            }
         }
         
     }
@@ -735,7 +739,11 @@ extension TrackerViewController: TrackerStoreDelegate {
         closeCollectionCellAt(idOfCell: tracker.id)
     }
     
-    func didUpdate(tracker: Tracker) {}
+    func didUpdate(tracker: Tracker, categoryTitle: String) {
+        
+        categories = trackerStore?.updateCategoriesArray() ?? []
+        showVisibleTrackers(dateDescription: currentDate?.description(with: .current))
+    }
     
     private func reloadSectionOrData() {
         
@@ -746,23 +754,39 @@ extension TrackerViewController: TrackerStoreDelegate {
         
         let newCount = visibleTrackers.count
         
-        let newCategory = visibleTrackers.first(where: { category in
+        if oldCount < newCount {
             
-            !oldVisibleTrackers.contains(where: { $0.titleOfCategory == category.titleOfCategory})})
-        
-        print(categories)
-        if
-            let pinedTrackers = updatePinedTrackers().first,
-           !(pinedTrackers.trackersArray.first(where: { tracker in
-               newCategory!.trackersArray.contains(where: { $0.id == tracker.id })}) != nil) {
-            
-        } else if oldCount < newCount {
-            
-            if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == newCategory?.titleOfCategory}) {
+            let newCategory = visibleTrackers.first(where: { category in
                 
-                collectionView.insertSections([section])
+                !oldVisibleTrackers.contains(where: { $0.titleOfCategory == category.titleOfCategory})})
+            
+            if let sectionInsert = visibleTrackers.firstIndex(where: { $0.titleOfCategory == newCategory?.titleOfCategory}) {
+                
+                let trackersArray = visibleTrackers[sectionInsert].trackersArray
+                
+                guard
+                    let sectionDelete = oldVisibleTrackers.firstIndex(where: {$0.trackersArray.contains(where: { tracker in trackersArray.contains(where: { $0.id == tracker.id })})}),
+                    
+                    let rowDelete = oldVisibleTrackers[sectionDelete].trackersArray.firstIndex(where: { tracker in
+                            trackersArray.contains(where: { $0.id == tracker.id})
+                        })
+                else {
+                    collectionView.insertSections([sectionInsert])
+                    return
+                }
+                
+                collectionView.performBatchUpdates {
+                    
+                    collectionView.deleteItems(at: [IndexPath(
+                        row: rowDelete, section: sectionDelete)])
+                    
+                    collectionView.insertSections([sectionInsert])
+                }
             }
-        } else if oldCount == newCount {
+        } else if oldCount > newCount {
+            
+            collectionView.reloadData()
+        }else if oldCount == newCount {
             
             collectionView.reloadData()
         }
@@ -833,15 +857,12 @@ extension TrackerViewController: TrackerStoreDelegate {
         
         if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == categories[index].titleOfCategory }) {
             
-            visibleTrackers[section] = categories[index]
-            
+            checkForVisibleTrackersAt(dateDescription: currentDate?.description(with: .current))
             collectionView.reloadSections([section])
             
         } else {
             
-            visibleTrackers.append(categories[index])
-            visibleTrackers.sort(by: { $0.titleOfCategory < $1.titleOfCategory })
-            
+            checkForVisibleTrackersAt(dateDescription: currentDate?.description(with: .current))
             guard let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == categories[index].titleOfCategory}) else { return }
             
             collectionView.insertSections([section])
