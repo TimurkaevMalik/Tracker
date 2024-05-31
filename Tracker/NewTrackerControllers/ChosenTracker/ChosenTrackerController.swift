@@ -305,6 +305,7 @@ class ChosenTrackerController: UIViewController {
         
         
         saveButton.setTitle(createButtonTitle, for: .normal)
+        saveButton.setTitleColor(.ypWhite, for: .normal)
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         saveButton.backgroundColor = .ypDarkGray
         saveButton.layer.cornerRadius = 16
@@ -371,7 +372,7 @@ class ChosenTrackerController: UIViewController {
         textField.placeholder = enterNameText
         textField.text = nameOfTracker
         textField.delegate = self
-        textField.backgroundColor = .ypLightGray
+        textField.backgroundColor = .ypMediumLightGray
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.leftViewMode = .always
@@ -384,8 +385,9 @@ class ChosenTrackerController: UIViewController {
         
         
         clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
-        clearTextFieldButton.backgroundColor = UIColor(named: "YPLightGray")
+        clearTextFieldButton.backgroundColor = .ypMediumLightGray
         clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
+        
         clearTextFieldButton.contentHorizontalAlignment = .leading
         
         textField.translatesAutoresizingMaskIntoConstraints = false
@@ -402,7 +404,7 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureTableView(){
-        tableView.backgroundColor = .black
+        tableView.backgroundColor = .ypWhite
         
         tableView.delegate = self
         tableView.dataSource = self
@@ -586,7 +588,7 @@ extension ChosenTrackerController: UITableViewDataSource {
             return UITableViewCell()
         }
         
-        cell.backgroundColor = .ypLightGray
+        cell.backgroundColor = .ypMediumLightGray
         cell.accessoryType = .disclosureIndicator
         
         if indexPath.row == 0 {
@@ -791,7 +793,7 @@ extension ChosenTrackerController: UICollectionViewDelegate {
         }
         
         if indexPath.section == 0 {
-            cell.backgroundColor = .ypMediumLightGray
+            cell.backgroundColor = .ypColorMilk
             chosenEmojiCell = cell
             emojiOfTracker = emojisArray[indexPath.row]
             

@@ -8,7 +8,7 @@
 
 
 "statistic.emptyState.title" = "No data to analyze";
-"trackersControler.emptyState.title" = "What should we track?";
+"trackerControler.emptyState.title" = "What should we track?";
 "delete.confirmation" = "Are you sure you want to delete the tracker?";
 
 "pined" = Pined;
@@ -16,6 +16,7 @@
 "edit" = Edit;
 "button.pin" = Pin;
 "button.unpin" = Unpin;
+"ready" = Ready;
 "delete" = Delete;
 "create" = Create;
 "cancel" = Cancel;

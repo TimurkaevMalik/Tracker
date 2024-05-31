@@ -95,7 +95,7 @@ final class NewCategoryView: UIViewController {
         let enterNameText = NSLocalizedString("placeholder.enterCategoryName", comment: "")
                 
         textField.delegate = self
-        textField.backgroundColor = UIColor(named: "YPLightGray")
+        textField.backgroundColor = .ypMediumLightGray
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.placeholder = enterNameText
@@ -109,7 +109,7 @@ final class NewCategoryView: UIViewController {
         
         
         clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
-        clearTextFieldButton.backgroundColor = UIColor(named: "YPLightGray")
+        clearTextFieldButton.backgroundColor = .ypMediumLightGray
         clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
         clearTextFieldButton.contentHorizontalAlignment = .leading
         
@@ -142,8 +142,9 @@ final class NewCategoryView: UIViewController {
     }
     
     private func configureSaveButton(){
-        let createButtonTitle = NSLocalizedString("create", comment: "Text displayed on create button")
+        let createButtonTitle = NSLocalizedString("ready", comment: "Text displayed on create button")
         
+        saveButton.setTitleColor(.ypWhite, for: .normal)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         
         saveButton.setTitle(createButtonTitle, for: .normal)

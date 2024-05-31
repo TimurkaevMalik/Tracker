@@ -33,7 +33,7 @@ final class CategoryCellView: UITableViewCell {
     private func configureTextFieldAndClearButton(){
         
         textField.delegate = self
-        textField.backgroundColor = UIColor(named: "YPLightGray")
+        textField.backgroundColor = .ypMediumLightGray
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
         textField.placeholder = "Введите название трекера"
@@ -48,7 +48,7 @@ final class CategoryCellView: UITableViewCell {
         
         
         clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
-        clearTextFieldButton.backgroundColor = UIColor(named: "YPLightGray")
+        clearTextFieldButton.backgroundColor = .ypMediumLightGray
         clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
         clearTextFieldButton.contentHorizontalAlignment = .leading
         

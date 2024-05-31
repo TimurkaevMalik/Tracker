@@ -144,6 +144,7 @@ final class ScheduleOfTracker: UIViewController {
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
         doneButton.setTitle(doneButtonTitle, for: .normal)
+        doneButton.setTitleColor(.ypWhite, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         doneButton.backgroundColor = .ypBlack
         doneButton.layer.cornerRadius = 16
@@ -204,13 +205,16 @@ extension ScheduleOfTracker: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath)
         
         let switchView = UISwitch(frame: .zero)
+        
         switchView.isOn = shouldSetSwitchOnForCell(indexPath)
         switchView.onTintColor = .ypBlue
         switchView.tag = indexPath.row
         switchView.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         
+        switchView.subviews[0].subviews[0].backgroundColor = .ypColorMilk
+
         cell.accessoryView = switchView
-        cell.backgroundColor = .ypLightGray
+        cell.backgroundColor = .ypMediumLightGray
         
         let weekday = daysOfWeek[indexPath.row]
         cell.textLabel?.text = NSLocalizedString(weekday, comment: "")
@@ -220,7 +224,6 @@ extension ScheduleOfTracker: UITableViewDataSource {
         return cell
     }
 }
-
 
 extension ScheduleOfTracker: UITableViewDelegate {
     

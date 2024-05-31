@@ -8,7 +8,7 @@
 
 
 "statistic.emptyState.title" = "Анализировать пока нечего";
-"emptyState.title" = "Что будем отслеживать?";
+"trackerControler.emptyState.title" = "Что будем отслеживать?";
 "delete.confirmation" = "Уверены что хотите удалить трекер?";
 
 "pined" = "Закрепленные";
@@ -16,6 +16,7 @@
 "edit" = "Редактировать";
 "button.pin" = "Закрепить";
 "button.unpin" = "Открепить";
+"ready" = "Готово";
 "delete" = "Удалить";
 "create" = "Создать";
 "cancel" = "Отменить";

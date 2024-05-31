@@ -70,11 +70,11 @@ final class TrackerViewController: UIViewController {
     private func configureTrackerButtonsViews() {
         
         plusButton = UIButton.systemButton(with: UIImage(named: "PlusImage") ?? UIImage(), target: self, action: #selector(didTapPlusButton))
-        plusButton.tintColor = UIColor(named: "YPBlack")
-        
+        plusButton.tintColor = .ypBlack
         
         datePicker.addTarget(self, action: #selector(datePickerValueChanged(_:)), for: .valueChanged)
-        datePicker.backgroundColor = UIColor(named: "YPLightGray")
+        datePicker.backgroundColor = .ypLightGray
+        
         datePicker.datePickerMode = .date
         datePicker.preferredDatePickerStyle = .compact
         datePicker.layer.cornerRadius = 8
@@ -82,12 +82,16 @@ final class TrackerViewController: UIViewController {
         datePicker.timeZone = TimeZone.current
         datePicker.calendar = .current
         
+        datePicker.tintColor = .black
+        datePicker.setValue(UIColor.black, forKeyPath: "textColor")
+        datePicker.setValue(false, forKey: "highlightsToday")
+        
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: plusButton)
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
     }
     
     private func configureTrackerLabelsViews(){
-        let emptyStateText = NSLocalizedString("trackersControler.emptyState.title", comment: "Text displayed on empty state")
+        let emptyStateText = NSLocalizedString("trackerControler.emptyState.title", comment: "Text displayed on empty state")
         centralPlugLabel.text = emptyStateText
         centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
         centralPlugLabel.textAlignment = .center
@@ -121,22 +125,17 @@ final class TrackerViewController: UIViewController {
         searchController.searchResultsUpdater = self
         
         let placeHolder = NSLocalizedString("searchBar.placeholder", comment: "Text displayed inside of searchBar as placeholder")
-        searchController.searchBar.placeholder = placeHolder
+
+        let atributedString = NSMutableAttributedString(string: placeHolder)
+        atributedString.setColor(.ypGray, forText: placeHolder)
         
+        searchController.searchBar.searchTextField.attributedPlaceholder = atributedString
+        searchController.searchBar.searchTextField.leftView?.tintColor = .ypGray
         searchController.hidesNavigationBarDuringPresentation = false
         searchController.searchBar.searchBarStyle = .prominent
         searchController.searchBar.layer.cornerRadius = 8
         searchController.searchBar.layer.masksToBounds = true
         searchController.searchBar.isTranslucent = false
-        
-        addTitleAndSearchControllerToNavBar()
-    }
-    
-    private func addTitleAndSearchControllerToNavBar(){
-        let trackersTopTitle = NSLocalizedString("trackers", comment: "Text displayed on the top of search bar")
-        navigationItem.title = trackersTopTitle
-        navigationItem.searchController = searchController
-        navigationController?.navigationBar.prefersLargeTitles = true
     }
     
     private func configureCollectionView(){
@@ -168,12 +167,20 @@ final class TrackerViewController: UIViewController {
         collectionView.register(SupplementaryView.self, forSupplementaryViewOfKind: UICollectionView.elementKindSectionHeader, withReuseIdentifier: headerIdentifier)
     }
     
+    private func addTitleAndSearchControllerToNavBar(){
+        let trackersTopTitle = NSLocalizedString("trackers", comment: "Text displayed on the top of search bar")
+        navigationItem.title = trackersTopTitle
+        navigationItem.searchController = searchController
+        navigationController?.navigationBar.prefersLargeTitles = true
+    }
+    
     private func configureTrackerViews(){
         view.backgroundColor = UIColor(named: "YPWhite")
         
         configureCentralPlug()
         configureTrackerLabelsViews()
         configureSearchController()
+        addTitleAndSearchControllerToNavBar()
         configureCollectionView()
         configureTrackerButtonsViews()
     }
@@ -188,6 +195,16 @@ final class TrackerViewController: UIViewController {
         cell.nameLable.text = actualTracker.name
         cell.view.backgroundColor = actualTracker.color
         cell.doneButton.backgroundColor = actualTracker.color
+        
+        let category = visibleTrackers[indexPath.section]
+        
+        if  let pinedCategory = updatePinedTrackers().first,
+            category.titleOfCategory == pinedCategory.titleOfCategory {
+            
+            cell.pinedImageView.image = .pined
+        } else {
+            cell.pinedImageView.image = nil
+        }
         
         if wasCellButtonTapped(at: indexPath) == true {
             
@@ -359,7 +376,7 @@ final class TrackerViewController: UIViewController {
     }
     
     @objc func didTapPlusButton(){
-        
+        print(updatePinedTrackers())
         presentCreatingTrackerView()
     }
 }
@@ -691,11 +708,15 @@ extension TrackerViewController: CollectionViewCellDelegate {
         let alert = UIAlertController(title: alertTitle, message: nil, preferredStyle: .actionSheet)
         
         let cancel = UIAlertAction(title: cancelText, style: .cancel)
+        
         let delete = UIAlertAction(title: deleteText, style: .destructive) { [weak self] _ in
             
             guard let self else { return }
             self.deleteMenuButtonTappedOn(indexPath)
         }
+        
+        delete.titleTextColor = .ypColorBlud
+        cancel.titleTextColor = .ypColorSky
         
         alert.addAction(delete)
         alert.addAction(cancel)

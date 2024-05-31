@@ -90,14 +90,12 @@ final class CategoryView: UIViewController {
     }
     
     private func configureTableView(){
-        
-        tableView.backgroundColor = .black
+        tableView.backgroundColor = .ypWhite
         
         tableView.delegate = self
         tableView.dataSource = self
         
         tableView.register(CategoryCellView.self, forCellReuseIdentifier: "cellIdentifier")
-        tableView.backgroundColor = .white
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.allowsMultipleSelection = false
@@ -117,11 +115,12 @@ final class CategoryView: UIViewController {
     
     private func configureDoneButton(){
         buttonContainer.backgroundColor = .ypWhite
+        doneButton.backgroundColor = .ypBlack
+        doneButton.setTitleColor(.ypWhite, for: .normal)
         
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
-        doneButton.backgroundColor = .ypBlack
         doneButton.layer.cornerRadius = 16
         doneButton.layer.masksToBounds = true
         
@@ -210,7 +209,7 @@ extension CategoryView: UITableViewDataSource {
         cell.layer.masksToBounds = true
         cell.setCornerRadiusForCell(at: indexPath, of: tableView)
         
-        cell.backgroundColor = .ypLightGray
+        cell.backgroundColor = .ypMediumLightGray
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
         if !viewModel.categories.isEmpty {
