@@ -8,13 +8,14 @@
 import UIKit
 import CoreData
 
+
 protocol TrackerStoreProtocol {
-    func storeNewTracker(_ tracker: Tracker, for categoryTitle: String)
-    func updateTracker(_ tracker: Tracker, for categoryTitle: String)
-    func fetchTracker(with id: UUID) -> Tracker?
-    func updateCategoriesArray() -> [TrackerCategory]?
-    func deleteTrackerOf(categoryTitle: String, id: UUID)
-    func deleteTrackerWith(id: UUID)
+   func storeNewTracker(_ tracker: Tracker, for categoryTitle: String)
+   func updateTracker(_ tracker: Tracker, for categoryTitle: String)
+   func fetchTracker(with id: UUID) -> Tracker?
+   func updateCategoriesArray() -> [TrackerCategory]?
+   func deleteTrackerOf(categoryTitle: String, id: UUID)
+   func deleteTrackerWith(id: UUID)
 }
 
 final class TrackerStore: NSObject {

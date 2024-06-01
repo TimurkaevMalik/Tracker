@@ -7,10 +7,16 @@
 
 import UIKit
 
+
 protocol TrackerStoreDelegate: AnyObject {
     func didUpdate(tracker: Tracker, categoryTitle: String)
     func didDelete(tracker: Tracker)
     func didAdd(tracker: Tracker, with categoryTitle: String)
+}
+
+protocol CategoryStoreDelegate: AnyObject {
+    func didStoreCategory(_ category: TrackerCategory)
+    func storeDidUpdate(category: TrackerCategory)
 }
 
 protocol RecordStoreDelegate: AnyObject {
@@ -19,10 +25,21 @@ protocol RecordStoreDelegate: AnyObject {
     func didAdd(record: TrackerRecord)
 }
 
+protocol TabBarControllerDelegate: AnyObject {
+    func hideFilterButton()
+    func showFilterButton()
+}
+
 protocol TrackerViewControllerDelegate: AnyObject {
     func dismisTrackerTypeController()
     func addNewTracker(trackerCategory: TrackerCategory)
     func didEditTracker(tracker: TrackerToEdit)
+}
+
+
+protocol FilterControllerDelegate: AnyObject {
+    func didChooseFilter()
+    func trackersForToday()
 }
 
 protocol ScheduleOfTrackerDelegate: AnyObject {

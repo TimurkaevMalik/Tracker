@@ -8,10 +8,6 @@
 import UIKit
 import CoreData
 
-protocol CategoryStoreDelegate: AnyObject {
-    func didStoreCategory(_ category: TrackerCategory)
-    func storeDidUpdate(category: TrackerCategory)
-}
 
 final class TrackerCategoryStore: NSObject {
     

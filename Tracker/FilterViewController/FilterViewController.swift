@@ -7,22 +7,15 @@
 
 import UIKit
 
-protocol FilterControllerDelegate: AnyObject {
-    
-    func didChooseFilter(_ filter: String)
-    func trackersForToday()
-}
 
 class FilterViewController: UIViewController {
     
     private let titleLabel = UILabel()
     private let tableView = UITableView()
     
-    private var chosenFilter: String = "allTrackers"
-    private let filters: [String] = ["allTrackers", "trackersForToday", "completedOnes", "notCompletedOnes"]
-    
-    
     private weak var delegate: FilterControllerDelegate?
+    private let filters: [String] = ["allTrackers", "trackersForToday", "completedOnes", "notCompletedOnes"]
+
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -32,12 +25,8 @@ class FilterViewController: UIViewController {
         configureTableView()
     }
     
-    init(chosenFilter: String?, delegate: FilterControllerDelegate) {
+    init(delegate: FilterControllerDelegate) {
         self.delegate = delegate
-        
-        if let chosenFilter {
-            self.chosenFilter = chosenFilter
-        }
         super.init(nibName: nil, bundle: nil)
     }
     
@@ -106,7 +95,7 @@ extension FilterViewController: UITableViewDataSource {
 
         cell.backgroundColor = .ypMediumLightGray
         
-        cell.accessoryType = chosenFilter == filters[indexPath.row] ? .checkmark : .none
+        cell.accessoryType = UserDefaultsManager.chosenFilter == filters[indexPath.row] ? .checkmark : .none
         
         let filterText = filters[indexPath.row]
         cell.textLabel?.text = NSLocalizedString(filterText, comment: "")
@@ -126,8 +115,10 @@ extension FilterViewController: UITableViewDelegate {
         }
         
         updateCheckMark(on: indexPath)
-        chosenFilter = filters[indexPath.row]
-        delegate?.didChooseFilter(chosenFilter)
+        
+        UserDefaultsManager.chosenFilter = filters[indexPath.row]
+        
+        delegate?.didChooseFilter()
         
         dismiss(animated: true)
     }

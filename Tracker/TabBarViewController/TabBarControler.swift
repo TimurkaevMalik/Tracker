@@ -7,11 +7,6 @@
 
 import UIKit
 
-protocol TabBarControllerDelegate: AnyObject {
-    
-    func hideFilterButton()
-    func showFilterButton()
-}
 
 final class TabBarControler: UITabBarController {
     
@@ -41,9 +36,7 @@ final class TabBarControler: UITabBarController {
     
     @objc func didTapFilterButton() {
         
-        let viewController = FilterViewController(
-            chosenFilter: trackerViewController.chosenFilter,
-            delegate: trackerViewController)
+        let viewController = FilterViewController(delegate: trackerViewController)
         
         present(viewController, animated: true)
     }

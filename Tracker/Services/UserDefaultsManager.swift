@@ -11,6 +11,15 @@ class UserDefaultsManager {
     
     
     private static let wasOnboardinShownKey = "wasOnboardinShown"
+    private static let chosenFilterKey = "chosenFilter"
+    
+    static var chosenFilter: String? {
+        get {
+            UserDefaults.standard.string(forKey: UserDefaultsManager.chosenFilterKey)
+        } set {
+            UserDefaults.standard.setValue(newValue, forKey: UserDefaultsManager.chosenFilterKey)
+        }
+    }
     
     static var wasOnboardinShown: Bool {
         get {
@@ -20,6 +29,8 @@ class UserDefaultsManager {
             UserDefaults.standard.set(newValue, forKey: UserDefaultsManager.wasOnboardinShownKey)
             
             if newValue == true {
+                
+                chosenFilter = "allTrackers"
                 
                 guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
                     return
