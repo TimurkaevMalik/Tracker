@@ -114,14 +114,10 @@ final class ScheduleOfTracker: UIViewController {
     }
     
     private func configureTableView(){
-        
-//        tableView.backgroundColor = .black
-        
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
-//        tableView.backgroundColor = .white
+        
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.isScrollEnabled = false
@@ -216,8 +212,8 @@ extension ScheduleOfTracker: UITableViewDataSource {
         cell.accessoryView = switchView
         cell.backgroundColor = .ypMediumLightGray
         
-        let weekday = daysOfWeek[indexPath.row]
-        cell.textLabel?.text = NSLocalizedString(weekday, comment: "")
+        let weekdayText = daysOfWeek[indexPath.row]
+        cell.textLabel?.text = NSLocalizedString(weekdayText, comment: "")
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         

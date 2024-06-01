@@ -5,7 +5,6 @@
 //  Created by Malik Timurkaev on 21.05.2024.
 //
 
-import Foundation
 import UIKit
 
 class UserDefaultsManager {

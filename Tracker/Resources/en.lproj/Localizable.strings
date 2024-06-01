@@ -21,6 +21,7 @@
 "delete" = Delete;
 "create" = Create;
 "cancel" = Cancel;
+"filters" = Filters;
 "doneButton.title" = Done;
 "button.habbit" = Habbit;
 "button.irregularEvent" = "Irregular event";
@@ -70,3 +71,8 @@
 "day" = "%d day";
 "days" = "%d days";
 "days.fromTwoToFour" = "%d days";
+
+"allTrackers" = "All trackers";
+"trackersForToday" = "Trackers for today";
+"completedOnes" = "Completed";
+"notCompletedOnes" = "Not Completed";

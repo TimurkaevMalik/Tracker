@@ -5,7 +5,6 @@
 //  Created by Malik Timurkaev on 12.04.2024.
 //
 
-import Foundation
 import UIKit
 
 final class TrackerTypeController: UIViewController {

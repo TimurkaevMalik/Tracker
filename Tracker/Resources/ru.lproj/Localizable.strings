@@ -21,6 +21,7 @@
 "delete" = "Удалить";
 "create" = "Создать";
 "cancel" = "Отменить";
+"filters" = "Фильтры";
 "doneButton.title" = "Готово";
 "button.habbit" = "Привычка";
 "button.irregularEvent" = "Нерегулярное событие";
@@ -70,3 +71,8 @@
 "day" = "%d день";
 "days" = "%d дней";
 "days.fromTwoToFour" = "%d дня";
+
+"allTrackers" = "Все трекеры";
+"trackersForToday" = "Трекеры на сегодня";
+"completedOnes" = "Завершенные";
+"notCompletedOnes" = "Не Завершенные";
