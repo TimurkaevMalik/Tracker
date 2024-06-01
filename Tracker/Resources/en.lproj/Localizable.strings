@@ -20,6 +20,7 @@
 "ready" = Ready;
 "delete" = Delete;
 "create" = Create;
+"save" = Save;
 "cancel" = Cancel;
 "filters" = Filters;
 "doneButton.title" = Done;

@@ -20,6 +20,7 @@
 "ready" = "Готово";
 "delete" = "Удалить";
 "create" = "Создать";
+"save" = "Сохранить";
 "cancel" = "Отменить";
 "filters" = "Фильтры";
 "doneButton.title" = "Готово";

@@ -269,6 +269,7 @@ class ChosenTrackerController: UIViewController {
         
         collectionView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(collectionView)
+        scrollView.insertSubview(collectionView, belowSubview: buttonsContainer)
         
         NSLayoutConstraint.activate([
             collectionView.heightAnchor.constraint(equalToConstant: 484),
@@ -295,23 +296,30 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureSaveAndCancelButtons(){
-        let cancelButtonTitle = NSLocalizedString("cancel", comment: "Text displayed on cancel button")
-        let createButtonTitle = NSLocalizedString("create", comment: "Text displayed on create button")
-        
         buttonsContainer.backgroundColor = .ypWhite
         
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         cancelButton.addTarget(self, action: #selector(cancelButtonTapped), for: .touchUpInside)
         
+        let cancelButtonText = NSLocalizedString("cancel", comment: "Text displayed on cancel button")
+        var saveButtonText: String?
         
-        saveButton.setTitle(createButtonTitle, for: .normal)
+        switch actionType {
+        case .create:
+            saveButtonText = NSLocalizedString("create", comment: "Text displayed on create button")
+            
+        case .edit:
+            saveButtonText = NSLocalizedString("save", comment: "Text displayed on create button")
+        }
+        
+        saveButton.setTitle(saveButtonText, for: .normal)
         saveButton.setTitleColor(.ypWhite, for: .normal)
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         saveButton.backgroundColor = .ypDarkGray
         saveButton.layer.cornerRadius = 16
         saveButton.layer.masksToBounds = true
         
-        cancelButton.setTitle(cancelButtonTitle, for: .normal)
+        cancelButton.setTitle(cancelButtonText, for: .normal)
         cancelButton.setTitleColor(.ypRed, for: .normal)
         cancelButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         cancelButton.backgroundColor = .ypWhite
