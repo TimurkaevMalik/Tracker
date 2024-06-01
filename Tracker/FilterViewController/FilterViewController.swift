@@ -10,7 +10,6 @@ import UIKit
 protocol FilterControllerDelegate: AnyObject {
     
     func didChooseFilter(_ filter: String)
-    func allTrackers()
     func trackersForToday()
 }
 
@@ -122,18 +121,14 @@ extension FilterViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
+         if indexPath.row == 1 {
+            delegate?.trackersForToday()
+        }
+        
         updateCheckMark(on: indexPath)
         chosenFilter = filters[indexPath.row]
-        
         delegate?.didChooseFilter(chosenFilter)
         
-        if indexPath.row == 0 {
-            delegate?.allTrackers()
-        } else if indexPath.row == 1 {
-            delegate?.trackersForToday()
-        } else {
-           
-        }
         dismiss(animated: true)
     }
     
