@@ -13,8 +13,6 @@ protocol TabBarControllerDelegate: AnyObject {
     func showFilterButton()
 }
 
-protocol TabBarControllerItem: UIViewController {}
-
 final class TabBarControler: UITabBarController {
     
     private let trackerViewController = TrackerViewController()
@@ -30,6 +28,15 @@ final class TabBarControler: UITabBarController {
         makeTabBarTopBorderLine()
         addTabBarItems()
         configureFilterButton()
+    }
+    
+    override func tabBar(_ tabBar: UITabBar, didSelect item: UITabBarItem) {
+        
+        if item == tabBar.items?[0] {
+            showFilterButton()
+        } else if item == tabBar.items?[1] {
+            hideFilterButton()
+        }
     }
     
     @objc func didTapFilterButton() {

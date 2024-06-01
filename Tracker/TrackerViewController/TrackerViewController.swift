@@ -428,8 +428,10 @@ extension TrackerViewController: UICollectionViewDataSource {
         
         if visibleTrackers.isEmpty {
             collectionView.backgroundColor? = .clear
+            delegate?.hideFilterButton()
         } else {
             collectionView.backgroundColor = .ypWhite
+            delegate?.showFilterButton()
         }
         
         return visibleTrackers.count
