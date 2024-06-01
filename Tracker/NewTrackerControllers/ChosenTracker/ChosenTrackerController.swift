@@ -404,17 +404,17 @@ class ChosenTrackerController: UIViewController {
     }
     
     private func configureTableView(){
-        tableView.backgroundColor = .ypWhite
+//        tableView.backgroundColor = .ypWhite
         
         tableView.delegate = self
         tableView.dataSource = self
         tableView.register(TableViewCell.self, forCellReuseIdentifier: tableCellIdentifier)
         
-        tableView.backgroundColor = .white
+//        tableView.backgroundColor = .white
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.isScrollEnabled = false
-        
+        tableView.separatorColor = .ypBlack
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         scrollView.addSubview(tableView)

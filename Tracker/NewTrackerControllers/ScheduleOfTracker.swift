@@ -115,17 +115,17 @@ final class ScheduleOfTracker: UIViewController {
     
     private func configureTableView(){
         
-        tableView.backgroundColor = .black
+//        tableView.backgroundColor = .black
         
         tableView.delegate = self
         tableView.dataSource = self
         
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
-        tableView.backgroundColor = .white
+//        tableView.backgroundColor = .white
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.isScrollEnabled = false
-        
+        tableView.separatorColor = .ypBlack
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])

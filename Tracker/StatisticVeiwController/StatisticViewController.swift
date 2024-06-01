@@ -14,35 +14,35 @@ final class StatisticViewController: UIViewController {
     private lazy var centralPlugLabel = UILabel()
     private lazy var centralPlugImage = UIImageView()
     
-    private func configureLabelsViews(){
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .ypWhite
+        
+        configureTitleLabel()
+        configurePlugImage()
+        configurePlugLabel()
+    }
+    
+    private func configureTitleLabel(){
         let statisticTopTitle = NSLocalizedString("statistic", comment: "Text displayed on the top of statistic")
-        let emptyStateText = NSLocalizedString("statistic.emptyState.title", comment: "Text displayed on empty state")
         
         titleLabel.text = statisticTopTitle
         titleLabel.font = UIFont.boldSystemFont(ofSize: 34)
         
-        centralPlugLabel.text = emptyStateText
-        centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
-        centralPlugLabel.textAlignment = .center
-        
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
-        centralPlugLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviews([titleLabel, centralPlugLabel])
+        
+        view.addSubview(titleLabel)
         
         NSLayoutConstraint.activate([
             titleLabel.widthAnchor.constraint(equalToConstant: 254),
             titleLabel.heightAnchor.constraint(equalToConstant: 41),
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
-            
-            centralPlugLabel.widthAnchor.constraint(equalToConstant: 180),
-            centralPlugLabel.heightAnchor.constraint(equalToConstant: 18),
-            centralPlugLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 419),
-            centralPlugLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
         ])
     }
     
-    private func configureCentralPlug(){
+    private func configurePlugImage(){
         centralPlugImage.image = UIImage(named: "StatisticPlug")
         
         centralPlugImage.translatesAutoresizingMaskIntoConstraints = false
@@ -52,15 +52,26 @@ final class StatisticViewController: UIViewController {
             centralPlugImage.widthAnchor.constraint(equalToConstant: 80),
             centralPlugImage.heightAnchor.constraint(equalToConstant: 80),
             centralPlugImage.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor),
-            centralPlugImage.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 331)
+            centralPlugImage.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30)
         ])
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .ypWhite
+    private func configurePlugLabel() {
+        let emptyStateText = NSLocalizedString("statistic.emptyState.title", comment: "Text displayed on empty state")
         
-        configureLabelsViews()
-        configureCentralPlug()
+        centralPlugLabel.text = emptyStateText
+        centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
+        centralPlugLabel.textAlignment = .center
+        
+        centralPlugLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(centralPlugLabel)
+        
+        NSLayoutConstraint.activate([
+            centralPlugLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            centralPlugLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            centralPlugLabel.heightAnchor.constraint(equalToConstant: 18),
+            centralPlugLabel.topAnchor.constraint(equalTo: centralPlugImage.bottomAnchor, constant: 8),
+            centralPlugLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
+        ])
     }
 }

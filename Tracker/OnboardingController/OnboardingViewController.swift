@@ -61,8 +61,8 @@ class OnboardingViewController: UIPageViewController {
         pageControl.numberOfPages = pages.count
         pageControl.currentPage = 0
         
-        pageControl.currentPageIndicatorTintColor = .ypBlack
-        pageControl.pageIndicatorTintColor = .ypBlack.withAlphaComponent(0.3)
+        pageControl.currentPageIndicatorTintColor = .black
+        pageControl.pageIndicatorTintColor = .black.withAlphaComponent(0.3)
         
         pageControl.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(pageControl)
@@ -76,9 +76,10 @@ class OnboardingViewController: UIPageViewController {
     private func configureButton() {
         button.addTarget(self, action: #selector(didTapButton), for: .touchUpInside)
         button.setTitle("Вот это технологии!", for: .normal)
+        button.setTitleColor(.white, for: .normal)
         button.layer.masksToBounds = true
         button.layer.cornerRadius = 16
-        button.backgroundColor = .ypBlack
+        button.backgroundColor = .black
         
         button.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(button)

@@ -10,10 +10,13 @@ import UIKit
 
 final class CategoryView: UIViewController {
     
+    
+    private let titleLabel = UILabel()
     private let doneButton = UIButton()
     private let buttonContainer = UIView()
-    private let titleLabel = UILabel()
     private let tableView = UITableView()
+    private lazy var centralPlugLabel = UILabel()
+    private lazy var centralPlugImage = UIImageView()
     
     private let viewModel: CategoryViewModel
     private let newCategoryView: NewCategoryView
@@ -35,15 +38,12 @@ final class CategoryView: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        view.backgroundColor = .ypWhite
-        
-        configureTitleLabelView()
-        configureDoneButton()
-        configureTableView()
+        configureControllerViews()
         
         viewModel.categoriesBinding = { [weak self] _ in
             guard let self = self else { return }
             
+            self.tableView.backgroundColor = .ypWhite
             self.updateTableViewCells()
         }
         
@@ -74,6 +74,16 @@ final class CategoryView: UIViewController {
         }
     }
     
+    private func configureControllerViews() {
+        view.backgroundColor = .ypWhite
+        
+        configurePlugImage()
+        configurePlugLabel()
+        configureTitleLabelView()
+        configureDoneButton()
+        configureTableView()
+    }
+    
     private func configureTitleLabelView(){
         let titleLabelText = NSLocalizedString("category", comment: "Text displayed on the top of screen")
         
@@ -90,13 +100,14 @@ final class CategoryView: UIViewController {
     }
     
     private func configureTableView(){
-        tableView.backgroundColor = .ypWhite
         
         tableView.delegate = self
         tableView.dataSource = self
         
         tableView.register(CategoryCellView.self, forCellReuseIdentifier: "cellIdentifier")
+        
         tableView.layer.cornerRadius = 16
+        tableView.separatorColor = .ypBlack
         tableView.layer.masksToBounds = true
         tableView.allowsMultipleSelection = false
         tableView.showsVerticalScrollIndicator = false
@@ -110,6 +121,39 @@ final class CategoryView: UIViewController {
             tableView.bottomAnchor.constraint(equalTo: buttonContainer.topAnchor),
             tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
             tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
+        ])
+    }
+    
+    private func configurePlugImage(){
+        centralPlugImage.image = UIImage(named: "TrackerPlug")
+        
+        centralPlugImage.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(centralPlugImage)
+        
+        NSLayoutConstraint.activate([
+            centralPlugImage.widthAnchor.constraint(equalToConstant: 80),
+            centralPlugImage.heightAnchor.constraint(equalToConstant: 80),
+            centralPlugImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
+            centralPlugImage.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: -45)
+        ])
+    }
+    
+    private func configurePlugLabel(){
+        let emptyStateText = NSLocalizedString("categoryView.emptyState.title", comment: "Text displayed on empty state")
+        centralPlugLabel.text = emptyStateText
+        centralPlugLabel.numberOfLines = 2
+        centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
+        centralPlugLabel.textAlignment = .center
+        
+        centralPlugLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubviews([centralPlugLabel])
+        
+        NSLayoutConstraint.activate([
+            centralPlugLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            centralPlugLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            centralPlugLabel.heightAnchor.constraint(equalToConstant: 36),
+            centralPlugLabel.topAnchor.constraint(equalTo: centralPlugImage.bottomAnchor, constant: 8),
+            centralPlugLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -197,6 +241,12 @@ extension CategoryView: UITableViewDataSource {
             tableView.isScrollEnabled = true
         }
         
+        if viewModel.categories.count == 0 {
+            tableView.backgroundColor = .clear
+        } else {
+            tableView.backgroundColor = .ypWhite
+        }
+        
         return viewModel.categories.count
     }
     
@@ -211,10 +261,12 @@ extension CategoryView: UITableViewDataSource {
         
         cell.backgroundColor = .ypMediumLightGray
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
+
+        cell.hidesBottomSeparator = indexPath.row == viewModel.categories.count - 1
         
-        if !viewModel.categories.isEmpty {
+//        if !viewModel.categories.isEmpty {
             cell.nameOfCategory = viewModel.categories[indexPath.row]
-        }
+//        }
         cell.awakeFromNib()
         cell.accessoryType = cell.nameOfCategory == viewModel.chosenCategory ? .checkmark : .none
         

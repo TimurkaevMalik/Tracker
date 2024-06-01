@@ -90,24 +90,7 @@ final class TrackerViewController: UIViewController {
         navigationItem.rightBarButtonItem = UIBarButtonItem(customView: datePicker)
     }
     
-    private func configureTrackerLabelsViews(){
-        let emptyStateText = NSLocalizedString("trackerControler.emptyState.title", comment: "Text displayed on empty state")
-        centralPlugLabel.text = emptyStateText
-        centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
-        centralPlugLabel.textAlignment = .center
-        
-        centralPlugLabel.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubviews([centralPlugLabel])
-        
-        NSLayoutConstraint.activate([
-            centralPlugLabel.widthAnchor.constraint(equalToConstant: 150),
-            centralPlugLabel.heightAnchor.constraint(equalToConstant: 18),
-            centralPlugLabel.topAnchor.constraint(equalTo: centralPlugImage.bottomAnchor, constant: 8),
-            centralPlugLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
-    
-    private func configureCentralPlug(){
+    private func configurePlugImage(){
         centralPlugImage.image = UIImage(named: "TrackerPlug")
         
         centralPlugImage.translatesAutoresizingMaskIntoConstraints = false
@@ -118,6 +101,24 @@ final class TrackerViewController: UIViewController {
             centralPlugImage.heightAnchor.constraint(equalToConstant: 80),
             centralPlugImage.centerXAnchor.constraint(equalTo: view.centerXAnchor),
             centralPlugImage.centerYAnchor.constraint(equalTo: view.centerYAnchor, constant: 30)
+        ])
+    }
+    
+    private func configurePlugLabel(){
+        let emptyStateText = NSLocalizedString("trackerControler.emptyState.title", comment: "Text displayed on empty state")
+        centralPlugLabel.text = emptyStateText
+        centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
+        centralPlugLabel.textAlignment = .center
+        
+        centralPlugLabel.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubviews([centralPlugLabel])
+        
+        NSLayoutConstraint.activate([
+            centralPlugLabel.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 16),
+            centralPlugLabel.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -16),
+            centralPlugLabel.heightAnchor.constraint(equalToConstant: 18),
+            centralPlugLabel.topAnchor.constraint(equalTo: centralPlugImage.bottomAnchor, constant: 8),
+            centralPlugLabel.centerXAnchor.constraint(equalTo: view.centerXAnchor)
         ])
     }
     
@@ -177,8 +178,8 @@ final class TrackerViewController: UIViewController {
     private func configureTrackerViews(){
         view.backgroundColor = UIColor(named: "YPWhite")
         
-        configureCentralPlug()
-        configureTrackerLabelsViews()
+        configurePlugImage()
+        configurePlugLabel()
         configureSearchController()
         addTitleAndSearchControllerToNavBar()
         configureCollectionView()
