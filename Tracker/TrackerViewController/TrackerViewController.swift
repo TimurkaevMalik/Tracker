@@ -10,7 +10,7 @@ import UIKit
 
 final class TrackerViewController: UIViewController {
     
-    private lazy var filterButton = UIButton()
+//    private lazy var filterButton = UIButton()
     private lazy var plusButton = UIButton()
     private lazy var datePicker = UIDatePicker()
     private lazy var centralPlugLabel = UILabel()
@@ -28,9 +28,11 @@ final class TrackerViewController: UIViewController {
     private var records: [Date] = []
     private var currentDate: Date?
     
-    private var chosenFilter: String?
+    weak var delegate: TabBarControllerDelegate?
+    var chosenFilter: String?
     private let cellIdentifier = "collectionCell"
     private let headerIdentifier = "headerIdentifier"
+//    private var filterButonBottomConstraint: NSLayoutConstraint?
     
     private let params = GeomitricParams(cellCount: 2, leftInset: 16, rightInset: 16, cellSpacing: 7)
     
@@ -91,14 +93,18 @@ final class TrackerViewController: UIViewController {
         currentDate = sender.date
         
         showVisibleTrackers(dateDescription: currentDate?.description(with: .current))
+        
+        if chosenFilter == "trackersForToday" {
+            chosenFilter = "allTrackers"
+        }
     }
     
-    @objc func didTapFilterButton() {
-        
-        let viewController = FilterViewController(chosenFilter: chosenFilter, delegate: self)
-        
-        present(viewController, animated: true)
-    }
+//    @objc func didTapFilterButton() {
+//        
+//        let viewController = FilterViewController(chosenFilter: chosenFilter, delegate: self)
+//        
+//        present(viewController, animated: true)
+//    }
     
     @objc func didTapPlusButton(){
         print(updatePinedTrackers())
@@ -202,25 +208,28 @@ final class TrackerViewController: UIViewController {
         navigationItem.leftBarButtonItem = UIBarButtonItem(customView: plusButton)
     }
     
-    private func configureFilterButton() {
-        let titleText = NSLocalizedString("filters", comment: "")
-        
-        filterButton.backgroundColor = .ypBlue
-        filterButton.setTitle(titleText, for: .normal)
-        filterButton.layer.masksToBounds = true
-        filterButton.layer.cornerRadius = 16
-        filterButton.addTarget(self, action: #selector(didTapFilterButton), for: .touchUpInside)
-        
-        filterButton.translatesAutoresizingMaskIntoConstraints = false
-        view.addSubview(filterButton)
-        
-        NSLayoutConstraint.activate([
-            filterButton.heightAnchor.constraint(equalToConstant: 50),
-            filterButton.widthAnchor.constraint(equalToConstant: 114),
-            filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16),
-            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
-        ])
-    }
+//    private func configureFilterButton() {
+//        let titleText = NSLocalizedString("filters", comment: "")
+//        
+//        filterButton.backgroundColor = .ypBlue
+//        filterButton.setTitle(titleText, for: .normal)
+//        filterButton.layer.masksToBounds = true
+//        filterButton.layer.cornerRadius = 16
+//        filterButton.addTarget(self, action: #selector(didTapFilterButton), for: .touchUpInside)
+//        
+//        filterButton.translatesAutoresizingMaskIntoConstraints = false
+//        view.addSubview(filterButton)
+//        
+//        NSLayoutConstraint.activate([
+//            filterButton.heightAnchor.constraint(equalToConstant: 50),
+//            filterButton.widthAnchor.constraint(equalToConstant: 114),
+//            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+//        ])
+//        
+//        filterButonBottomConstraint = filterButton.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor, constant: -16)
+//        
+//        filterButonBottomConstraint?.isActive = true
+//    }
     
     private func registerCollectionViewsSubviews(){
         
@@ -246,7 +255,7 @@ final class TrackerViewController: UIViewController {
         configureCollectionView()
         configureDatePicker()
         configurePlusButton()
-        configureFilterButton()
+//        configureFilterButton()
     }
     
     private func configureCell(for cell: CollectionViewCell, with indexPath: IndexPath){
@@ -499,6 +508,18 @@ extension TrackerViewController: UICollectionViewDelegateFlowLayout {
     func collectionView(_ collectionView: UICollectionView, layout collectionViewLayout: UICollectionViewLayout, insetForSectionAt section: Int) -> UIEdgeInsets {
         
         return UIEdgeInsets(top: 12, left: 0, bottom: 0, right: 0)
+    }
+}
+
+extension TrackerViewController: UICollectionViewDelegate {
+    
+    func scrollViewWillEndDragging(_ scrollView: UIScrollView, withVelocity velocity: CGPoint, targetContentOffset: UnsafeMutablePointer<CGPoint>) {
+        
+        if scrollView.contentOffset.y > 15 {
+            delegate?.hideFilterButton()
+        } else if scrollView.contentOffset.y < 15 {
+            delegate?.showFilterButton()
+        }
     }
 }
 
@@ -997,5 +1018,18 @@ extension TrackerViewController: FilterControllerDelegate {
     func didChooseFilter(_ filter: String) {
         print(filter)
         chosenFilter = filter
+    }
+    
+    func allTrackers() {
+        categories = trackerStore?.updateCategoriesArray() ?? []
+        showVisibleTrackers(dateDescription: currentDate?.description(with: .current))
+    }
+    
+    func trackersForToday() {
+        datePicker.setDate(Date(), animated: true)
+        currentDate = Date()
+        
+        categories = trackerStore?.updateCategoriesArray() ?? []
+        showVisibleTrackers(dateDescription: currentDate?.description(with: .current))
     }
 }

@@ -7,27 +7,57 @@
 
 import UIKit
 
+protocol TabBarControllerDelegate: AnyObject {
+    
+    func hideFilterButton()
+    func showFilterButton()
+}
+
+protocol TabBarControllerItem: UIViewController {}
 
 final class TabBarControler: UITabBarController {
     
-    func makeTabBarTopBorderLine(){
+    private let trackerViewController = TrackerViewController()
+    private let statisticViewController = StatisticViewController()
+    
+    private lazy var filterButton = UIButton()
+    private var filterButonBottomConstraint: NSLayoutConstraint?
+
+
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        makeTabBarTopBorderLine()
+        addTabBarItems()
+        configureFilterButton()
+    }
+    
+    @objc func didTapFilterButton() {
+        
+        let viewController = FilterViewController(
+            chosenFilter: trackerViewController.chosenFilter,
+            delegate: trackerViewController)
+        
+        present(viewController, animated: true)
+    }
+    
+    private func makeTabBarTopBorderLine(){
         
         self.tabBar.layer.borderWidth = 1
         self.tabBar.layer.borderColor = UIColor(red:0.0/255.0, green:0.0/255.0, blue:0.0/255.0, alpha:0.2).cgColor
         self.tabBar.layer.masksToBounds = true
     }
     
-    func addTabBarItems(){
+    private func addTabBarItems(){
+        
+        tabBar.backgroundColor = .ypWhite
         
         let navigationController = UINavigationController()
         
-        let trackerViewController = TrackerViewController()
-        let statisticViewController = StatisticViewController()
         let trackerItemTitle = NSLocalizedString("trackers", comment: "Text displayed on the trackerController item")
         let statisticItemTitle = NSLocalizedString("statistic", comment: "Text displayed on the statisticController item")
         
-        navigationController.viewControllers = [trackerViewController]
-        
+        trackerViewController.delegate = self
         trackerViewController.tabBarItem = UITabBarItem(
             title: trackerItemTitle,
             image: UIImage(named: "TrackerBarItem"),
@@ -38,16 +68,56 @@ final class TabBarControler: UITabBarController {
             image: UIImage(named: "StatisticBarItem"),
             selectedImage: nil)
         
+        navigationController.viewControllers = [trackerViewController]
+        
         self.viewControllers = [
             navigationController,
             statisticViewController,
         ]
     }
     
-    override func viewDidLoad() {
-        super.viewDidLoad()
+    private func configureFilterButton() {
+        let titleText = NSLocalizedString("filters", comment: "")
         
-        makeTabBarTopBorderLine()
-        addTabBarItems()
+        filterButton.backgroundColor = .ypBlue
+        filterButton.setTitle(titleText, for: .normal)
+        filterButton.layer.masksToBounds = true
+        filterButton.layer.cornerRadius = 16
+        filterButton.addTarget(self, action: #selector(didTapFilterButton), for: .touchUpInside)
+        
+        filterButton.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(filterButton)
+        view.insertSubview(filterButton, belowSubview: tabBar)
+        NSLayoutConstraint.activate([
+            filterButton.heightAnchor.constraint(equalToConstant: 50),
+            filterButton.widthAnchor.constraint(equalToConstant: 114),
+            filterButton.centerXAnchor.constraint(equalTo: view.centerXAnchor)
+        ])
+        
+        filterButonBottomConstraint = filterButton.bottomAnchor.constraint(equalTo: tabBar.topAnchor, constant: -16)
+        
+        filterButonBottomConstraint?.isActive = true
+    }
+}
+
+extension TabBarControler: TabBarControllerDelegate {
+    
+    func hideFilterButton(){
+        
+        DispatchQueue.main.async {
+            
+            UIView.animate(withDuration: 0.5) {
+                self.filterButonBottomConstraint?.constant = +50
+                self.view.layoutIfNeeded()
+            }
+        }
+    }
+    
+    func showFilterButton() {
+        
+        UIView.animate(withDuration: 0.5) {
+            self.filterButonBottomConstraint?.constant = -16
+            self.view.layoutIfNeeded()
+        }
     }
 }
