@@ -352,7 +352,7 @@ final class TrackerViewController: UIViewController {
                 break
             }
         }
-        print(visibleTrackers)
+        
         for category in categories {
             
             trackers.removeAll()
@@ -819,8 +819,6 @@ extension TrackerViewController: CollectionViewCellDelegate {
 extension TrackerViewController: TrackerStoreDelegate {
     
     func didAdd(tracker: Tracker, with categoryTitle: String) {
-        
-        trackers.removeAll()
         
         if categories.contains(where: {
             $0.titleOfCategory == categoryTitle}) {
