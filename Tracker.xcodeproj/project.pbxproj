@@ -36,6 +36,7 @@
 		BC988C1A2C0CE52B002187FD /* BlackScreenTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC988C192C0CE52B002187FD /* BlackScreenTests.swift */; };
 		BC988C1C2C0CEC99002187FD /* StatisticCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC988C1B2C0CEC99002187FD /* StatisticCell.swift */; };
 		BC988C1E2C0CF1DF002187FD /* GradientView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC988C1D2C0CF1DF002187FD /* GradientView.swift */; };
+		BC988C202C0D183D002187FD /* AnalyticsService.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC988C1F2C0D183D002187FD /* AnalyticsService.swift */; };
 		BC9A9F852BCB2F8800558F38 /* CollectionViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */; };
 		BC9A9F872BCB429900558F38 /* GeomitricParams.swift in Sources */ = {isa = PBXBuildFile; fileRef = BC9A9F862BCB429900558F38 /* GeomitricParams.swift */; };
 		BCA853612BCE402500173B4A /* SupplementaryView.swift in Sources */ = {isa = PBXBuildFile; fileRef = BCA853602BCE402500173B4A /* SupplementaryView.swift */; };
@@ -100,6 +101,7 @@
 		BC988C192C0CE52B002187FD /* BlackScreenTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = BlackScreenTests.swift; sourceTree = "<group>"; };
 		BC988C1B2C0CEC99002187FD /* StatisticCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = StatisticCell.swift; sourceTree = "<group>"; };
 		BC988C1D2C0CF1DF002187FD /* GradientView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GradientView.swift; sourceTree = "<group>"; };
+		BC988C1F2C0D183D002187FD /* AnalyticsService.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AnalyticsService.swift; sourceTree = "<group>"; };
 		BC9A9F842BCB2F8800558F38 /* CollectionViewCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CollectionViewCell.swift; sourceTree = "<group>"; };
 		BC9A9F862BCB429900558F38 /* GeomitricParams.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = GeomitricParams.swift; sourceTree = "<group>"; };
 		BCA853602BCE402500173B4A /* SupplementaryView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SupplementaryView.swift; sourceTree = "<group>"; };
@@ -279,6 +281,7 @@
 			children = (
 				BC2D1FB92BE9768700609ECF /* UIColorMarshalling.swift */,
 				BCB8EADB2BFD33F40053BA61 /* UserDefaultsManager.swift */,
+				BC988C1F2C0D183D002187FD /* AnalyticsService.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -572,6 +575,7 @@
 				BC91949B2BF955A900CAFF70 /* OnboardingViewController.swift in Sources */,
 				BC47D6032BDFC0FF00B63417 /* ColorCollectionCell.swift in Sources */,
 				BCF6219C2BBF4561001DE986 /* TabBarControler.swift in Sources */,
+				BC988C202C0D183D002187FD /* AnalyticsService.swift in Sources */,
 				BC5E5DBE2BC9A18800BD7655 /* TrackerRecord.swift in Sources */,
 				BC988C1C2C0CEC99002187FD /* StatisticCell.swift in Sources */,
 				BC5E5DC02BC9A5E700BD7655 /* Tracker.swift in Sources */,

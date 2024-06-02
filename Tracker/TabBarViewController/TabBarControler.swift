@@ -70,10 +70,8 @@ final class TabBarControler: UITabBarController {
         
         navigationController.viewControllers = [trackerViewController]
         
-        self.viewControllers = [
-            navigationController,
-            statisticViewController,
-        ]
+        self.viewControllers = [navigationController,
+                                statisticViewController]
     }
     
     private func configureFilterButton() {

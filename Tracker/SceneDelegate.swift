@@ -15,7 +15,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         
         guard let scene = (scene as? UIWindowScene) else { return }
         
-        window = UIWindow(windowScene: scene)
+         window = UIWindow(windowScene: scene)
         
         if UserDefaultsManager.wasOnboardinShown == false {
             window?.rootViewController = OnboardingViewController()
@@ -23,9 +23,29 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.rootViewController = TabBarControler()
         }
         window?.makeKeyAndVisible()
+        
+        if var viewController = window?.rootViewController?.children.first(where: {$0.isViewLoaded}) {
+            
+            if let navigationController = viewController as? UINavigationController,
+               let visibleController = navigationController.visibleViewController {
+                
+                viewController = visibleController
+            }
+            
+            print(viewController)
+            
+            AnalyticsService.report(event: "open", params: ["Main": "\(viewController)"])
+        }
     }
-    
-    func sceneDidDisconnect(_ scene: UIScene) {}
+
+    func sceneDidDisconnect(_ scene: UIScene) {
+        
+        guard let scene = (scene as? UIWindowScene) else { return }
+        
+        window = UIWindow(windowScene: scene)
+        
+        print(window?.rootViewController)
+    }
     func sceneDidBecomeActive(_ scene: UIScene) {}
     func sceneWillResignActive(_ scene: UIScene) {}
     func sceneWillEnterForeground(_ scene: UIScene) {}

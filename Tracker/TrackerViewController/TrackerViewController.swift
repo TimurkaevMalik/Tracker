@@ -80,9 +80,6 @@ final class TrackerViewController: UIViewController {
         completedTrackers = trackerRecordStore?.fetchAllConvertedRecords() ?? []
         
         showVisibleTrackers(dateDescription: currentDate.description(with: .current))
-        
-        print(categories.count)
-        print(categories)
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
@@ -862,8 +859,7 @@ extension TrackerViewController: TrackerStoreDelegate {
         checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
         
         let newCount = visibleTrackers.count
-        print(oldCount)
-        print(newCount)
+        
         if oldCount < newCount {
             
             let newCategory = visibleTrackers.first(where: { category in
@@ -972,9 +968,8 @@ extension TrackerViewController: TrackerStoreDelegate {
         
         if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == categories[index].titleOfCategory }) {
             
-            print(visibleTrackers[index].trackersArray.count)
             checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
-            print(visibleTrackers[index].trackersArray.count)
+            
             collectionView.performBatchUpdates {
                 collectionView.reloadSections([section])
             }
