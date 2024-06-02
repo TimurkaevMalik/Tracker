@@ -15,15 +15,45 @@ final class StatisticViewController: UIViewController {
     private lazy var centralPlugLabel = UILabel()
     private lazy var centralPlugImage = UIImageView()
     
+    private var trackerRecordStore: TrackerRecordStore?
+    private var records = 0
+    
+    
+    convenience init() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            self.init()
+            return
+        }
+        self.init(appDelegate: appDelegate)
+    }
+    
+    private init(appDelegate: AppDelegate) {
+        super.init(nibName: nil, bundle: nil)
+        trackerRecordStore = TrackerRecordStore(self, appDelegate: appDelegate)
+    }
+    
+    required init?(coder: NSCoder) {
+        fatalError("init(coder:) has not been implemented")
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite
         
+        updateStatistic()
         configureTitleLabel()
         configurePlugImage()
         configurePlugLabel()
         configureTableView()
+    }
+    
+    private func updateStatistic() {
+        guard let trackerRecords = trackerRecordStore?.fetchAllConvertedRecords() else {
+            return
+        }
+        records = 0
+        trackerRecords.forEach({ records += $0.date.count })
+        tableView.reloadData()
     }
     
     private func configureTitleLabel(){
@@ -100,9 +130,16 @@ final class StatisticViewController: UIViewController {
 }
 
 extension StatisticViewController: UITableViewDataSource {
+    
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return 1
+        if records == 0 {
+            tableView.backgroundColor = .clear
+        } else {
+            tableView.backgroundColor = .ypWhite
+        }
+        
+        return records == 0 ? 0 : 1
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -113,7 +150,7 @@ extension StatisticViewController: UITableViewDataSource {
         
         let statisticText = NSLocalizedString("completedTrackers", comment: "")
 
-        cell.statisticNumber.text = "6"
+        cell.statisticNumber.text = "\(records)"
         cell.cellText.text = statisticText
         cell.backgroundColor = .red
 
@@ -125,5 +162,17 @@ extension StatisticViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         90
+    }
+}
+
+extension StatisticViewController: RecordStoreDelegate {
+    func didUpdate(record: TrackerRecord) {
+        updateStatistic()
+    }
+    func didDelete(record: TrackerRecord) {
+        updateStatistic()
+    }
+    func didAdd(record: TrackerRecord) {
+        updateStatistic()
     }
 }
