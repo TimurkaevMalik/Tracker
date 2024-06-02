@@ -566,24 +566,35 @@ extension TrackerViewController: UISearchResultsUpdating {
     
     func updateSearchResults(for searchController: UISearchController){
         
-        trackers.removeAll()
         if let searchText = searchController.searchBar.text , !searchText.isEmpty {
             
             visibleTrackers.removeAll()
             
+            if let category = updatePinedTrackers().first {
+                trackers = category.trackersArray.filter({ $0.name.lowercased().contains(searchText.lowercased())})
+
+                if !trackers.isEmpty {
+                    visibleTrackers.append( TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers))
+                }
+            }
+            
             for category in categories {
-                trackers.removeAll()
                 
                 trackers = category.trackersArray.filter { tracker in
                     tracker.name.lowercased().contains(searchText.lowercased())
                 }
+                
+                if let pinedCategory = visibleTrackers.first {
+                    trackers = trackers.filter({ tracker in
+                        pinedCategory.trackersArray.contains(where: { $0.id != tracker.id })
+                    })
+                }
+                
                 if !trackers.isEmpty {
                     visibleTrackers.append(TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers))
                 }
             }
-            
         } else {
-            
             checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
         }
         
