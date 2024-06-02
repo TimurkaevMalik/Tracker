@@ -10,6 +10,7 @@ import UIKit
 
 final class StatisticViewController: UIViewController {
     
+    private let tableView = UITableView()
     private lazy var titleLabel = UILabel()
     private lazy var centralPlugLabel = UILabel()
     private lazy var centralPlugImage = UIImageView()
@@ -22,6 +23,7 @@ final class StatisticViewController: UIViewController {
         configureTitleLabel()
         configurePlugImage()
         configurePlugLabel()
+        configureTableView()
     }
     
     private func configureTitleLabel(){
@@ -39,6 +41,27 @@ final class StatisticViewController: UIViewController {
             titleLabel.heightAnchor.constraint(equalToConstant: 41),
             titleLabel.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor, constant: 44),
             titleLabel.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+        ])
+    }
+    
+    private func configureTableView(){
+        tableView.dataSource = self
+        tableView.register(StatisticCell.self, forCellReuseIdentifier: "cellIdentifier")
+        
+        tableView.layer.cornerRadius = 16
+        tableView.layer.masksToBounds = true
+        tableView.isScrollEnabled = false
+        tableView.backgroundColor = .ypWhite
+        tableView.separatorStyle = .none
+        
+        tableView.translatesAutoresizingMaskIntoConstraints = false
+        view.addSubview(tableView)
+        
+        NSLayoutConstraint.activate([
+            tableView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor),
+            tableView.topAnchor.constraint(equalTo: titleLabel.bottomAnchor, constant: 77),
+            tableView.leadingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leadingAnchor, constant: 16),
+            tableView.trailingAnchor.constraint(equalTo: view.safeAreaLayoutGuide.trailingAnchor, constant: -16)
         ])
     }
     
@@ -73,5 +96,34 @@ final class StatisticViewController: UIViewController {
             centralPlugLabel.topAnchor.constraint(equalTo: centralPlugImage.bottomAnchor, constant: 8),
             centralPlugLabel.centerXAnchor.constraint(equalTo: view.safeAreaLayoutGuide.centerXAnchor)
         ])
+    }
+}
+
+extension StatisticViewController: UITableViewDataSource {
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        
+        return 1
+    }
+    
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        guard let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath) as? StatisticCell else {
+            return UITableViewCell()
+        }
+        
+        let statisticText = NSLocalizedString("completedTrackers", comment: "")
+
+        cell.statisticNumber.text = "6"
+        cell.cellText.text = statisticText
+        cell.backgroundColor = .red
+
+        return cell
+    }
+}
+
+extension StatisticViewController: UITableViewDelegate {
+    
+    func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        90
     }
 }
