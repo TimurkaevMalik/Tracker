@@ -7,8 +7,9 @@
 */
 
 
+"nothingWasFound" = "Nothing was found";
+"whatShouldWeTrack" = "What should we track?";
 "statistic.emptyState.title" = "No data to analyze";
-"trackerControler.emptyState.title" = "What should we track?";
 "categoryView.emptyState.title" = "Habits and events\n can be combined in meaning";
 "delete.confirmation" = "Are you sure you want to delete the tracker?";
 

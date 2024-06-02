@@ -80,6 +80,9 @@ final class TrackerViewController: UIViewController {
         completedTrackers = trackerRecordStore?.fetchAllConvertedRecords() ?? []
         
         showVisibleTrackers(dateDescription: currentDate.description(with: .current))
+        
+        print(categories.count)
+        print(categories)
     }
     
     @objc func datePickerValueChanged(_ sender: UIDatePicker){
@@ -98,7 +101,6 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configurePlugImage(){
-        centralPlugImage.image = UIImage(named: "TrackerPlug")
         
         centralPlugImage.translatesAutoresizingMaskIntoConstraints = false
         view.addSubview(centralPlugImage)
@@ -112,8 +114,6 @@ final class TrackerViewController: UIViewController {
     }
     
     private func configurePlugLabel(){
-        let emptyStateText = NSLocalizedString("trackerControler.emptyState.title", comment: "Text displayed on empty state")
-        centralPlugLabel.text = emptyStateText
         centralPlugLabel.font = UIFont.systemFont(ofSize: 12)
         centralPlugLabel.textAlignment = .center
         
@@ -340,8 +340,7 @@ final class TrackerViewController: UIViewController {
     
     private func checkForVisibleTrackersAt(dateDescription: String?) {
         guard let dateDescription else { return }
-        
-        visibleTrackers.removeAll()
+        shouldUpdatePlugs()
         visibleTrackers = updatePinedTrackers()
         
         var selectedDate = ""
@@ -353,38 +352,41 @@ final class TrackerViewController: UIViewController {
                 break
             }
         }
-        
+        print(visibleTrackers)
         for category in categories {
             
             trackers.removeAll()
             
             for tracker in category.trackersArray {
                 
-                if !tracker.schedule.isEmpty {
-                    for dayOfWeek in tracker.schedule {
-                        
-                        if let dayOfWeek {
+                if !visibleTrackers.contains(where: { $0.trackersArray.contains(where: { $0.id == tracker.id })}) {
+                    
+                    if !tracker.schedule.isEmpty {
+                        for dayOfWeek in tracker.schedule {
                             
-                            let locolizedDay = NSLocalizedString(dayOfWeek, comment: "")
-                            
-                            if locolizedDay.lowercased() == selectedDate,
-                               !visibleTrackers.contains(where: { $0.trackersArray.contains(where: { $0.id == tracker.id }) }) {
+                            if let dayOfWeek {
                                 
-                                if UserDefaultsManager.chosenFilter == "completedOnes" {
-                                    appendIfCompleted(tracker: tracker)
-                                } else if UserDefaultsManager.chosenFilter == "notCompletedOnes" {
-                                    appendIfNotCompleted(tracker: tracker)
-                                } else {
-                                    trackers.append(tracker)
+                                let locolizedDay = NSLocalizedString(dayOfWeek, comment: "")
+                                
+                                if locolizedDay.lowercased() == selectedDate,
+                                   !visibleTrackers.contains(where: { $0.trackersArray.contains(where: { $0.id == tracker.id }) }) {
+                                    
+                                    if UserDefaultsManager.chosenFilter == "completedOnes" {
+                                        appendIfCompleted(tracker: tracker)
+                                    } else if UserDefaultsManager.chosenFilter == "notCompletedOnes" {
+                                        appendIfNotCompleted(tracker: tracker)
+                                    } else {
+                                        trackers.append(tracker)
+                                    }
                                 }
                             }
                         }
+                    } else if UserDefaultsManager.chosenFilter == "completedOnes" {
+                        
+                        appendIfCompleted(event: tracker)
+                    } else {
+                        appendIdNotCompleted(event: tracker)
                     }
-                } else if UserDefaultsManager.chosenFilter == "completedOnes" {
-                    
-                    appendIfCompleted(event: tracker)
-                } else {
-                    appendIdNotCompleted(event: tracker)
                 }
             }
             if !trackers.isEmpty {
@@ -439,6 +441,18 @@ final class TrackerViewController: UIViewController {
             }
         }
     }
+    
+    private func shouldUpdatePlugs() {
+        if UserDefaultsManager.chosenFilter != "allTrackers" {
+            let plugText = NSLocalizedString("nothingWasFound", comment: "")
+            centralPlugLabel.text = plugText
+            centralPlugImage.image = UIImage(named: "SearchEmojiPlug")
+        } else {
+            let emptyStateText = NSLocalizedString("whatShouldWeTrack", comment: "")
+            centralPlugLabel.text = emptyStateText
+            centralPlugImage.image = UIImage(named: "TrackerPlug")
+        }
+    }
 }
 
 extension TrackerViewController: UICollectionViewDataSource {
@@ -448,11 +462,12 @@ extension TrackerViewController: UICollectionViewDataSource {
             collectionView.backgroundColor? = .clear
         } else {
             collectionView.backgroundColor = .ypWhite
-            delegate?.showFilterButton()
         }
         
-        if categories.isEmpty {
+        if categories.isEmpty && UserDefaultsManager.chosenFilter == "allTrackers" {
             delegate?.hideFilterButton()
+        } else {
+            delegate?.showFilterButton()
         }
         
         return visibleTrackers.count
@@ -838,7 +853,8 @@ extension TrackerViewController: TrackerStoreDelegate {
         checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
         
         let newCount = visibleTrackers.count
-        
+        print(oldCount)
+        print(newCount)
         if oldCount < newCount {
             
             let newCategory = visibleTrackers.first(where: { category in
@@ -896,12 +912,8 @@ extension TrackerViewController: TrackerStoreDelegate {
         
         if category.trackersArray.count != 1 {
             
-            trackers.removeAll()
-            
             trackers = category.trackersArray.filter({ $0.id != idOfCell })
             visibleTrackers[indexPath.section] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
-            
-            trackers.removeAll()
             
             trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
             categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
@@ -911,10 +923,13 @@ extension TrackerViewController: TrackerStoreDelegate {
             }
         } else {
             
-            trackers.removeAll()
-            
             trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
-            categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+            
+            if !trackers.isEmpty {
+                categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
+            } else {
+                categories.remove(at: categoryIndex)
+            }
             
             visibleTrackers.remove(at: indexPath.section)
             
@@ -948,7 +963,9 @@ extension TrackerViewController: TrackerStoreDelegate {
         
         if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == categories[index].titleOfCategory }) {
             
+            print(visibleTrackers[index].trackersArray.count)
             checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
+            print(visibleTrackers[index].trackersArray.count)
             collectionView.performBatchUpdates {
                 collectionView.reloadSections([section])
             }

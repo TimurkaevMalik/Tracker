@@ -7,8 +7,9 @@
 */
 
 
+"nothingWasFound" = "Ничего не найдено";
+"whatShouldWeTrack" = "Что будем отслеживать?";
 "statistic.emptyState.title" = "Анализировать пока нечего";
-"trackerControler.emptyState.title" = "Что будем отслеживать?";
 "categoryView.emptyState.title" = "Привычки и события можно\n объединить по смыслу";
 "delete.confirmation" = "Уверены что хотите удалить трекер?";
 
