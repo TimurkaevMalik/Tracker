@@ -730,7 +730,7 @@ extension TrackerViewController: CollectionViewCellDelegate {
             
             if completedTrackers.contains(where: { $0.id == tracker.id }){
                 
-                trackerRecordStore?.deleteRecord(TrackerRecord(id: idOfCell, date: []))
+                trackerRecordStore?.deleteAllRecordsOfTracker(idOfCell)
             } else {
                 trackerRecordStore?.storeRecord(TrackerRecord(id: idOfCell, date: [actualDate]))
             }

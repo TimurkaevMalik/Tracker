@@ -181,6 +181,13 @@ extension TrackerRecordStore: RecordStoreProtocol {
         appDelegate.saveContext()
     }
     
+    func deleteAllRecordsWith(id: UUID) {
+        guard let recordCoreData = fetchRecordWith(id: id) else { return }
+        
+        context.delete(recordCoreData)
+        appDelegate.saveContext()
+    }
+    
     func deleteRecord(_ record: TrackerRecord) {
         
         guard let recordCoreData = fetchRecordWith(id: record.id) else { return }
