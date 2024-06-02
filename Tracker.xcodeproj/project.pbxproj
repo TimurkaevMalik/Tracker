@@ -325,8 +325,8 @@
 		BCC82EE22BBEE8710042D467 /* Tracker */ = {
 			isa = PBXGroup;
 			children = (
-				BC1A79BE2C010F38005B06C5 /* Resources */,
 				BCBF2C202BE7ACAF001B6622 /* CoreData */,
+				BC1A79BE2C010F38005B06C5 /* Resources */,
 				BC9194992BF9554800CAFF70 /* OnboardingController */,
 				BC0319F42BC00D2D00BF10D1 /* TabBarViewController */,
 				BCF6219A2BBF4545001DE986 /* TrackerViewController */,

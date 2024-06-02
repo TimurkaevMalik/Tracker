@@ -464,7 +464,7 @@ extension TrackerViewController: UICollectionViewDataSource {
             collectionView.backgroundColor = .ypWhite
         }
         
-        if categories.isEmpty && UserDefaultsManager.chosenFilter == "allTrackers" {
+        if visibleTrackers.isEmpty && UserDefaultsManager.chosenFilter == "allTrackers" && !completedTrackers.contains(where: {$0.date.contains(where: { $0 == currentDate.getDefaultDateWith(formatter: dateFormatter)})}) {
             delegate?.hideFilterButton()
         } else {
             delegate?.showFilterButton()
