@@ -36,7 +36,7 @@ final class CollectionViewCell: UICollectionViewCell {
     
     @objc func didTapDoneButton(){
         
-        delegate?.plusButtonTapped(self)
+        delegate?.cellPlusButtonTapped(self)
     }
     
     private func configureView(){

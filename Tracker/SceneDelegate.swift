@@ -32,9 +32,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
                 viewController = visibleController
             }
             
-            print(viewController)
-            
-            AnalyticsService.report(event: "open", params: ["Main": "\(viewController)"])
+            AnalyticsService.report(event: "open", params: ["screen": "\(viewController)"])
         }
     }
 

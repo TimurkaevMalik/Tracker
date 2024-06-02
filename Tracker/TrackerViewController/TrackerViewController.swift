@@ -94,7 +94,12 @@ final class TrackerViewController: UIViewController {
     }
     
     @objc func didTapPlusButton(){
-        presentCreatingTrackerView()
+        
+        AnalyticsService.report(event: "click", params: ["screen": "\(self)", "item": "add_track"])
+        
+        let viewController = TrackerTypeController(delegate: self)
+        
+        present(viewController, animated: true)
     }
     
     private func configurePlugImage(){
@@ -308,12 +313,6 @@ final class TrackerViewController: UIViewController {
         }
         
         return false
-    }
-    
-    private func presentCreatingTrackerView(){
-        let viewController = TrackerTypeController(delegate: self)
-        
-        present(viewController, animated: true)
     }
     
     private func showVisibleTrackers(dateDescription: String?){
@@ -672,6 +671,8 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     func editMenuButtonTappedOn(_ indexPath: IndexPath) {
         
+        AnalyticsService.report(event: "click", params: ["screen": "\(self)", "item": "edit"])
+        
         let tracker = visibleTrackers[indexPath.section].trackersArray[indexPath.row]
         let daysCount = completedTrackers.first(where: { $0.id == tracker.id })?.date.count
         
@@ -701,14 +702,17 @@ extension TrackerViewController: CollectionViewCellDelegate {
     
     func deleteMenuButtonTappedOn(_ indexPath: IndexPath) {
         
-        let category = visibleTrackers[indexPath.section]
-        let tracker = category.trackersArray[indexPath.row]
+        AnalyticsService.report(event: "click", params: ["screen": "\(self)", "item": "delete"])
+        
+        let tracker = visibleTrackers[indexPath.section].trackersArray[indexPath.row]
         
         trackerStore?.deleteTrackerWith(id: tracker.id)
         trackerRecordStore?.deleteAllRecordsOfTracker(tracker.id)
     }
     
-    func plusButtonTapped(_ cell: CollectionViewCell) {
+    func cellPlusButtonTapped(_ cell: CollectionViewCell) {
+        
+        AnalyticsService.report(event: "click", params: ["screen": "\(self)", "item": "track"])
         
         guard
             let indexPath = collectionView.indexPath(for: cell),

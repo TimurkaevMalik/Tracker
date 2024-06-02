@@ -36,6 +36,8 @@ final class TabBarControler: UITabBarController {
     
     @objc func didTapFilterButton() {
         
+        AnalyticsService.report(event: "click", params: ["screen": "\(self)", "item": "filter"])
+        
         let viewController = FilterViewController(delegate: trackerViewController)
         
         present(viewController, animated: true)

@@ -62,5 +62,5 @@ protocol CollectionViewCellDelegate: AnyObject {
     func unpinMenuButtonTappedOn(_ indexPath: IndexPath)
     func editMenuButtonTappedOn(_ indexPath: IndexPath)
     func deleteMenuButtonTappedOn(_ indexPath: IndexPath)
-    func plusButtonTapped(_ cell: CollectionViewCell)
+    func cellPlusButtonTapped(_ cell: CollectionViewCell)
 }
