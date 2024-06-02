@@ -110,14 +110,8 @@ extension FilterViewController: UITableViewDelegate {
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
-         if indexPath.row == 1 {
-            delegate?.trackersForToday()
-        }
-        
-        updateCheckMark(on: indexPath)
-        
         UserDefaultsManager.chosenFilter = filters[indexPath.row]
-        
+        updateCheckMark(on: indexPath)
         delegate?.didChooseFilter()
         
         dismiss(animated: true)

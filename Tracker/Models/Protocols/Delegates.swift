@@ -39,7 +39,6 @@ protocol TrackerViewControllerDelegate: AnyObject {
 
 protocol FilterControllerDelegate: AnyObject {
     func didChooseFilter()
-    func trackersForToday()
 }
 
 protocol ScheduleOfTrackerDelegate: AnyObject {
