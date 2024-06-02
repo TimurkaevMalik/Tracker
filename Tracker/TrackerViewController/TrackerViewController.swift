@@ -801,14 +801,12 @@ extension TrackerViewController: TrackerStoreDelegate {
     }
     
     func didUpdate(tracker: Tracker, categoryTitle: String) {
-        
         categories = trackerStore?.updateCategoriesArray() ?? []
         showVisibleTrackers(dateDescription: currentDate.description(with: .current))
     }
     
     
     func didDelete(tracker: Tracker) {
-        
         closeCollectionCellAt(idOfCell: tracker.id)
     }
     
@@ -838,7 +836,9 @@ extension TrackerViewController: TrackerStoreDelegate {
                             trackersArray.contains(where: { $0.id == tracker.id})
                         })
                 else {
-                    collectionView.insertSections([sectionInsert])
+                    collectionView.performBatchUpdates {
+                        collectionView.insertSections([sectionInsert])
+                    }
                     return
                 }
                 
@@ -886,7 +886,9 @@ extension TrackerViewController: TrackerStoreDelegate {
             trackers = categories[categoryIndex].trackersArray.filter({ $0.id != idOfCell })
             categories[categoryIndex] = TrackerCategory(titleOfCategory: category.titleOfCategory, trackersArray: trackers)
             
-            collectionView.deleteItems(at: [indexPath])
+            collectionView.performBatchUpdates {
+                collectionView.deleteItems(at: [indexPath])
+            }
         } else {
             
             trackers.removeAll()
@@ -896,7 +898,9 @@ extension TrackerViewController: TrackerStoreDelegate {
             
             visibleTrackers.remove(at: indexPath.section)
             
-            collectionView.deleteSections([indexPath.section])
+            collectionView.performBatchUpdates {
+                collectionView.deleteSections([indexPath.section])
+            }
         }
         
         let pinedText = NSLocalizedString("pined", comment: "")
@@ -925,15 +929,19 @@ extension TrackerViewController: TrackerStoreDelegate {
         if let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == categories[index].titleOfCategory }) {
             
             checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
-            collectionView.reloadSections([section])
+            collectionView.performBatchUpdates {
+                collectionView.reloadSections([section])
+            }
             
         } else {
             
             checkForVisibleTrackersAt(dateDescription: currentDate.description(with: .current))
+            
             guard let section = visibleTrackers.firstIndex(where: { $0.titleOfCategory == categories[index].titleOfCategory}) else { return }
             
-            collectionView.insertSections([section])
-            collectionView.reloadSections([section])
+            collectionView.performBatchUpdates {
+                collectionView.insertSections([section])
+            }
         }
     }
     
