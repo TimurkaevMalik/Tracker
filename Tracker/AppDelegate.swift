@@ -32,7 +32,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         
         if let lastViewController = UserDefaultsManager.lastRootVeiwController {
-            print(lastViewController)
+            
             AnalyticsService.report(event: "close", params: ["screen": lastViewController])
         }
     }
