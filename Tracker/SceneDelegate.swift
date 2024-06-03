@@ -36,14 +36,7 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
         }
     }
 
-    func sceneDidDisconnect(_ scene: UIScene) {
-        
-        guard let scene = (scene as? UIWindowScene) else { return }
-        
-        window = UIWindow(windowScene: scene)
-        
-        print(window?.rootViewController)
-    }
+    func sceneDidDisconnect(_ scene: UIScene) {}
     func sceneDidBecomeActive(_ scene: UIScene) {}
     func sceneWillResignActive(_ scene: UIScene) {}
     func sceneWillEnterForeground(_ scene: UIScene) {}

@@ -57,9 +57,13 @@ final class CategoryView: UIViewController {
         setButtonTitle()
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UserDefaultsManager.lastRootVeiwController = "\(self)"
+    }
+    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
-        
         viewModel.categoryViewWillDissapear()
     }
     
@@ -264,9 +268,8 @@ extension CategoryView: UITableViewDataSource {
 
         cell.hidesBottomSeparator = indexPath.row == viewModel.categories.count - 1
         
-//        if !viewModel.categories.isEmpty {
-            cell.nameOfCategory = viewModel.categories[indexPath.row]
-//        }
+        cell.nameOfCategory = viewModel.categories[indexPath.row]
+
         cell.awakeFromNib()
         cell.accessoryType = cell.nameOfCategory == viewModel.chosenCategory ? .checkmark : .none
         

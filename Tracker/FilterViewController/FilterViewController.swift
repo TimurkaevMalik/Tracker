@@ -17,6 +17,11 @@ class FilterViewController: UIViewController {
     private let filters: [String] = ["allTrackers", "trackersForToday", "completedOnes", "notCompletedOnes"]
 
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UserDefaultsManager.lastRootVeiwController = "\(self)"
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .ypWhite

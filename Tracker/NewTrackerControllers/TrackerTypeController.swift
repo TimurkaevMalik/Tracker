@@ -24,6 +24,40 @@ final class TrackerTypeController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidAppear(_ animated: Bool) {
+        super.viewDidAppear(animated)
+        UserDefaultsManager.lastRootVeiwController = "\(self)"
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .ypWhite
+        
+        configureTitleLable()
+        configureButtons()
+    }
+    
+    
+    @objc func habbitButtonTapped(){
+        
+        guard let delegate else { return }
+        
+        let type = ActionType.create(value: TrackerType.habbit)
+        let viewController = ChosenTrackerController(actionType: type, tracker: nil, delegate: delegate)
+        
+        present(viewController, animated: true)
+    }
+    
+    @objc func irregularEventButtonTapped(){
+        
+        guard let delegate else { return }
+        
+        let type = ActionType.create(value: TrackerType.irregularEvent)
+        let viewController = ChosenTrackerController(actionType: type, tracker: nil, delegate: delegate)
+        
+        present(viewController, animated: true)
+    }
+    
     private func configureButtons(){
         let habbitTitle = NSLocalizedString("button.habbit", comment: "Text displayed on habbit button")
         let eventTitle = NSLocalizedString("button.irregularEvent", comment: "Text displayed on irregular event button")
@@ -80,34 +114,5 @@ final class TrackerTypeController: UIViewController {
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        view.backgroundColor = .ypWhite
-        
-        configureTitleLable()
-        configureButtons()
-    }
-    
-    
-    @objc func habbitButtonTapped(){
-        
-        guard let delegate else { return }
-        
-        let type = ActionType.create(value: TrackerType.habbit)
-        let viewController = ChosenTrackerController(actionType: type, tracker: nil, delegate: delegate)
-        
-        present(viewController, animated: true)
-    }
-    
-    @objc func irregularEventButtonTapped(){
-        
-        guard let delegate else { return }
-        
-        let type = ActionType.create(value: TrackerType.irregularEvent)
-        let viewController = ChosenTrackerController(actionType: type, tracker: nil, delegate: delegate)
-        
-        present(viewController, animated: true)
     }
 }

@@ -31,25 +31,11 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     
     func applicationWillTerminate(_ application: UIApplication) {
         
-        
-        guard var viewController = application.windows.first?.rootViewController else {
-            return
+        if let lastViewController = UserDefaultsManager.lastRootVeiwController {
+            print(lastViewController)
+            AnalyticsService.report(event: "close", params: ["screen": lastViewController])
         }
-        
-        if let tabBarController = viewController as? TabBarControler {
-            
-            if let navigationController = viewController as? UINavigationController,
-               let visibleController = navigationController.visibleViewController {
-                
-                viewController = visibleController
-                print(viewController)
-            }
-        }
-        
-        print(viewController)
     }
-    
-    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {}
     
     lazy var persistentContainer: NSPersistentContainer = {
         
@@ -81,5 +67,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             }
         }
     }
+    
+    func application(_ application: UIApplication, didDiscardSceneSessions sceneSessions: Set<UISceneSession>) {}
 }
 

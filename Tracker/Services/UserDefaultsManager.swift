@@ -11,6 +11,7 @@ class UserDefaultsManager {
     
     
     private static let wasOnboardinShownKey = "wasOnboardinShown"
+    private static let lastRootViewControllerKey = "lastRootViewController"
     private static let chosenFilterKey = "chosenFilter"
     
     static var chosenFilter: String? {
@@ -18,6 +19,15 @@ class UserDefaultsManager {
             UserDefaults.standard.string(forKey: UserDefaultsManager.chosenFilterKey)
         } set {
             UserDefaults.standard.setValue(newValue, forKey: UserDefaultsManager.chosenFilterKey)
+        }
+    }
+    
+    static var lastRootVeiwController: String? {
+        get {
+            UserDefaults.standard.string(forKey: UserDefaultsManager.lastRootViewControllerKey)
+        }
+        set {
+            UserDefaults.standard.setValue(newValue, forKey: UserDefaultsManager.lastRootViewControllerKey)
         }
     }
     
