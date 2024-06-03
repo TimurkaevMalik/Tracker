@@ -70,7 +70,12 @@ final class TrackerViewController: UIViewController {
     
     override func viewDidAppear(_ animated: Bool) {
         super.viewDidAppear(animated)
-        UserDefaultsManager.lastRootVeiwController = "\(self)"
+        AnalyticsService.report(event: "open", params: ["screen": "\(self)"])
+    }
+    
+    override func viewDidDisappear(_ animated: Bool) {
+        super.viewDidDisappear(animated)
+        AnalyticsService.report(event: "close", params: ["screen": "\(self)"])
     }
     
     override func viewDidLoad() {

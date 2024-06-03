@@ -23,23 +23,12 @@ class SceneDelegate: UIResponder, UIWindowSceneDelegate {
             window?.rootViewController = TabBarControler()
         }
         window?.makeKeyAndVisible()
-        
-        if var viewController = window?.rootViewController?.children.first(where: {$0.isViewLoaded}) {
-            
-            if let navigationController = viewController as? UINavigationController,
-               let visibleController = navigationController.visibleViewController {
-                
-                viewController = visibleController
-            }
-            
-            AnalyticsService.report(event: "open", params: ["screen": "\(viewController)"])
-        }
     }
 
     func sceneDidDisconnect(_ scene: UIScene) {}
     func sceneDidBecomeActive(_ scene: UIScene) {}
     func sceneWillResignActive(_ scene: UIScene) {}
-    func sceneWillEnterForeground(_ scene: UIScene) {}
     func sceneDidEnterBackground(_ scene: UIScene) {}
+    func sceneWillEnterForeground(_ scene: UIScene) {}
 }
 

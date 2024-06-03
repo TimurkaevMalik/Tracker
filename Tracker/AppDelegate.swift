@@ -14,7 +14,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         
         AnalyticsService.activate()
-
         return true
     }
     
@@ -27,14 +26,6 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         sceneConfiguration.delegateClass = SceneDelegate.self
         
         return sceneConfiguration
-    }
-    
-    func applicationWillTerminate(_ application: UIApplication) {
-        
-        if let lastViewController = UserDefaultsManager.lastRootVeiwController {
-            
-            AnalyticsService.report(event: "close", params: ["screen": lastViewController])
-        }
     }
     
     lazy var persistentContainer: NSPersistentContainer = {
