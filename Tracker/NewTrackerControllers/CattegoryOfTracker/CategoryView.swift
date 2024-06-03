@@ -57,11 +57,6 @@ final class CategoryView: UIViewController {
         setButtonTitle()
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        UserDefaultsManager.lastRootVeiwController = "\(self)"
-    }
-    
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         viewModel.categoryViewWillDissapear()

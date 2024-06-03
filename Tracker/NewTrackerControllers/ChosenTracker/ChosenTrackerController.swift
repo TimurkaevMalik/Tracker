@@ -78,11 +78,6 @@ class ChosenTrackerController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    override func viewDidAppear(_ animated: Bool) {
-        super.viewDidAppear(animated)
-        UserDefaultsManager.lastRootVeiwController = "\(self)"
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         configureViewsBasedOn(actionType: actionType)
