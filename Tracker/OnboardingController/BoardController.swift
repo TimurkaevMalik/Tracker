@@ -44,7 +44,7 @@ class BoardController: UIViewController {
     
     private func configureOnboardingText() {
         onboardingText.font = UIFont.boldSystemFont(ofSize: 32)
-        onboardingText.tintColor = .ypBlack
+        onboardingText.textColor = .black
         onboardingText.numberOfLines = 2
         onboardingText.textAlignment = .center
         

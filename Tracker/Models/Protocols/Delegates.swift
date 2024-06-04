@@ -5,12 +5,18 @@
 //  Created by Malik Timurkaev on 12.04.2024.
 //
 
-import Foundation
+import UIKit
+
 
 protocol TrackerStoreDelegate: AnyObject {
-    func didUpdate(tracker: Tracker)
+    func didUpdate(tracker: Tracker, categoryTitle: String)
     func didDelete(tracker: Tracker)
     func didAdd(tracker: Tracker, with categoryTitle: String)
+}
+
+protocol CategoryStoreDelegate: AnyObject {
+    func didStoreCategory(_ category: TrackerCategory)
+    func storeDidUpdate(category: TrackerCategory)
 }
 
 protocol RecordStoreDelegate: AnyObject {
@@ -19,9 +25,20 @@ protocol RecordStoreDelegate: AnyObject {
     func didAdd(record: TrackerRecord)
 }
 
+protocol TabBarControllerDelegate: AnyObject {
+    func hideFilterButton()
+    func showFilterButton()
+}
+
 protocol TrackerViewControllerDelegate: AnyObject {
     func dismisTrackerTypeController()
     func addNewTracker(trackerCategory: TrackerCategory)
+    func didEditTracker(tracker: TrackerToEdit)
+}
+
+
+protocol FilterControllerDelegate: AnyObject {
+    func didChooseFilter()
 }
 
 protocol ScheduleOfTrackerDelegate: AnyObject {
@@ -40,5 +57,10 @@ protocol NewCategoryViewProtocol: AnyObject {
 }
 
 protocol CollectionViewCellDelegate: AnyObject {
-    func didTapCollectionCellButton(_ cell: CollectionViewCell)
+    func contextMenuForCell(_ cell: CollectionViewCell) -> UIContextMenuConfiguration?
+    func pinMenuButtonTappedOn(_ indexPath: IndexPath)
+    func unpinMenuButtonTappedOn(_ indexPath: IndexPath)
+    func editMenuButtonTappedOn(_ indexPath: IndexPath)
+    func deleteMenuButtonTappedOn(_ indexPath: IndexPath)
+    func cellPlusButtonTapped(_ cell: CollectionViewCell)
 }

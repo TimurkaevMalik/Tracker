@@ -1,0 +1,81 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Malik Timurkaev on 24.05.2024.
+  
+*/
+
+
+"nothingWasFound" = "Nothing was found";
+"whatShouldWeTrack" = "What should we track?";
+"statistic.emptyState.title" = "No data to analyze";
+"categoryView.emptyState.title" = "Habits and events\n can be combined in meaning";
+"delete.confirmation" = "Are you sure you want to delete the tracker?";
+
+"pined" = Pined;
+
+"edit" = Edit;
+"button.pin" = Pin;
+"button.unpin" = Unpin;
+"ready" = Ready;
+"delete" = Delete;
+"create" = Create;
+"save" = Save;
+"cancel" = Cancel;
+"filters" = Filters;
+"doneButton.title" = Done;
+"button.habbit" = Habbit;
+"button.irregularEvent" = "Irregular event";
+"button.createCategory" = "Create category";
+"button.addCategory" = "Add category";
+
+"emoji" = Emoji;
+"color" = Color;
+"trackers" = Trackers;
+"statistic" = Statistic;
+"category" = Category;
+"schedule" = Schedule;
+
+"searchBar.placeholder" = Search;
+"placeholder.enterCategoryName" = "Enter the name of the category";
+"placeholder.enterTrackerName" = "Enter the name of the tracker";
+
+"trackerTypeController.title" = "Creating a Tracker";
+"habbitController.title" = "New habbit";
+"habbitController.editing.title" = "Editing habbit";
+"eventController.title" = "New event";
+"eventController.editing.title" = "Editing event";
+"newCategoryView.title" = "New category";
+
+"warning.categoryAlreadyExists" = "This category already exists";
+"warning.enterCategoryName" = "Enter category name";
+"warning.fieldsfullness" = "Fill in all the fields";
+"warning.limititation" = "The limit is";
+"warning.caracters" = characters;
+
+"monday" = Monday;
+"tuesday" = Tuesday;
+"wednesday" = Wednesday;
+"thursday" = Thursday;
+"friday" = Friday;
+"saturday" = Saturday;
+"sunday" = Sunday;
+
+"mon" = "Mon";
+"tue" = "Tue";
+"wed" = "Wed";
+"thu" = "Thu";
+"fri" = "Fri";
+"sat" = "Sat";
+"sun" = "Sun";
+
+"day" = "%d day";
+"days" = "%d days";
+"days.fromTwoToFour" = "%d days";
+
+"allTrackers" = "All trackers";
+"trackersForToday" = "Trackers for today";
+"completedOnes" = "Completed";
+"notCompletedOnes" = "Not Completed";
+"completedTrackers" = "Completed trackers";

@@ -58,12 +58,14 @@ final class NewCategoryView: UIViewController {
     
     @objc func saveButtonTapped(){
         
+        let enterCategoryName = NSLocalizedString("warning.enterCategoryName", comment: "Text shows up as warning")
+        
         if let nameOfCategory = viewModel.newCategory {
             
             textField.text = nameOfCategory.trimmingCharacters(in: .whitespaces)
             viewModel.storeNewCategory(TrackerCategory(titleOfCategory: nameOfCategory, trackersArray: []))
         } else {
-            showWarningLabel(with: "укажите название")
+            showWarningLabel(with: enterCategoryName)
             highLightButton()
         }
     }
@@ -74,7 +76,9 @@ final class NewCategoryView: UIViewController {
     }
     
     private func configureTitleLabelView(){
-        titleLabel.text = "Новая привычка"
+        let titleLabelText = NSLocalizedString("newCategoryView.title", comment: "Text displayed on the top of screen")
+        
+        titleLabel.text = titleLabelText
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -88,12 +92,13 @@ final class NewCategoryView: UIViewController {
     }
     
     private func configureTextFieldAndClearButton(){
-        
+        let enterNameText = NSLocalizedString("placeholder.enterCategoryName", comment: "")
+                
         textField.delegate = self
-        textField.backgroundColor = UIColor(named: "YPLightGray")
+        textField.backgroundColor = .ypMediumLightGray
         textField.layer.cornerRadius = 16
         textField.layer.masksToBounds = true
-        textField.placeholder = "Введите название трекера"
+        textField.placeholder = enterNameText
         textField.leftViewMode = .always
         
         
@@ -104,7 +109,7 @@ final class NewCategoryView: UIViewController {
         
         
         clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
-        clearTextFieldButton.backgroundColor = UIColor(named: "YPLightGray")
+        clearTextFieldButton.backgroundColor = .ypMediumLightGray
         clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
         clearTextFieldButton.contentHorizontalAlignment = .leading
         
@@ -137,10 +142,12 @@ final class NewCategoryView: UIViewController {
     }
     
     private func configureSaveButton(){
+        let createButtonTitle = NSLocalizedString("ready", comment: "Text displayed on create button")
         
+        saveButton.setTitleColor(.ypWhite, for: .normal)
         saveButton.addTarget(self, action: #selector(saveButtonTapped), for: .touchUpInside)
         
-        saveButton.setTitle("Создать", for: .normal)
+        saveButton.setTitle(createButtonTitle, for: .normal)
         saveButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         saveButton.backgroundColor = .ypDarkGray
         saveButton.layer.cornerRadius = 16
@@ -158,11 +165,13 @@ final class NewCategoryView: UIViewController {
     }
     
     private func shouldActivateSaveButton(_ text: String?) {
+        
         guard
             let text,
             !text.isEmpty,
             !text.filter({ $0 != Character(" ") }).isEmpty
         else {
+            viewModel.updateNameOfNewCategory(nil)
             saveButton.backgroundColor = .ypDarkGray
             return
         }
@@ -237,7 +246,10 @@ extension NewCategoryView: UITextFieldDelegate {
         
         guard newString.count <= maxLength else {
             
-            showWarningLabel(with: "Ограничение 20 символов")
+            let limititationText = NSLocalizedString("warning.limititation", comment: "Text before the number of the limit")
+            let charatersText = NSLocalizedString("warning.caracters", comment: "Text after the number of the limit")
+            
+            showWarningLabel(with: limititationText + " \(20) " + charatersText)
             return false
         }
         
@@ -253,7 +265,9 @@ extension NewCategoryView: NewCategoryViewProtocol {
     }
     
     func categoryAlreadyExists() {
-        showWarningLabel(with: "Такая категория существует")
+        let categoryAlreadyExists = NSLocalizedString("warning.categoryAlreadyExists", comment: "Text shows up as warning")
+        
+        showWarningLabel(with: categoryAlreadyExists)
         highLightButton()
     }
 }

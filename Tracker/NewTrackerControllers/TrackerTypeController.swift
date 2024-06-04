@@ -5,7 +5,6 @@
 //  Created by Malik Timurkaev on 12.04.2024.
 //
 
-import Foundation
 import UIKit
 
 final class TrackerTypeController: UIViewController {
@@ -25,27 +24,55 @@ final class TrackerTypeController: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
-    private func configureCreatingTrackerView(){
-        view.backgroundColor = UIColor(named: "YPWhite")
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        view.backgroundColor = .ypWhite
+        
+        configureTitleLable()
+        configureButtons()
+    }
+    
+    
+    @objc func habbitButtonTapped(){
+        
+        guard let delegate else { return }
+        
+        let type = ActionType.create(value: TrackerType.habbit)
+        let viewController = ChosenTrackerController(actionType: type, tracker: nil, delegate: delegate)
+        
+        present(viewController, animated: true)
+    }
+    
+    @objc func irregularEventButtonTapped(){
+        
+        guard let delegate else { return }
+        
+        let type = ActionType.create(value: TrackerType.irregularEvent)
+        let viewController = ChosenTrackerController(actionType: type, tracker: nil, delegate: delegate)
+        
+        present(viewController, animated: true)
+    }
+    
+    private func configureButtons(){
+        let habbitTitle = NSLocalizedString("button.habbit", comment: "Text displayed on habbit button")
+        let eventTitle = NSLocalizedString("button.irregularEvent", comment: "Text displayed on irregular event button")
         
         habbit.addTarget(self, action: #selector(habbitButtonTapped), for: .touchUpInside)
         irregularEvent.addTarget(self, action: #selector(irregularEventButtonTapped), for: .touchUpInside)
         
-        
-        habbit.setTitle("Привычка", for: .normal)
-        habbit.setTitleColor(UIColor(named: "YPWhite"), for: .normal)
+        habbit.setTitle(habbitTitle, for: .normal)
+        habbit.setTitleColor(.ypWhite, for: .normal)
         habbit.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         habbit.layer.cornerRadius = 16
         habbit.layer.masksToBounds = true
-        habbit.backgroundColor = UIColor(named: "YPBlack")
+        habbit.backgroundColor = .ypBlack
         
-        
-        irregularEvent.setTitle("Нерегулярные событие", for: .normal)
-        irregularEvent.setTitleColor(UIColor(named: "YPWhite"), for: .normal)
+        irregularEvent.setTitle(eventTitle, for: .normal)
+        irregularEvent.setTitleColor(.ypWhite, for: .normal)
         irregularEvent.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         irregularEvent.layer.cornerRadius = 16
         irregularEvent.layer.masksToBounds = true
-        irregularEvent.backgroundColor = UIColor(named: "YPBlack")
+        irregularEvent.backgroundColor = .ypBlack
         
         
         view.addSubviews([habbit, irregularEvent])
@@ -67,8 +94,9 @@ final class TrackerTypeController: UIViewController {
     }
     
     private func configureTitleLable(){
+        let titleLabelText = NSLocalizedString("trackerTypeController.title", comment: "Text displayed on the top of screen")
         
-        titleLabel.text = "Создание трекера"
+        titleLabel.text = titleLabelText
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         titleLabel.textAlignment = .center
         view.addSubview(titleLabel)
@@ -81,31 +109,5 @@ final class TrackerTypeController: UIViewController {
             titleLabel.topAnchor.constraint(equalTo: view.topAnchor, constant: 27)
         ])
         
-    }
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        configureTitleLable()
-        configureCreatingTrackerView()
-    }
-    
-    
-    @objc func habbitButtonTapped(){
-        
-        guard let delegate else { return }
-        
-        let viewController = ChosenTrackerController(trackerType: TrackerType.habbit, delegate: delegate)
-        
-        present(viewController, animated: true)
-    }
-    
-    @objc func irregularEventButtonTapped(){
-        
-        guard let delegate else { return }
-        
-        let viewController = ChosenTrackerController(trackerType: TrackerType.irregularEvent, delegate: delegate)
-        
-        present(viewController, animated: true)
     }
 }

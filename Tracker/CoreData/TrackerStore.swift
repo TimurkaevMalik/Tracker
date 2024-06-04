@@ -8,10 +8,14 @@
 import UIKit
 import CoreData
 
+
 protocol TrackerStoreProtocol {
-    func storeNewTracker(_ tracker: Tracker, for categoryTitle: String)
-    func deleteTrackerWith(id: UUID)
-    func updateCategoriesArray() -> [TrackerCategory]?
+   func storeNewTracker(_ tracker: Tracker, for categoryTitle: String)
+   func updateTracker(_ tracker: Tracker, for categoryTitle: String)
+   func fetchTracker(with id: UUID) -> Tracker?
+   func updateCategoriesArray() -> [TrackerCategory]?
+   func deleteTrackerOf(categoryTitle: String, id: UUID)
+   func deleteTrackerWith(id: UUID)
 }
 
 final class TrackerStore: NSObject {
@@ -162,15 +166,90 @@ extension TrackerStore: TrackerStoreProtocol {
         appDelegate.saveContext()
     }
     
+    func updateTracker(_ tracker: Tracker, for categoryTitle: String) {
+        guard let trackersCoreData = fetchAllTrackers() else { return }
+        
+        let pinedText = NSLocalizedString("pined", comment: "")
+        let filteredCoreData = trackersCoreData.filter({ $0.id == tracker.id })
+        
+        filteredCoreData.forEach { filteredTracker in
+            
+            filteredTracker.name = tracker.name
+            filteredTracker.color = uiColorMarshalling.hexString(from: tracker.color)
+            filteredTracker.emoji = tracker.emoji
+            
+            if !tracker.schedule.isEmpty {
+                let schedule: [String] = tracker.schedule.map { element in
+                    
+                    return element ?? ""
+                }
+                let weekdays: String = schedule.joined(separator: " ")
+                
+                filteredTracker.schedule = weekdays
+                
+            } else {
+                filteredTracker.schedule = nil
+            }
+        }
+        
+        
+        if let nonpinedTracker = filteredCoreData.first(where: { $0.trackerCategory?.titleOfCategory != pinedText }),
+           let oldTitle = nonpinedTracker.trackerCategory?.titleOfCategory,
+           oldTitle != categoryTitle {
+            
+            let oldCategory = trackerCategoryStore.fetchCategory(with: oldTitle)
+            oldCategory?.removeFromTrackersArray(nonpinedTracker)
+            
+           let newCategory = trackerCategoryStore.fetchCategory(with: categoryTitle)
+            newCategory?.addToTrackersArray( nonpinedTracker )
+        }
+        
+        appDelegate.saveContext()
+    }
+    
+    func fetchTracker(with id: UUID) -> Tracker? {
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
+        
+        do {
+            guard let trackerCoreData = try context.fetch(fetchRequest).first(where: { $0.id == id }) else {
+                return nil
+            }
+            
+           return convertCoreDataToTracker(trackerCoreData)
+            
+        } catch let error as NSError {
+            assertionFailure("\(error)")
+            return nil
+        }
+    }
+    
+    func deleteTrackerOf(categoryTitle: String, id: UUID) {
+        
+        let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
+        
+        do {
+            let trackers = try context.fetch(fetchRequest)
+            
+            guard let tracker = (trackers.filter( { $0.id == id }).first { $0.trackerCategory?.titleOfCategory == categoryTitle }) else { return }
+            
+            context.delete(tracker)
+            appDelegate.saveContext()
+            
+        } catch let error as NSError {
+            assertionFailure("\(error)")
+        }
+    }
+    
     func deleteTrackerWith(id: UUID) {
         let fetchRequest = NSFetchRequest<TrackerCoreData>(entityName: trackerName)
         
         do {
             let trackers = try context.fetch(fetchRequest)
             
-            guard let tracker = trackers.first(where: { $0.id == id }) else { return }
+            let tracker = trackers.filter( { $0.id == id })
             
-            context.delete(tracker)
+            tracker.forEach({ context.delete($0) })
+            
             appDelegate.saveContext()
             
         } catch let error as NSError {
@@ -235,7 +314,9 @@ extension TrackerStore: NSFetchedResultsControllerDelegate {
             delegate?.didDelete(tracker: tracker)
             
         case .update:
-            break
+            if let title = trackerCoreData.trackerCategory?.titleOfCategory {
+                delegate?.didUpdate(tracker: tracker, categoryTitle: title)
+            }
         default:
             break
         }

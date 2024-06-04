@@ -7,6 +7,11 @@
 
 import Foundation
 
+enum ActionType {
+    case create(value: TrackerType)
+    case edit(value: TrackerType)
+}
+
 enum TrackerType {
     case habbit
     case irregularEvent
