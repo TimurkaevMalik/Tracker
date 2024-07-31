@@ -112,6 +112,18 @@ final class TrackerViewController: UIViewController {
         present(viewController, animated: true)
     }
     
+    private func configureTrackerViews(){
+        view.backgroundColor = .ypWhite
+        
+        configurePlugImage()
+        configurePlugLabel()
+        configureSearchController()
+        addTitleAndSearchControllerToNavBar()
+        configureCollectionView()
+        configureDatePicker()
+        configurePlusButton()
+    }
+    
     private func configurePlugImage(){
         
         centralPlugImage.translatesAutoresizingMaskIntoConstraints = false
@@ -221,18 +233,6 @@ final class TrackerViewController: UIViewController {
         navigationItem.title = trackersTopTitle
         navigationItem.searchController = searchController
         navigationController?.navigationBar.prefersLargeTitles = true
-    }
-    
-    private func configureTrackerViews(){
-        view.backgroundColor = .ypWhite
-        
-        configurePlugImage()
-        configurePlugLabel()
-        configureSearchController()
-        addTitleAndSearchControllerToNavBar()
-        configureCollectionView()
-        configureDatePicker()
-        configurePlusButton()
     }
     
     private func configureCell(for cell: CollectionViewCell, with indexPath: IndexPath){
