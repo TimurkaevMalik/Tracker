@@ -8,10 +8,6 @@
 import UIKit
 import CoreData
 
-protocol CategoryStoreDelegate: AnyObject {
-    func didStoreCategory(_ category: TrackerCategory)
-    func storeDidUpdate(category: TrackerCategory)
-}
 
 final class TrackerCategoryStore: NSObject {
     
@@ -69,6 +65,33 @@ final class TrackerCategoryStore: NSObject {
         appDelegate.saveContext()
     }
     
+    func locolizePinedCategory() {
+        
+        if Locale.current.languageCode == "ru" {
+            if fetchCategory(with: "Закрепленные") == nil {
+                
+                guard let categoryCoreData = fetchCategory(with: "Pined") else {
+                    return
+                }
+                
+                categoryCoreData.titleOfCategory = "Закрепленные"
+                appDelegate.saveContext()
+                
+            }
+        } else if Locale.current.languageCode == "en" {
+                
+            if fetchCategory(with: "Pined") == nil {
+                
+                guard let categoryCoreData = fetchCategory(with: "Закрепленные") else {
+                    return
+                }
+                
+                categoryCoreData.titleOfCategory = "Pined"
+                appDelegate.saveContext()
+            }
+        }
+    }
+    
     func fetchAllCategories() -> [TrackerCategoryCoreData]? {
         
         let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: categoryName)
@@ -98,6 +121,20 @@ final class TrackerCategoryStore: NSObject {
             assertionFailure("\(error)")
             return nil
         }
+    }
+    
+    func deleteTrackerWith(_ id: UUID, from categoryTitle: String) {
+        
+        guard
+            let categoryCoreData = fetchCategory(with: categoryTitle),
+            let tracker = categoryCoreData.trackersArray?.first(where: { ($0 as? TrackerCoreData)?.id == id }) as? NSManagedObject
+        else {
+            return
+        }
+    
+        context.delete(tracker)
+        
+        appDelegate.saveContext()
     }
     
     func convertToCategotyArray( _ response: [TrackerCategoryCoreData]) -> [TrackerCategory] {
@@ -139,12 +176,10 @@ extension TrackerCategoryStore: NSFetchedResultsControllerDelegate {
         else { return }
         
         switch type {
-            
         case .insert:
             delegate?.didStoreCategory(category)
         case .update:
             delegate?.storeDidUpdate(category: category)
-            
         case .delete:
             break
         default:

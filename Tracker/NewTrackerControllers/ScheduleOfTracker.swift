@@ -17,7 +17,7 @@ final class ScheduleOfTracker: UIViewController {
     private let tableView = UITableView()
     
     private var chosenDates: [String] = []
-    private let weekdays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]
+    private let daysOfWeek = ["monday", "tuesday", "wednesday", "thursday", "friday", "saturday", "sunday"]
     
     
     init(delegate: ScheduleOfTrackerDelegate,
@@ -32,8 +32,76 @@ final class ScheduleOfTracker: UIViewController {
         fatalError("init(coder:) has not been implemented")
     }
     
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        
+        view.backgroundColor = .ypWhite
+        
+        configureDoneButton()
+        configureTitleLabelView()
+        configureTableView()
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        super.viewWillDisappear(animated)
+        
+        delegate?.didDismissScreenWithChanges(dates: chosenDates)
+    }
+    
+    @objc func doneButtonTapped(){
+        
+        guard !chosenDates.isEmpty else {
+            highLightButton()
+            return
+        }
+        
+        delegate?.didRecieveDatesArray(dates: chosenDates)
+        
+        dismiss(animated: true)
+    }
+    
+    @objc func switchChanged(_ sender: UISwitch){
+        
+        var stringWeekDay = ""
+        
+        switch sender.tag {
+        case 0:
+            stringWeekDay = daysOfWeek[0]
+        case 1:
+            stringWeekDay = daysOfWeek[1]
+        case 2:
+            stringWeekDay = daysOfWeek[2]
+        case 3:
+            stringWeekDay = daysOfWeek[3]
+        case 4:
+            stringWeekDay = daysOfWeek[4]
+        case 5:
+            stringWeekDay = daysOfWeek[5]
+        case 6:
+            stringWeekDay = daysOfWeek[6]
+        default:
+            return
+        }
+        
+        switch sender.isOn {
+        case true:
+            chosenDates.append(stringWeekDay)
+            
+        case false:
+            for index in 0..<chosenDates.count {
+                
+                if chosenDates[index] == stringWeekDay {
+                    chosenDates.remove(at: index)
+                    break
+                }
+            }
+        }
+    }
+    
     private func configureTitleLabelView(){
-        titleLabel.text = "Новая привычка"
+        let titleLabelText = NSLocalizedString("schedule", comment: "Text displayed on the top of screen")
+        
+        titleLabel.text = titleLabelText
         titleLabel.font = UIFont.systemFont(ofSize: 16)
         
         titleLabel.translatesAutoresizingMaskIntoConstraints = false
@@ -46,18 +114,14 @@ final class ScheduleOfTracker: UIViewController {
     }
     
     private func configureTableView(){
-        
-        tableView.backgroundColor = .black
-        
         tableView.delegate = self
         tableView.dataSource = self
-        
         tableView.register(UITableViewCell.self, forCellReuseIdentifier: "cellIdentifier")
-        tableView.backgroundColor = .white
+        
         tableView.layer.cornerRadius = 16
         tableView.layer.masksToBounds = true
         tableView.isScrollEnabled = false
-        
+        tableView.separatorColor = .ypBlack
         
         tableView.translatesAutoresizingMaskIntoConstraints = false
         view.addSubviews([tableView])
@@ -71,10 +135,12 @@ final class ScheduleOfTracker: UIViewController {
     }
     
     private func configureDoneButton(){
+        let doneButtonTitle = NSLocalizedString("doneButton.title", comment: "Text displayed on done button")
         
         doneButton.addTarget(self, action: #selector(doneButtonTapped), for: .touchUpInside)
         
-        doneButton.setTitle("Готово", for: .normal)
+        doneButton.setTitle(doneButtonTitle, for: .normal)
+        doneButton.setTitleColor(.ypWhite, for: .normal)
         doneButton.titleLabel?.font = UIFont.systemFont(ofSize: 16)
         doneButton.backgroundColor = .ypBlack
         doneButton.layer.cornerRadius = 16
@@ -115,86 +181,19 @@ final class ScheduleOfTracker: UIViewController {
     private func shouldSetSwitchOnForCell(_ indexPath: IndexPath) -> Bool {
         
         for date in chosenDates {
-            if date == weekdays[indexPath.row] {
+            if date == daysOfWeek[indexPath.row] {
                 return true
             }
         }
         
         return false
     }
-    
-    
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        
-        view.backgroundColor = .ypWhite
-        
-        configureDoneButton()
-        configureTitleLabelView()
-        configureTableView()
-    }
-    
-    override func viewWillDisappear(_ animated: Bool) {
-        super.viewWillDisappear(animated)
-        
-        delegate?.didDismissScreenWithChanges(dates: chosenDates)
-    }
-    
-    @objc func doneButtonTapped(){
-        
-        guard !chosenDates.isEmpty else {
-            highLightButton()
-            return
-        }
-        
-        delegate?.didRecieveDatesArray(dates: chosenDates)
-        
-        dismiss(animated: true)
-    }
-    
-    @objc func switchChanged(_ sender: UISwitch){
-        
-        var stringWeekDay = ""
-        
-        switch sender.tag {
-        case 0:
-            stringWeekDay = "Monday"
-        case 1:
-            stringWeekDay = "Tuesday"
-        case 2:
-            stringWeekDay = "Wednesday"
-        case 3:
-            stringWeekDay = "Thursday"
-        case 4:
-            stringWeekDay = "Friday"
-        case 5:
-            stringWeekDay = "Saturday"
-        case 6:
-            stringWeekDay = "Sunday"
-        default:
-            return
-        }
-        
-        switch sender.isOn {
-        case true:
-            chosenDates.append(stringWeekDay)
-            
-        case false:
-            for index in 0..<chosenDates.count {
-                
-                if chosenDates[index] == stringWeekDay {
-                    chosenDates.remove(at: index)
-                    break
-                }
-            }
-        }
-    }
 }
 
 extension ScheduleOfTracker: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         
-        return weekdays.count
+        return daysOfWeek.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -202,21 +201,25 @@ extension ScheduleOfTracker: UITableViewDataSource {
         let cell = tableView.dequeueReusableCell(withIdentifier: "cellIdentifier", for: indexPath)
         
         let switchView = UISwitch(frame: .zero)
+        
         switchView.isOn = shouldSetSwitchOnForCell(indexPath)
         switchView.onTintColor = .ypBlue
         switchView.tag = indexPath.row
         switchView.addTarget(self, action: #selector(switchChanged(_:)), for: .valueChanged)
         
+        switchView.subviews[0].subviews[0].backgroundColor = .ypColorMilk
+
         cell.accessoryView = switchView
-        cell.backgroundColor = .ypLightGray
-        cell.textLabel?.text = weekdays[indexPath.row]
+        cell.backgroundColor = .ypMediumLightGray
+        
+        let weekdayText = daysOfWeek[indexPath.row]
+        cell.textLabel?.text = NSLocalizedString(weekdayText, comment: "")
         
         cell.separatorInset = UIEdgeInsets(top: 0.3, left: 16, bottom: 0.3, right: 16)
         
         return cell
     }
 }
-
 
 extension ScheduleOfTracker: UITableViewDelegate {
     

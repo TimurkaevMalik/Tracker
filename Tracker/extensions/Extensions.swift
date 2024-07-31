@@ -6,7 +6,6 @@
 //
 
 import UIKit
-import Foundation
 
 extension UIView {
     func addSubviews(_ subviews: [UIView]) {
@@ -59,5 +58,16 @@ extension NSMutableAttributedString {
         
         let range: NSRange = self.mutableString.range(of: forText, options: .caseInsensitive)
         self.addAttribute(NSAttributedString.Key.foregroundColor, value: color, range: range)
+    }
+}
+
+extension UIAlertAction {
+    
+    var titleTextColor: UIColor? {
+        get {
+            return self.value(forKey: "titleTextColor") as? UIColor
+        } set {
+            self.setValue(newValue, forKey: "titleTextColor")
+        }
     }
 }

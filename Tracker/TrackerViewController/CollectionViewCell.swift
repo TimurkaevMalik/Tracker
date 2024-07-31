@@ -5,7 +5,6 @@
 //  Created by Malik Timurkaev on 14.04.2024.
 //
 
-import Foundation
 import UIKit
 
 final class CollectionViewCell: UICollectionViewCell {
@@ -18,22 +17,31 @@ final class CollectionViewCell: UICollectionViewCell {
     let emoji = UILabel()
     let daysCount = UILabel()
     let doneButton = UIButton()
+    let pinedImageView = UIImageView()
     var count: Int?
     
     
     override init(frame: CGRect) {
         super.init(frame: frame)
-    
+        
         configureView()
         configureLabels()
         configureButton()
+        configurepinedImageView()
     }
     
     required init?(coder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
     
+    @objc func didTapDoneButton(){
+        
+        delegate?.cellPlusButtonTapped(self)
+    }
+    
     private func configureView(){
+        let interction = UIContextMenuInteraction(delegate: self)
+        view.addInteraction(interction)
         
         view.layer.cornerRadius = 16
         view.layer.masksToBounds = true
@@ -54,7 +62,7 @@ final class CollectionViewCell: UICollectionViewCell {
         nameLable.textAlignment = .left
         nameLable.numberOfLines = 2
         nameLable.font = UIFont.systemFont(ofSize: 12)
-        nameLable.textColor = UIColor(named: "YPWhite")
+        nameLable.textColor = .white
         
         daysCount.font = UIFont.systemFont(ofSize: 12)
         daysCount.textColor = UIColor(named: "YPBlack")
@@ -69,22 +77,22 @@ final class CollectionViewCell: UICollectionViewCell {
         nameLable.translatesAutoresizingMaskIntoConstraints = false
         daysCount.translatesAutoresizingMaskIntoConstraints = false
         emoji.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubviews([nameLable, emoji, daysCount])
-        
+        view.addSubviews([nameLable, emoji])
+        contentView.addSubview(daysCount)
         NSLayoutConstraint.activate([
-            nameLable.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            nameLable.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12),
+            nameLable.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
+            nameLable.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -12),
             nameLable.bottomAnchor.constraint(equalTo: view.bottomAnchor, constant: -12),
             
             emoji.widthAnchor.constraint(equalToConstant: 24),
             emoji.heightAnchor.constraint(equalToConstant: 24),
-            emoji.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 12),
-            emoji.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
+            emoji.topAnchor.constraint(equalTo: view.topAnchor, constant: 12),
+            emoji.leadingAnchor.constraint(equalTo: view.leadingAnchor, constant: 12),
             
             daysCount.widthAnchor.constraint(equalToConstant: 101),
             daysCount.heightAnchor.constraint(equalToConstant: 18),
             daysCount.leadingAnchor.constraint(equalTo: contentView.leadingAnchor, constant: 12),
-            daysCount.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -24)
+            daysCount.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 16)
         ])
     }
     
@@ -101,8 +109,21 @@ final class CollectionViewCell: UICollectionViewCell {
         NSLayoutConstraint.activate([
             doneButton.widthAnchor.constraint(equalToConstant: 34),
             doneButton.heightAnchor.constraint(equalToConstant: 34),
-            doneButton.bottomAnchor.constraint(equalTo: contentView.bottomAnchor, constant: -16),
+            doneButton.topAnchor.constraint(equalTo: view.bottomAnchor, constant: 8),
             doneButton.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12)
+        ])
+    }
+    
+    func configurepinedImageView() {
+        
+        view.addSubview(pinedImageView)
+        pinedImageView.translatesAutoresizingMaskIntoConstraints = false
+        
+        NSLayoutConstraint.activate([
+            pinedImageView.heightAnchor.constraint(equalToConstant: 12),
+            pinedImageView.widthAnchor.constraint(equalToConstant: 8),
+            pinedImageView.topAnchor.constraint(equalTo: contentView.topAnchor, constant: 18),
+            pinedImageView.trailingAnchor.constraint(equalTo: contentView.trailingAnchor, constant: -12)
         ])
     }
     
@@ -135,6 +156,8 @@ final class CollectionViewCell: UICollectionViewCell {
             return nil
         }
         
+        let locolizedText = NSLocalizedString("numberOfDays", comment: "")
+        
         if doneButton.imageView?.image?.pngData() == UIImage(named: "WhitePlus")?.pngData() {
             
             doneButton.setImage(UIImage(named: "CheckMark"), for: .normal)
@@ -142,7 +165,8 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count + 1
             count += 1
-            daysCount.text = "\(count) день"
+            
+            daysCount.text = String(format: locolizedText, count)
             
             return true
         } else {
@@ -152,14 +176,18 @@ final class CollectionViewCell: UICollectionViewCell {
             
             self.count = count - 1
             count -= 1
-            daysCount.text = "\(count) день"
+            
+            daysCount.text = String(format: locolizedText, count)
             
             return false
         }
     }
+}
+
+extension CollectionViewCell: UIContextMenuInteractionDelegate {
     
-    @objc func didTapDoneButton(){
+    func contextMenuInteraction(_ interaction: UIContextMenuInteraction, configurationForMenuAtLocation location: CGPoint) -> UIContextMenuConfiguration? {
         
-        delegate?.didTapCollectionCellButton(self)
+        return delegate?.contextMenuForCell(self)
     }
 }

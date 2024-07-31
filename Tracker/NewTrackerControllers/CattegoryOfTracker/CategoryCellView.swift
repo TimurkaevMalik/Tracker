@@ -15,6 +15,36 @@ final class CategoryCellView: UITableViewCell {
     let textField = UITextField()
     private let clearTextFieldButton = UIButton(frame: CGRect(x: 0, y: 0, width: 17, height: 17))
     
+    var hidesBottomSeparator = false
+    
+    override func awakeFromNib() {
+        super.awakeFromNib()
+        
+        configureCategoryNameLabel()
+    }
+    
+    override func layoutSubviews() {
+        super.layoutSubviews()
+        
+        let bottomSeparator = subviews.first { $0.frame.minY >= bounds.maxY - 1 && $0.frame.height <= 1 }
+        
+        bottomSeparator?.isHidden = hidesBottomSeparator
+    }
+    
+    @objc func didEnterTextInTextField(_ sender: UITextField){
+        
+        guard
+            let text = sender.text,
+            !text.isEmpty,
+            !text.filter({ $0 != Character(" ") }).isEmpty
+        else { return }
+        
+        textField.text = text.trimmingCharacters(in: .whitespaces)
+    }
+    
+    @objc func clearTextFieldButtonTapped(){
+        textField.text?.removeAll()
+    }
     
     private func configureCategoryNameLabel(){
         categoryNameLabel.text = nameOfCategory
@@ -30,42 +60,8 @@ final class CategoryCellView: UITableViewCell {
         ])
     }
     
-    private func configureTextFieldAndClearButton(){
-        
-        textField.delegate = self
-        textField.backgroundColor = UIColor(named: "YPLightGray")
-        textField.layer.cornerRadius = 16
-        textField.layer.masksToBounds = true
-        textField.placeholder = "Введите название трекера"
-        textField.text = nameOfCategory
-        textField.leftViewMode = .always
-        
-        
-        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
-        textField.addTarget(self, action: #selector(didEnterTextInTextField(_:)), for: .editingDidEndOnExit)
-        textField.rightView = clearTextFieldButton
-        textField.rightViewMode = .whileEditing
-        
-        
-        clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
-        clearTextFieldButton.backgroundColor = UIColor(named: "YPLightGray")
-        clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
-        clearTextFieldButton.contentHorizontalAlignment = .leading
-        
-        textField.translatesAutoresizingMaskIntoConstraints = false
-        contentView.addSubviews([textField])
-        
-        NSLayoutConstraint.activate([
-            textField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
-            textField.topAnchor.constraint(equalTo: contentView.topAnchor),
-            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
-            textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
-            
-            clearTextFieldButton.widthAnchor.constraint(equalToConstant: clearTextFieldButton.frame.width + 12)
-        ])
-    }
-    
     func setCornerRadiusForCell(at indexPath: IndexPath, of tableView: UITableView){
+    
         let lastRow = tableView.numberOfRows(inSection: indexPath.section) - 1
         self.layer.maskedCorners = []
         self.layer.cornerRadius = 16
@@ -89,26 +85,37 @@ final class CategoryCellView: UITableViewCell {
         }
     }
     
-    override func awakeFromNib() {
-        super.awakeFromNib()
+    private func configureTextFieldAndClearButton(){
         
-        configureCategoryNameLabel()
-    }
-    
-    
-    @objc func didEnterTextInTextField(_ sender: UITextField){
+        textField.delegate = self
+        textField.backgroundColor = .ypMediumLightGray
+        textField.layer.cornerRadius = 16
+        textField.layer.masksToBounds = true
+        textField.placeholder = "Введите название трекера"
+        textField.text = nameOfCategory
+        textField.leftViewMode = .always
         
-        guard
-            let text = sender.text,
-            !text.isEmpty,
-            !text.filter({ $0 != Character(" ") }).isEmpty
-        else { return }
+        textField.leftView = UIView(frame: CGRect(x: 0, y: 0, width: 16, height: 0))
+        textField.addTarget(self, action: #selector(didEnterTextInTextField(_:)), for: .editingDidEndOnExit)
+        textField.rightView = clearTextFieldButton
+        textField.rightViewMode = .whileEditing
         
-        textField.text = text.trimmingCharacters(in: .whitespaces)
-    }
-    
-    @objc func clearTextFieldButtonTapped(){
-        textField.text?.removeAll()
+        clearTextFieldButton.addTarget(self, action: #selector(clearTextFieldButtonTapped), for: .touchUpInside)
+        clearTextFieldButton.backgroundColor = .ypMediumLightGray
+        clearTextFieldButton.setImage(UIImage(named: "x.mark.circle"), for: .normal)
+        clearTextFieldButton.contentHorizontalAlignment = .leading
+        
+        textField.translatesAutoresizingMaskIntoConstraints = false
+        contentView.addSubviews([textField])
+        
+        NSLayoutConstraint.activate([
+            textField.bottomAnchor.constraint(equalTo: contentView.bottomAnchor),
+            textField.topAnchor.constraint(equalTo: contentView.topAnchor),
+            textField.leadingAnchor.constraint(equalTo: contentView.leadingAnchor),
+            textField.trailingAnchor.constraint(equalTo: contentView.trailingAnchor),
+            
+            clearTextFieldButton.widthAnchor.constraint(equalToConstant: clearTextFieldButton.frame.width + 12)
+        ])
     }
 }
 

@@ -1,0 +1,81 @@
+/* 
+  Localizable.strings
+  Tracker
+
+  Created by Malik Timurkaev on 24.05.2024.
+  
+*/
+
+
+"nothingWasFound" = "Ничего не найдено";
+"whatShouldWeTrack" = "Что будем отслеживать?";
+"statistic.emptyState.title" = "Анализировать пока нечего";
+"categoryView.emptyState.title" = "Привычки и события можно\n объединить по смыслу";
+"delete.confirmation" = "Уверены что хотите удалить трекер?";
+
+"pined" = "Закрепленные";
+
+"edit" = "Редактировать";
+"button.pin" = "Закрепить";
+"button.unpin" = "Открепить";
+"ready" = "Готово";
+"delete" = "Удалить";
+"create" = "Создать";
+"save" = "Сохранить";
+"cancel" = "Отменить";
+"filters" = "Фильтры";
+"doneButton.title" = "Готово";
+"button.habbit" = "Привычка";
+"button.irregularEvent" = "Нерегулярное событие";
+"button.createCategory" = "Создать категорию";
+"button.addCategory" = "Добавить категорию";
+
+"emoji" = "Эмодзи";
+"color" = "Цвет";
+"trackers" = "Трекеры";
+"statistic" = "Статистика";
+"category" = "Категория";
+"schedule" = "Расписание";
+
+"searchBar.placeholder" = "Поиск";
+"placeholder.enterCategoryName" = "Введети название категории";
+"placeholder.enterTrackerName" = "Введети название трекера";
+
+"trackerTypeController.title" = "Создание трекера";
+"habbitController.title" = "Новая привычка";
+"habbitController.editing.title" = "Редактирование привычки";
+"eventController.title" = "Новое событие";
+"eventController.editing.title" = "Редактирование события";
+"newCategoryView.title" = "Новая категория";
+
+"warning.categoryAlreadyExists" = "Такая категория уже существует";
+"warning.enterCategoryName" = "укажите название категории";
+"warning.fieldsfullness" = "Заполните все поля";
+"warning.limititation" = "Ограничение";
+"warning.caracters" = "символов";
+
+"monday" = "Понедельник";
+"tuesday" = "Вторник";
+"wednesday" = "Среда";
+"thursday" = "Четверг";
+"friday" = "Пятница";
+"saturday" = "Суббота";
+"sunday" = "Воскресенье";
+
+"mon" = "Пн";
+"tue" = "Вт";
+"wed" = "Ср";
+"thu" = "Чт";
+"fri" = "Пт";
+"sat" = "Сб";
+"sun" = "Вс";
+
+"day" = "%d день";
+"days" = "%d дней";
+"days.fromTwoToFour" = "%d дня";
+
+"allTrackers" = "Все трекеры";
+"trackersForToday" = "Трекеры на сегодня";
+"completedOnes" = "Завершенные";
+"notCompletedOnes" = "Не Завершенные";
+"completedTrackers" = "Трекеров завершено";

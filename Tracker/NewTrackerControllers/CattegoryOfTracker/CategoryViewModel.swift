@@ -41,7 +41,7 @@ final class CategoryViewModel {
         categories = fetchCategories()
     }
     
-    func updateNameOfNewCategory(_ name: String) {
+    func updateNameOfNewCategory(_ name: String?) {
         newCategory = name
     }
     
@@ -73,6 +73,7 @@ final class CategoryViewModel {
         }
         let convertedCategories = convertToCategotyArray(categoryCoreData)
         
+        
         return convertedCategories.map({ $0.titleOfCategory })
     }
     
@@ -87,9 +88,10 @@ final class CategoryViewModel {
             }
         }
         
-        return categoryArray
+        let pinedText = NSLocalizedString("pined", comment: "")
+        
+        return categoryArray.filter({$0.titleOfCategory != pinedText})
     }
-    
 }
 
 extension CategoryViewModel: CategoryStoreDelegate {
